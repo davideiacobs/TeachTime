@@ -1,0 +1,17 @@
+ANNUNCIO --> come per bacheca annunci. No orario e data. L'utente che vuole la ripetizione 
+riempie un form in cui specifica orario e data (e eventualmente la materia/argomento). Il 
+tutor riceve la mail con la richiesta e i dettagli e risponde confermando o meno e nel caso 
+può aggiungere info (es: se rifiuta e vuole proporre un orario diverso da quello richiesto)
+
+Se conferma allora lo studente potrà lasciare un feedback al tutor dalla pagine dei feedback. 
+
+
+MATERIE --> possibilità:
+		Lista predefinita di macrocategorie (es: mate,fisica,...) e il tutor quando
+		riempie il form sceglie la macrocategoria e inserisce a piacimento gli argoementi
+		dettagliati (es: analisi,...) (stile linkedin-->vengono salvati). 
+		Lo studente quando filtra seleziona una macrocateg disponibile e, se vuole, seleziona 
+		anche un argomento specifico dalla lista composta da tutti gli argomenti specifici 			inseriti dai tutor.
+		A questo punto lo studente visualizzerà TUTTI i tutor che offrono ripetizioni 
+		nella macrocateg scelta, con in cima all'elenco quelli che hanno il dettaglio 
+		scelto.
