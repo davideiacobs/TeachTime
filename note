@@ -15,3 +15,8 @@ MATERIE --> possibilità:
 		A questo punto lo studente visualizzerà TUTTI i tutor che offrono ripetizioni 
 		nella macrocateg scelta, con in cima all'elenco quelli che hanno il dettaglio 
 		scelto.
+
+
+LO-FI :
+
+lista tutor --> ogni profilo ha in ordine da sx verso dx e dall'alto verso il basso: foto profilo, nome, età, prezzo, ripetizioni offerte, voto  
