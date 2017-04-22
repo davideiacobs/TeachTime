@@ -1,4 +1,4 @@
-ANNUNCIO --> come per bacheca annunci. No orario e data. L'utente che vuole la ripetizione 
+﻿ANNUNCIO --> come per bacheca annunci. No orario e data. L'utente che vuole la ripetizione 
 riempie un form in cui specifica orario e data (e eventualmente la materia/argomento). Il 
 tutor riceve la mail con la richiesta e i dettagli e risponde confermando o meno e nel caso 
 può aggiungere info (es: se rifiuta e vuole proporre un orario diverso da quello richiesto)
@@ -19,4 +19,9 @@ MATERIE --> possibilità:
 
 LO-FI :
 
+inserisci ripetizione --> materia-argomento/i-città-luogo-descrizione
 lista tutor --> ogni profilo ha in ordine da sx verso dx e dall'alto verso il basso: foto profilo, nome, età, prezzo, ripetizioni offerte, voto  
+profilo tutor --> nome-età-titolo di studio-voto-costo-città-luogo-materia-->argomenti-descr-feedback(espandibile)-contatta
+
+
+DESCRIZIONE SI INSERISCE NEL PROFILO O QUANDO SI OFFRE LA RIPETIZIONE???
