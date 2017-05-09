@@ -1,0 +1,94 @@
+LOGIN UTENTE
+URL: /auth/login
+VERBO: POST
+prende in input un oggett contenente mail e password di un utente e restituisce un oggetto contenente il relativo token di sessione/autenticazione.
+
+LOGOUT UTENTE 
+URL: /auth/logout
+VERBO: POST
+Prende in input un token di sessione/autenticazione e chiude la relativa sessione, invalidando il token
+
+
+INSERIMENTO NUOVO UTENTE NEL SISTEMA:
+URL: /users
+VERBO: POST
+Inserisce un nuovo utente nel sistema. L’oggetto passato come payload conterrà tutti i dati del profilo utente, ad esempio:
+{
+	"nome":"pinco", 
+	"cognome":"pallino", 
+	"email":"pp@gmail.it",
+	"password":"abcdef",
+	"dataDiNascita":"27-04-1995",
+	"città":"Roma",
+	"telefono":3456789012,
+	"titoloDiStudio":"Laurea Basein Informatica"
+}
+
+ESTRAZIONE UTENTE PER CHIAVE:
+URL: /auth/{SID}/users/{ID}
+VERBO: GET
+Restituisce il profilo dell’utente {ID} sotto forma dello stesso oggetto utilizzato come payload per l’inserimento (POST) tramite la URL 
+/users, ad esclusione della password.
+L’operazione viene eseguita nel contesto della sessione con token {SID} (altrimenti si può restituire un errore 403 - Forbidden).
+
+AGGIORNAMENTO PROFILO UTENTE (città,telefono,titolo di studio) PER CHIAVE:
+URL: /auth/{SID}/users/{ID}
+VERBO: PUT
+Aggiorna il profilo dell’utente {ID}. Il payload è lo stesso oggetto utilizzato per l’inserimento (POST) tramite la URL /users.
+L’operazione viene eseguita nel contesto della sessione con token {SID} (altrimenti si può restituire un errore 403 - Forbidden).
+
+
+INSERIMENTO RIPETIZIONE:
+URL: /auth/{SID}/repetitions
+VERBO: POST
+Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload conterrà tutti i dati della ripetizione, ad esempio:
+{
+	"tutor": {
+		"nome":"pinco", 
+		"cognome":"pallino", 
+		"email":"pp@gmail.it",
+		"password":"abcdef",
+		"dataDiNascita":"27-04-1995",
+		"città":"Roma",
+		"telefono":3456789012,
+		"titoloDiStudio":"Laurea Base in Informatica"
+	},
+	"città":"Roma",
+	"luogoDiIncontro":"a scelta dello studente",
+	"prezzoPerOra":12,
+	"descrizione":"blablabla",
+	"materia":"informatica",
+	"listaArgomenti":[
+				"nome":"programmazione_java",
+				"nome":"programmazione_python"
+	]
+}
+L’operazione viene eseguita nel contesto della sessione con token {SID} (altrimenti si può restituire un errore 403 - Forbidden).
+
+
+ESTRAZIONE RIPETIZIONE PER CHIAVE:
+URL: repetitions/{ID}
+VERBO: GET
+Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /auth/{SID}/repetitions, ad esclusione della password.
+
+
+AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):
+URL: /auth/{SID}/repetitions/{ID}
+VERBO: PUT
+Aggiorna le informazioni relative alla ripetizione {ID}. Il payload è lo stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /auth/{SID}/repetitions, ad esclusione di tutor.
+
+
+CANCELLAZIONE RIPETIZIONE PER CHIAVE:
+URL: /auth/{SID}/repetitions/{ID}
+VERBO: DELETE
+Elimina la ripetizione {ID}.
+L’operazione viene eseguita nel contesto della sessione con token {SID} (altrimenti potreste restituire un errore 403 - Forbidden)
+
+
+LISTA RIPETIZIONI PER MATERIA E CITTA':
+URL: /repetitions/{CITY}/{SUBJECT}
+
+
+
+
+

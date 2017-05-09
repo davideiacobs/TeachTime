@@ -1,0 +1,148 @@
+* URL: Formato dati per tutti i payload: JSON **
+
+UTENTE:{
+		"nome":"...", 
+		"cognome":"...", 
+		"email":"...",
+		"password":"...",
+		"dataDiNascita":"27-04-1995",
+		"città":"...",
+		"telefono":3333333333,
+		"titoloDiStudio":"..."
+	}
+
+
+
+
+
+RIPETIZIONE:
+{
+	"tutor": {
+		"nome":"...", 
+		"cognome":"...", 
+		"email":"...",
+		"password":"...",
+		"dataDiNascita":"27-04-1995",
+		"città":"...",
+		"telefono":3333333333,
+		"titoloDiStudio":"..."
+	},
+	"città":"...",
+	"luogoDiIncontro":"...",
+	"prezzoPerOra":12,
+	"descrizione":"...",
+	"materia":"...",
+	"listaArgomenti":[
+				"nome":"...",
+				"nome":"...",
+				"nome":"...",
+	]
+}
+
+
+
+
+
+PRENOTAZIONE:	
+{
+	"studente": {
+		"nome":"...", 
+		"cognome":"...", 
+		"email":"...",
+		"password":"...",
+		"dataDiNascita":"1-11-1998",
+		"città":"...",
+		"telefono":33133435323,
+		"titoloDiStudio":"..."
+	},
+	"ripetizione":{
+			"tutor": {
+				"nome":"...", 
+				"cognome":"...", 
+				"email":"...",
+				"password":"...",
+				"dataDiNascita":"27-04-1995",
+				"città":"...",
+				"telefono":3333333333,
+				"titoloDiStudio":"..."
+			},
+			"città":"...",
+			"luogoDiIncontro":"...",
+			"prezzoPerOra":12,
+			"descrizione":"...",
+			"materia":"...",
+			"listaArgomenti":[
+						"nome":"...",
+						"nome":"...",
+						"nome":"..."
+			 ]
+	},
+	"data":"21-05-2017",
+	"ora":"16:30",
+	"argomento":"...",
+	"stato":0
+}
+
+
+
+
+
+
+FEEDBACK:
+{
+	"prenotazione":{
+		"studente": {
+			"nome":"...", 
+			"cognome":"...", 
+			"email":"...",
+			"password":"...",
+			"dataDiNascita":"1-11-1998",
+			"città":"...",
+			"telefono":33133435323,
+			"titoloDiStudio":"..."
+		},
+		"ripetizione":{
+				"tutor": {
+					"nome":"...", 
+					"cognome":"...", 
+					"email":"...",
+					"password":"...",
+					"dataDiNascita":"27-04-1995",
+					"città":"...",
+					"telefono":3333333333,
+					"titoloDiStudio":"..."
+				},
+				"città":"...",
+				"luogoDiIncontro":"...",
+				"prezzoPerOra":12,
+				"descrizione":"...",
+				"materia":"...",
+				"listaArgomenti":[
+							"nome":"...",
+							"nome":"...",
+							"nome":"...",
+				 ]
+		},
+		"data":"21-05-2017",
+		"ora":"16:30",
+		"argomento":"...",
+		"stato":0
+	},
+	"voto":5,
+	"commento":"..."
+}	
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
