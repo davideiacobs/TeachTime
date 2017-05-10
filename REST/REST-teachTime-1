@@ -47,9 +47,11 @@ Funzionalità:
 -Inserimento nuovo utente nel sistema
 -Estrazione utente per chiave
 -Aggiornamento utente (città,telefono,titolo di studio) per chiave
+-Calcolo voto medio tutor
 
 -Inserimento ripetizione
 -Estrazione ripetizione (per chiave)
+-Estrazione ripetizione per tutor
 -Aggiornamento ripetizione (prezzo/ora,descrizione,luogo incontro, lista argomenti)
 -Cancellazione ripetizione
 
@@ -59,14 +61,19 @@ Funzionalità:
 
 
 -Ricerca feedback ricevuti (per chiave tutor) 
+-Inserimento feedback
+
 -Ricerca prenotazioni per chiave studente (con stato=accettato)
 (quest'ultima serve per recuperare le informazioni necessarie allo studente per rilasciare un feedback)
--Inserimento feedback
--Calcolo voto tutor
+
 -Estrazione delle informazioni su un tutor che offre una ripetizione
+
 -Estrazione delle informazioni su una ripetizione tramite una prenotazione ad essa relativa
--Calcolo numero di ripetizioni offerte da un tutor (prenotazioni per  ripetizioni offerte dal tutor che hanno stato accettato)
+
+-Calcolo numero di ripetizioni effettuate da un tutor (prenotazioni per  ripetizioni offerte dal tutor che hanno stato accettato)
+
 -Recupero lista argomenti per materia
+
 -Inserimento argomento relativo ad una materia
 
 

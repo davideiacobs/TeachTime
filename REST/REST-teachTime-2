@@ -13,15 +13,12 @@ UTENTE:{
 
 
 
-
-
 RIPETIZIONE:
 {
 	"tutor": {
 		"nome":"...", 
 		"cognome":"...", 
 		"email":"...",
-		"password":"...",
 		"dataDiNascita":"27-04-1995",
 		"città":"...",
 		"telefono":3333333333,
