@@ -168,5 +168,31 @@ VERBO: GET
 Restituisce le URI che rappresentano tutte le prenotazioni che hanno come studente {student_ID}.
 
 
+ESTRAZIONE RIPETIZIONE DA ID PRENOTAZIONE:
+URL: /booking/{ID}/prenotazione
+VERBO: GET
+
+
+ESTRAZIONI PROFILO TUTOR DA RIPETIZIONE:
+URL: /repetition?{tutor_ID}   --oppure-- /repetition/{ID}/user/
+VERBO: GET
+
+
+INSERIMENTO MATERIA:
+URL: /subject
+VERBO: POST
+
+RECUPERO LISTA ARGOMENTI PER MATERIA:
+URL: /subject/{ID}/arguments
+VERBO: GET
+
+INSERIMENTO ARGOMENTO:
+URL: /subject/{ID}/arguments
+VERBO: POST
+
+
+
+
+
 
 
