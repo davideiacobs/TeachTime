@@ -3,6 +3,7 @@ URL: /auth/login
 VERBO: POST
 prende in input un oggett contenente mail e password di un utente e restituisce un oggetto contenente il relativo token di sessione/autenticazione.
 
+
 LOGOUT UTENTE 
 URL: /auth/logout
 VERBO: POST
@@ -24,11 +25,13 @@ Inserisce un nuovo utente nel sistema. L’oggetto passato come payload conterr�
 	"titoloDiStudio":"Laurea Base in Informatica"
 }
 
+
 ESTRAZIONE UTENTE PER CHIAVE:
 URL: /users/{ID}
 VERBO: GET
 Restituisce il profilo dell’utente {ID} sotto forma dello stesso oggetto utilizzato come payload per l’inserimento (POST) tramite la URL 
 /users, ad esclusione della password.
+
 
 AGGIORNAMENTO PROFILO UTENTE (città,telefono,titolo di studio) PER CHIAVE:
 URL: /users/{ID}
@@ -68,10 +71,12 @@ URL: /repetitions/{ID}
 VERBO: GET
 Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions, ad esclusione della password.
 
+
 LISTA RIPETIZIONI PER CHIAVE TUTOR:
 URL: /repetitions?{tutor_ID}
 VERBO: GET
 Restituisce la lista di URI che rappresentano tutte le ripetizioni con informazioni associate al tutor {tutor_ID} presenti nel sistema.
+
 
 AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):
 URL: /repetitions/{ID}
@@ -91,10 +96,11 @@ VERBO: GET
 Restituisce la lista delle URI che rappresentano tutte le ripetizioni presenti nel sistema, includendo solo quelle con informazioni associate alla città e alla materia specificate in {CITY} e in {SUBJECT}. La lista può essere ulteriormente filtrata tramite la query string {FILTER} che può indicare uno specifico argomento che deve essere presente nella lista di argomenti contenuta nella ripetizione.
 
 
-LISTA FEEDBACK RICEVUTI PER CHIAVE TUTOR:
-URL: /feedbacks/{tutor_ID}
+LISTA FEEDBACK RICEVUTI DA UN TUTOR:
+URL: /users/{ID}/feedbacks
 VERBO: GET
-Restituisce la lista delle URI che rappresentano tutti i feedback ricevuti dallo user {tutor_ID}.
+Restituisce la lista delle URI che rappresentano tutti i feedback ricevuti dallo user {ID}.
+
 
 INSERIMENTO FEEDBACK:
 URL: /users/{ID}/feedbacks
@@ -143,19 +149,23 @@ Inserimento nel sistema di un nuovo feedback relativo allo user {ID}. L'oggetto 
 	"commento":"..."
 }
 
+
 ESTRAZIONE VOTO MEDIO TUTOR:
 URL: /users/{ID}/feedbacks/vote
 VERBO: GET
 Calcola e restituisce il voto medio dell'utente a partire dai voti contenuti in ogni feedback da esso ricevuto.
 
+
 ESTRAZIONE INFORMAZIONI TUTOR PER CHIAVE RIPETIZIONE:
 URL: /repetitions/{ID}/user
-VERBO:GET
+VERBO: GET
 Restituisce le informazioni relative allo user contenuto nella ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /users, ad esclusione della password.
 
-CALCOLO NUMERO DI RIPETIZIONI EFFETTUATE DA UN TUTOR:
-URL: /bookings/repetitions/count?{tutor_ID}
 
+ESTRAZIONE PRENOTAZIONI PER CHIAVE STUDENTE:
+URL: /booking?{student_ID}
+VERBO: GET
+Restituisce le URI che rappresentano tutte le prenotazioni che hanno come studente {student_ID}.
 
 
 
