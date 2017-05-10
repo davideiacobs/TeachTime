@@ -25,21 +25,19 @@ Inserisce un nuovo utente nel sistema. L’oggetto passato come payload conterr�
 }
 
 ESTRAZIONE UTENTE PER CHIAVE:
-URL: /auth/{SID}/users/{ID}
+URL: /users/{ID}
 VERBO: GET
 Restituisce il profilo dell’utente {ID} sotto forma dello stesso oggetto utilizzato come payload per l’inserimento (POST) tramite la URL 
 /users, ad esclusione della password.
-L’operazione viene eseguita nel contesto della sessione con token {SID} (altrimenti si può restituire un errore 403 - Forbidden).
 
 AGGIORNAMENTO PROFILO UTENTE (città,telefono,titolo di studio) PER CHIAVE:
-URL: /auth/{SID}/users/{ID}
+URL: /users/{ID}
 VERBO: PUT
 Aggiorna il profilo dell’utente {ID}. Il payload è lo stesso oggetto utilizzato per l’inserimento (POST) tramite la URL /users.
-L’operazione viene eseguita nel contesto della sessione con token {SID} (altrimenti si può restituire un errore 403 - Forbidden).
 
 
 INSERIMENTO RIPETIZIONE:
-URL: /auth/{SID}/repetitions
+URL: /repetitions
 VERBO: POST
 Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload conterrà tutti i dati della ripetizione, ad esempio:
 {
@@ -63,26 +61,24 @@ Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload cont
 				"nome":"programmazione_python"
 	]
 }
-L’operazione viene eseguita nel contesto della sessione con token {SID} (altrimenti si può restituire un errore 403 - Forbidden).
 
 
 ESTRAZIONE RIPETIZIONE PER CHIAVE:
 URL: repetitions/{ID}
 VERBO: GET
-Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /auth/{SID}/repetitions, ad esclusione della password.
+Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions, ad esclusione della password.
 
 
 AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):
-URL: /auth/{SID}/repetitions/{ID}
+URL: /repetitions/{ID}
 VERBO: PUT
-Aggiorna le informazioni relative alla ripetizione {ID}. Il payload è lo stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /auth/{SID}/repetitions, ad esclusione di tutor.
+Aggiorna le informazioni relative alla ripetizione {ID}. Il payload è lo stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions, ad esclusione di tutor.
 
 
 CANCELLAZIONE RIPETIZIONE PER CHIAVE:
-URL: /auth/{SID}/repetitions/{ID}
+URL: /repetitions/{ID}
 VERBO: DELETE
 Elimina la ripetizione {ID}.
-L’operazione viene eseguita nel contesto della sessione con token {SID} (altrimenti potreste restituire un errore 403 - Forbidden)
 
 
 LISTA RIPETIZIONI PER MATERIA E CITTA':
