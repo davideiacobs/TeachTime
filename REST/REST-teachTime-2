@@ -18,11 +18,9 @@ RIPETIZIONE:
 	"tutor": {
 		"nome":"...", 
 		"cognome":"...", 
-		"email":"...",
 		"dataDiNascita":"27-04-1995",
-		"città":"...",
-		"telefono":3333333333,
-		"titoloDiStudio":"..."
+		"titoloDiStudio":"...",
+		"uri":"..."
 	},
 	"città":"...",
 	"luogoDiIncontro":"...",
@@ -42,37 +40,19 @@ RIPETIZIONE:
 
 PRENOTAZIONE:	
 {
-	"studente": {
-		"nome":"...", 
-		"cognome":"...", 
-		"email":"...",
-		"password":"...",
-		"dataDiNascita":"1-11-1998",
-		"città":"...",
-		"telefono":33133435323,
-		"titoloDiStudio":"..."
-	},
+	"uri_studente": "...",                        //basta la uri perchè la mail verrà mandata dal sistema senza indicare i dati
+						      //relativi allo studente che si vuole prenotare. Se il tutor accetta allora tramite 
+						      //la uri si recuperano le informazioni riguardanti il profilo dello studente
 	"ripetizione":{
 			"tutor": {
 				"nome":"...", 
 				"cognome":"...", 
 				"email":"...",
-				"password":"...",
-				"dataDiNascita":"27-04-1995",
-				"città":"...",
-				"telefono":3333333333,
-				"titoloDiStudio":"..."
+				"uri_tutor":...
 			},
 			"città":"...",
 			"luogoDiIncontro":"...",
-			"prezzoPerOra":12,
-			"descrizione":"...",
-			"materia":"...",
-			"listaArgomenti":[
-						"nome":"...",
-						"nome":"...",
-						"nome":"..."
-			 ]
+			"prezzoPerOra":12
 	},
 	"data":"21-05-2017",
 	"ora":"16:30",
@@ -91,39 +71,18 @@ FEEDBACK:
 		"studente": {
 			"nome":"...", 
 			"cognome":"...", 
-			"email":"...",
-			"password":"...",
 			"dataDiNascita":"1-11-1998",
-			"città":"...",
-			"telefono":33133435323,
-			"titoloDiStudio":"..."
+			"uri_studente":"..."
 		},
-		"ripetizione":{
-				"tutor": {
-					"nome":"...", 
-					"cognome":"...", 
-					"email":"...",
-					"password":"...",
-					"dataDiNascita":"27-04-1995",
-					"città":"...",
-					"telefono":3333333333,
-					"titoloDiStudio":"..."
-				},
-				"città":"...",
-				"luogoDiIncontro":"...",
-				"prezzoPerOra":12,
-				"descrizione":"...",
-				"materia":"...",
-				"listaArgomenti":[
-							"nome":"...",
-							"nome":"...",
-							"nome":"...",
-				 ]
+
+		"tutor": {
+			"nome":"...", 
+			"cognome":"...", 
+			"uri_tutor":"..."		 
 		},
+
 		"data":"21-05-2017",
-		"ora":"16:30",
 		"argomento":"...",
-		"stato":0
 	},
 	"voto":5,
 	"commento":"..."

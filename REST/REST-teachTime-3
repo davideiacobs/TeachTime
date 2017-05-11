@@ -44,15 +44,12 @@ URL: /repetitions  --oppure-- /users/{ID}/repetitions????
 VERBO: POST
 Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload conterrà tutti i dati della ripetizione, ad esempio:
 {
-	"tutor":{                                   //serve mettere tutti i dati relativi al tutor o basta la sua chiave??
+	"tutor":{                                   
 		"nome":"pinco", 
 		"cognome":"pallino", 
-		"email":"pp@gmail.it",
-		"password":"abcdef",
 		"dataDiNascita":"27-04-1995",
-		"città":"Roma",
-		"telefono":3456789012,
-		"titoloDiStudio":"Laurea Base in Informatica"
+		"titoloDiStudio":"Laurea Base in Informatica",
+		"uri":"..."
 	},
 	"città":"Roma",
 	"luogoDiIncontro":"a scelta dello studente",
