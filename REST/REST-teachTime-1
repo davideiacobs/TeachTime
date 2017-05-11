@@ -66,9 +66,10 @@ Funzionalità:
 -Ricerca prenotazioni per chiave studente (con stato=accettato)
 (quest'ultima serve per recuperare le informazioni necessarie allo studente per rilasciare un feedback)
 
+/***non serve più***/
 -Estrazione delle informazioni su un tutor che offre una ripetizione
-
 -Estrazione delle informazioni su una ripetizione tramite una prenotazione ad essa relativa
+/*******************/
 
 -Estrazione informazioni utente per chiave prenotazione
 

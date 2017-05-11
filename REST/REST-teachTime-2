@@ -1,6 +1,7 @@
 * URL: Formato dati per tutti i payload: JSON **
 
 UTENTE:{
+		"ID":123,
 		"nome":"...", 
 		"cognome":"...", 
 		"email":"...",
@@ -8,18 +9,21 @@ UTENTE:{
 		"dataDiNascita":"27-04-1995",
 		"città":"...",
 		"telefono":3333333333,
-		"titoloDiStudio":"..."
+		"titoloDiStudio":"...",
+		"immagineDelProfilo:"..."
 	}
 
 
 
 RIPETIZIONE:
 {
+	"ID":234,
 	"tutor": {
 		"nome":"...", 
 		"cognome":"...", 
 		"dataDiNascita":"27-04-1995",
 		"titoloDiStudio":"...",
+		"immagineDelProfilo":"...",
 		"uri":"..."
 	},
 	"città":"...",
@@ -40,7 +44,10 @@ RIPETIZIONE:
 
 PRENOTAZIONE:	
 {
-	"uri_studente": "...",                        //basta la uri perchè la mail verrà mandata dal sistema senza indicare i dati
+	"ID":345,
+	"studente":{
+		 "student_ID":"232",
+		 "uri_studente": "..."                         //basta la uri perchè la mail verrà mandata dal sistema senza indicare i dati
 						      //relativi allo studente che si vuole prenotare. Se il tutor accetta allora tramite 
 						      //la uri si recuperano le informazioni riguardanti il profilo dello studente
 	"ripetizione":{
@@ -67,15 +74,18 @@ PRENOTAZIONE:
 
 FEEDBACK:
 {
+	"ID":456,
 	"prenotazione":{
 		"studente": {
 			"nome":"...", 
 			"cognome":"...", 
 			"dataDiNascita":"1-11-1998",
+			"immagineDelProfilo":"...",
 			"uri_studente":"..."
 		},
 
 		"tutor": {
+			"tutor_ID":123,
 			"nome":"...", 
 			"cognome":"...", 
 			"uri_tutor":"..."		 
