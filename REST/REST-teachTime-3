@@ -40,11 +40,11 @@ Aggiorna il profilo dell’utente {ID}. Il payload è lo stesso oggetto utilizza
 
 
 INSERIMENTO RIPETIZIONE:
-URL: /repetitions
+URL: /repetitions  --oppure-- /users/{ID}/repetitions????
 VERBO: POST
 Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload conterrà tutti i dati della ripetizione, ad esempio:
 {
-	"tutor":{
+	"tutor":{                                   //serve mettere tutti i dati relativi al tutor o basta la sua chiave??
 		"nome":"pinco", 
 		"cognome":"pallino", 
 		"email":"pp@gmail.it",
@@ -73,7 +73,7 @@ Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello ste
 
 
 LISTA RIPETIZIONI PER CHIAVE TUTOR:
-URL: /repetitions?{tutor_ID}
+URL: /repetitions?{tutor_ID} --oppure-- /users/{ID}/repetitions
 VERBO: GET
 Restituisce la lista di URI che rappresentano tutte le ripetizioni con informazioni associate al tutor {tutor_ID} presenti nel sistema.
 
@@ -97,15 +97,15 @@ Restituisce la lista delle URI che rappresentano tutte le ripetizioni presenti n
 
 
 LISTA FEEDBACK RICEVUTI DA UN TUTOR:
-URL: /users/{ID}/feedbacks
+URL: /users/{tutor_ID}/feedbacks
 VERBO: GET
-Restituisce la lista delle URI che rappresentano tutti i feedback ricevuti dallo user {ID}.
+Restituisce la lista delle URI che rappresentano tutti i feedback ricevuti dal tutor {tutor_ID}.
 
 
 INSERIMENTO FEEDBACK:
-URL: /users/{ID}/feedbacks
+URL: /users/{tutor_ID}/feedbacks
 VERBO: POST
-Inserimento nel sistema di un nuovo feedback relativo allo user {ID}. L'oggetto passato come payload conterrà tutti i dati del feedback, ad esempio:
+Inserimento nel sistema di un nuovo feedback ricevuto dal tutor {tutor_ID}. L'oggetto passato come payload conterrà tutti i dati del feedback, ad esempio:
 {
 	"prenotazione":{
 		"studente": {
@@ -163,32 +163,36 @@ Restituisce le informazioni relative allo user contenuto nella ripetizione {ID} 
 
 
 ESTRAZIONE PRENOTAZIONI PER CHIAVE STUDENTE:
-URL: /booking?{student_ID}
+URL: /users/{ID}/bookings
 VERBO: GET
-Restituisce le URI che rappresentano tutte le prenotazioni che hanno come studente {student_ID}.
+Restituisce le URI che rappresentano tutte le prenotazioni che hanno come studente {ID}.
 
 
 ESTRAZIONE RIPETIZIONE DA ID PRENOTAZIONE:
-URL: /booking/{ID}/prenotazione
+URL: /bookings/{ID}/repetition
 VERBO: GET
 
 
 ESTRAZIONI PROFILO TUTOR DA RIPETIZIONE:
-URL: /repetition?{tutor_ID}   --oppure-- /repetition/{ID}/user/
+URL: /repetitions/{ID}/user
 VERBO: GET
 
 
 INSERIMENTO MATERIA:
-URL: /subject
+URL: /subjects
 VERBO: POST
+
 
 RECUPERO LISTA ARGOMENTI PER MATERIA:
-URL: /subject/{ID}/arguments
+URL: /subjects/{ID}/arguments
 VERBO: GET
 
+
 INSERIMENTO ARGOMENTO:
-URL: /subject/{ID}/arguments
+URL: /subjects/{ID}/arguments
 VERBO: POST
+
+
 
 
 
