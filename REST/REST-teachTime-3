@@ -178,11 +178,6 @@ URL: /repetitions/{ID}/user
 VERBO: GET
 
 
-INSERIMENTO MATERIA:
-URL: /subjects
-VERBO: POST
-
-
 RECUPERO LISTA ARGOMENTI PER MATERIA:
 URL: /subjects/{ID}/arguments
 VERBO: GET
