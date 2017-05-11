@@ -3,6 +3,7 @@ URL: /auth/login
 VERBO: POST
 prende in input un oggett contenente mail e password di un utente e restituisce un oggetto contenente il relativo token di sessione/autenticazione.
 
+
 LOGOUT UTENTE 
 URL: /auth/logout
 VERBO: POST
@@ -21,14 +22,16 @@ Inserisce un nuovo utente nel sistema. L’oggetto passato come payload conterr�
 	"dataDiNascita":"27-04-1995",
 	"città":"Roma",
 	"telefono":3456789012,
-	"titoloDiStudio":"Laurea Basein Informatica"
+	"titoloDiStudio":"Laurea Base in Informatica"
 }
+
 
 ESTRAZIONE UTENTE PER CHIAVE:
 URL: /users/{ID}
 VERBO: GET
 Restituisce il profilo dell’utente {ID} sotto forma dello stesso oggetto utilizzato come payload per l’inserimento (POST) tramite la URL 
 /users, ad esclusione della password.
+
 
 AGGIORNAMENTO PROFILO UTENTE (città,telefono,titolo di studio) PER CHIAVE:
 URL: /users/{ID}
@@ -41,7 +44,7 @@ URL: /repetitions
 VERBO: POST
 Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload conterrà tutti i dati della ripetizione, ad esempio:
 {
-	"tutor": {
+	"tutor":{
 		"nome":"pinco", 
 		"cognome":"pallino", 
 		"email":"pp@gmail.it",
@@ -64,9 +67,15 @@ Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload cont
 
 
 ESTRAZIONE RIPETIZIONE PER CHIAVE:
-URL: repetitions/{ID}
+URL: /repetitions/{ID}
 VERBO: GET
 Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions, ad esclusione della password.
+
+
+LISTA RIPETIZIONI PER CHIAVE TUTOR:
+URL: /repetitions?{tutor_ID}
+VERBO: GET
+Restituisce la lista di URI che rappresentano tutte le ripetizioni con informazioni associate al tutor {tutor_ID} presenti nel sistema.
 
 
 AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):
@@ -82,7 +91,106 @@ Elimina la ripetizione {ID}.
 
 
 LISTA RIPETIZIONI PER MATERIA E CITTA':
-URL: /repetitions/{CITY}/{SUBJECT}
+URL: /repetitions/{CITY}/{SUBJECT}[?{FILTER}]
+VERBO: GET 
+Restituisce la lista delle URI che rappresentano tutte le ripetizioni presenti nel sistema, includendo solo quelle con informazioni associate alla città e alla materia specificate in {CITY} e in {SUBJECT}. La lista può essere ulteriormente filtrata tramite la query string {FILTER} che può indicare uno specifico argomento che deve essere presente nella lista di argomenti contenuta nella ripetizione.
+
+
+LISTA FEEDBACK RICEVUTI DA UN TUTOR:
+URL: /users/{ID}/feedbacks
+VERBO: GET
+Restituisce la lista delle URI che rappresentano tutti i feedback ricevuti dallo user {ID}.
+
+
+INSERIMENTO FEEDBACK:
+URL: /users/{ID}/feedbacks
+VERBO: POST
+Inserimento nel sistema di un nuovo feedback relativo allo user {ID}. L'oggetto passato come payload conterrà tutti i dati del feedback, ad esempio:
+{
+	"prenotazione":{
+		"studente": {
+			"nome":"...", 
+			"cognome":"...", 
+			"email":"...",
+			"password":"...",
+			"dataDiNascita":"1-11-1998",
+			"città":"...",
+			"telefono":33133435323,
+			"titoloDiStudio":"..."
+		},
+		"ripetizione":{
+				"tutor": {
+					"nome":"...", 
+					"cognome":"...", 
+					"email":"...",
+					"password":"...",
+					"dataDiNascita":"27-04-1995",
+					"città":"...",
+					"telefono":3333333333,
+					"titoloDiStudio":"..."
+				},
+				"città":"...",
+				"luogoDiIncontro":"...",
+				"prezzoPerOra":12,
+				"descrizione":"...",
+				"materia":"...",
+				"listaArgomenti":[
+							"nome":"...",
+							"nome":"...",
+							"nome":"...",
+				 ]
+		},
+		"data":"21-05-2017",
+		"ora":"16:30",
+		"argomento":"...",
+		"stato":0
+	},
+	"voto":5,
+	"commento":"..."
+}
+
+
+ESTRAZIONE VOTO MEDIO TUTOR:
+URL: /users/{ID}/feedbacks/vote
+VERBO: GET
+Calcola e restituisce il voto medio dell'utente a partire dai voti contenuti in ogni feedback da esso ricevuto.
+
+
+ESTRAZIONE INFORMAZIONI TUTOR PER CHIAVE RIPETIZIONE:
+URL: /repetitions/{ID}/user
+VERBO: GET
+Restituisce le informazioni relative allo user contenuto nella ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /users, ad esclusione della password.
+
+
+ESTRAZIONE PRENOTAZIONI PER CHIAVE STUDENTE:
+URL: /booking?{student_ID}
+VERBO: GET
+Restituisce le URI che rappresentano tutte le prenotazioni che hanno come studente {student_ID}.
+
+
+ESTRAZIONE RIPETIZIONE DA ID PRENOTAZIONE:
+URL: /booking/{ID}/prenotazione
+VERBO: GET
+
+
+ESTRAZIONI PROFILO TUTOR DA RIPETIZIONE:
+URL: /repetition?{tutor_ID}   --oppure-- /repetition/{ID}/user/
+VERBO: GET
+
+
+INSERIMENTO MATERIA:
+URL: /subject
+VERBO: POST
+
+RECUPERO LISTA ARGOMENTI PER MATERIA:
+URL: /subject/{ID}/arguments
+VERBO: GET
+
+INSERIMENTO ARGOMENTO:
+URL: /subject/{ID}/arguments
+VERBO: POST
+
+
 
 
 
