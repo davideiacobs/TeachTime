@@ -39,6 +39,21 @@ public class Repetition {
         dirty = false;
         argomenti = null;
     }
+    
+     public Repetition(){
+        this.ownerdatalayer = null;
+        key = 0;
+        luogoIncontro = "";
+        costo = 0;
+        descr = "";
+        città = "";
+        tutor = null;
+        tutor_key = 0;
+        materia = null;
+        materia_key = 0;       
+        dirty = false;
+        argomenti = null;
+    }
 
     /**
      * @return the ID

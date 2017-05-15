@@ -27,6 +27,14 @@ public class Subject {
         dirty = false;
         argomenti = null;
     }
+    
+    public Subject(){
+        this.ownerdatalayer = null;
+        key = 0;
+        nome = "";   
+        dirty = false;
+        argomenti = null;
+    }
 
     /**
      * @return the key

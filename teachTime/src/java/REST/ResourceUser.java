@@ -31,8 +31,9 @@ import javax.ws.rs.core.UriInfo;
  */
  
 
-@Path("user")
+@Path("users")
 public class ResourceUser {
+    
     @Resource(name = "jdbc/teachtime")
     private DataSource ds;
     
@@ -41,35 +42,33 @@ public class ResourceUser {
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException {
-        // Creiamo una classe dati giocattolo 
-        /*User u = new User();
-            u.setNome("dav");
-            u.setCognome("iac");
-            u.setEmail("a@a");
-            u.setPwd("123");
-            u.setCittà("sr");
-            u.setImgProfilo("/ameche");
-            u.setTelefono("33333");
-            u.setTitoloDiStudi("top");
-            GregorianCalendar gc = new GregorianCalendar();
-            gc.setLenient(false);
-            gc.set(GregorianCalendar.YEAR, 1995);
-            gc.set(GregorianCalendar.MONTH, 03); //parte da 0
-            gc.set(GregorianCalendar.DATE, 27);
-            u.setDataDiNascita(gc);
-        *///JAX-RS la serializza automaticamente in JSON se Jackson è tra le librerie!
         
-          
-            TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-            datalayer.init();
-            
-           User u = datalayer.getUtente(n);
-            
-       
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
         
-        return Response.ok(u).build();
+        User utente = datalayer.getUtente(n);
+            
+        return Response.ok(utente).build();
     }
 
-     
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postUser(@Context UriInfo c, User utente) throws SQLException, NamingException, DataLayerException {
+            
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        /* 
+         * Attenzione: per poter essere deserializzato l'oggetto
+         * deve essere dotato di un construttore di default 
+         * (senza parametri), oltre ovviamente ad avere campo
+         * mappabil su quelli del JSON del payload.
+         */
+        datalayer.storeUser(utente);
+        URI u = c.getAbsolutePathBuilder()
+                .path(ResourceUser.class, "getUser")
+                .build(utente.getKey());
+
+        return Response.created(u).build();
+    }  
     
 }

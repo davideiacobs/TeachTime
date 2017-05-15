@@ -49,6 +49,25 @@ public class Prenotation {
         recensione = "";
         dirty = false;
     }
+    
+     public Prenotation(){
+        this.ownerdatalayer = null;
+        tutor_key = 0;
+        studente_key = 0;
+        tutor = null;
+        studente = null;
+        descr = "";
+        data = null;
+        stato = -1;
+        ora = null;
+        argomento = null;
+        argomento_key = 0;
+        ripetizione = null;
+        ripetizione_key = 0;
+        voto = 0;
+        recensione = "";
+        dirty = false;
+    }
 
     /**
      * @return the tutor_key

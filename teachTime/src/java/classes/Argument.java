@@ -27,6 +27,15 @@ public class Argument {
         materia_key = 0;
         dirty = false;
     }
+    
+    public Argument(){
+        this.ownerdatalayer = null;
+        key = 0;
+        nome = "";
+        materia = null;
+        materia_key = 0;
+        dirty = false;
+    }
 
     /**
      * @return the key
