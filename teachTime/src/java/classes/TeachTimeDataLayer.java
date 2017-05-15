@@ -217,7 +217,23 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return null;
     }
     
-    
+    public Repetition getRipetizione(int ripetizione_key) throws DataLayerException {
+        try {
+            sRipetizioneByID.setInt(1, ripetizione_key); //setta primo parametro query a project_key
+            try (ResultSet rs = sRipetizioneByID.executeQuery()) {
+                if (rs.next()) {
+                    //notare come utilizziamo il costrutture
+                    //"helper" della classe AuthorImpl
+                    //per creare rapidamente un'istanza a
+                    //partire dal record corrente
+                    return createRepetition(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load repetition by ID", ex);
+        }
+        return null;
+    }
     
      public void storeUser(User utente) throws DataLayerException {
         int key = utente.getKey();
@@ -397,7 +413,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
             if (key > 0) {
-                ripetizione.copyFrom(getUtente(key));
+                ripetizione.copyFrom(getRipetizione(key));
             }
             ripetizione.setDirty(false);
         } catch (SQLException ex) {

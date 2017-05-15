@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <servlet>
-        <servlet-name>provaDB</servlet-name>
-        <servlet-class>classes.provaDB</servlet-class>
+        <servlet-name>MainApplication</servlet-name>
+        <servlet-class>REST.MainApplication</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>provaDB</servlet-name>
-        <url-pattern>/provaDB</url-pattern>
+        <servlet-name>MainApplication</servlet-name>
+        <url-pattern>/MainApplication</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

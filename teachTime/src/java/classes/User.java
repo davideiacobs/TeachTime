@@ -42,6 +42,21 @@ public class User {
     }
     
     
+     public User(){
+        this.ownerdatalayer = null;
+        key = 0;
+        nome = "";
+        cognome = "";
+        email = "";
+        pwd = "";
+        città = "";
+        telefono = "";
+        dataDiNascita = null;
+        titoloDiStudi = "";
+        imgProfilo = "";
+        dirty = false;
+    }
+    
     /**
      * @return the nome
      */

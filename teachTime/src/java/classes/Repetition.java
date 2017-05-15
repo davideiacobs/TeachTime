@@ -171,7 +171,7 @@ public class Repetition {
         this.dirty = true;
     }
     
-    public User getTutor() throws DataLayerException{
+    /*public User getTutor() throws DataLayerException{
         if (tutor == null && tutor_key > 0) {
             tutor = ownerdatalayer.getTutor(tutor_key);
         }
@@ -189,18 +189,29 @@ public class Repetition {
     /**
      * @return the argomenti
      */
-    public List<Argument> getArgomenti() {
+    /*public List<Argument> getArgomenti() {
         if(argomenti == null){
             argomenti = ownerdatalayer.getArgomentiByRipetizione(this.key);
         }
         return argomenti;
-    }
-
+    }*/
+    
     /**
      * @param argomenti the argomenti to set
      */
     public void setArgomenti(List<Argument> argomenti) {
         this.argomenti = argomenti;
+    }
+    
+    public void copyFrom(Repetition ripetizione){
+        key = ripetizione.getKey();
+        luogoIncontro = ripetizione.getLuogoIncontro();
+        città = ripetizione.getCittà();
+        costo = ripetizione.getCosto();
+        descr = ripetizione.getDescr();
+        materia_key = ripetizione.getMateria_key();
+        tutor_key = ripetizione.getTutor_key();
+        this.dirty = true;
     }
     
 }

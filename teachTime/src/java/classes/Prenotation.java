@@ -95,7 +95,8 @@ public class Prenotation {
     /**
      * @return the tutor
      */
-    public User getTutor() {
+    
+    /*public User getTutor() {
         if(tutor == null && tutor_key > 0){
            tutor = this.ownerdatalayer.getTutor(tutor_key);
         }
@@ -110,6 +111,7 @@ public class Prenotation {
     /**
      * @param tutor the tutor to set
      */
+    
     public void setTutor(User tutor) {
         this.tutor = tutor;
         this.tutor_key = tutor.getKey();
@@ -124,13 +126,13 @@ public class Prenotation {
     /**
      * @return the studente
      */
-    public User getStudente() {
+    /*public User getStudente() {
         if(studente == null && studente_key > 0){
             studente = ownerdatalayer.getStudente(studente_key);
         }
 
         return studente;
-    }
+    }*/
 
     /**
      * @param studente the studente to set
@@ -189,12 +191,12 @@ public class Prenotation {
     /**
      * @return the argomento
      */
-    public Argument getArgomento() {
+    /*public Argument getArgomento() {
         if(argomento == null && argomento_key > 0){
             argomento = ownerdatalayer.getArgomento(argomento_key);
         }
         return argomento;
-    }
+    }*/
 
     /**
      * @param argomento the argomento to set

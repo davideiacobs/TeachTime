@@ -75,12 +75,12 @@ public class Subject {
     /**
      * @return the argomenti
      */
-    public List<Argument> getArgomenti() throws DataLayerException {
+   /* public List<Argument> getArgomenti() throws DataLayerException {
         if(argomenti == null){
            argomenti = ownerdatalayer.getArgomentiByMateria(this.key);
         }
         return argomenti;
-    }
+    }*/
 
     /**
      * @param argomenti the argomenti to set
