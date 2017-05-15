@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `teachtime` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `teachtime`;
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Linux (x86_64)
 --
 -- Host: 127.0.0.1    Database: teachtime
 -- ------------------------------------------------------
--- Server version	5.7.18-log
+-- Server version	5.7.18-0ubuntu0.17.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -31,7 +31,7 @@ CREATE TABLE `ripetizione_has_argomento` (
   PRIMARY KEY (`ripetizione_ID`,`ripetizione_materia_ID`,`argomento_ID`),
   KEY `fk_ripetizione_has_argomento_argomento1_idx` (`argomento_ID`),
   KEY `fk_ripetizione_has_argomento_ripetizione1_idx` (`ripetizione_ID`,`ripetizione_materia_ID`),
-  CONSTRAINT `fk_ripetizione_has_argomento_argomento1` FOREIGN KEY (`argomento_ID`) REFERENCES `mydb`.`argomento` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ripetizione_has_argomento_argomento1` FOREIGN KEY (`argomento_ID`) REFERENCES `argomento` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ripetizione_has_argomento_ripetizione1` FOREIGN KEY (`ripetizione_ID`, `ripetizione_materia_ID`) REFERENCES `mydb`.`ripetizione` (`ID`, `materia_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-15 14:47:56
+-- Dump completed on 2017-05-15 22:18:05

@@ -77,7 +77,28 @@ Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload cont
 	]
 }
 
+ex:
+{
+        "tutor_key":1,
+	"tutor": {
+		"nome":"davide", 
+		"cognome":"iacobelli", 
+		"dataDiNascita":"1995-04-27",
+		"titoloDiStudi":"magari"
+	},
+	"città":"sora",
+	"luogoIncontro":"andotepare",
+	"costo":500,
+	"descr":"top",
+	"materia_key":"1",
 
+	"argomenti":[
+                          {"nome":"programmazione python",
+                           "materia_key":1},
+                          {"nome":"database",
+                          "materia_key":1}
+	]
+}
 
 
 ESTRAZIONE RIPETIZIONE PER CHIAVE:
@@ -225,10 +246,10 @@ VERBO: GET
 
 
 
-
 INSERIMENTO ARGOMENTO:
 URL: /subjects/{ID}/arguments
 VERBO: POST
+
 
 
 

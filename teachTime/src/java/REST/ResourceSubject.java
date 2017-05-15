@@ -68,16 +68,14 @@ public class ResourceSubject {
          */
         datalayer.storeArgument(argomento);
         
-        URI u = c.getAbsolutePathBuilder()
-                .path(ResourceSubject.class, "getArgomento")
-                .build(argomento.getMateria_key(),argomento.getKey());
-
+        URI u = c.getAbsolutePath();
+        
         return Response.created(u).build();
     }  
 
     
     
-    @GET
+    /*@GET
     @Path("{id: [0-9]+}/arguments/{id_arg: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getArgomento(@PathParam("id") int materia, @PathParam("id_arg") int argomento) throws SQLException, NamingException, DataLayerException{
@@ -87,7 +85,7 @@ public class ResourceSubject {
         Argument arg = datalayer.getArgomento(argomento);
         return Response.ok(arg).build();
     }
-  
+    */
     
   }  
    

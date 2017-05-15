@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `teachtime` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `teachtime`;
--- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Linux (x86_64)
 --
 -- Host: 127.0.0.1    Database: teachtime
 -- ------------------------------------------------------
--- Server version	5.7.18-log
+-- Server version	5.7.18-0ubuntu0.17.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -36,7 +36,7 @@ CREATE TABLE `utente` (
   `titolo_di_studio` varchar(250) DEFAULT 'NULL',
   `img_profilo` varchar(250) DEFAULT 'NULL',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,6 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-INSERT INTO `utente` VALUES (1,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(2,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(3,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(4,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(5,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(6,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(7,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(8,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(9,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(10,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche'),(11,'dav','iac','a@a','123','sr','33333','1995-04-27','top','/ameche');
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-15 14:47:57
+-- Dump completed on 2017-05-15 22:18:05
