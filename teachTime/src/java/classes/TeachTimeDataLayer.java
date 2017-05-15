@@ -12,7 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
@@ -24,7 +26,8 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     
     private PreparedStatement uUtente,iUtente,dUser, sUtenteByID, sMateriaByID, uMateria, iMateria, uArgomento;
     private PreparedStatement iArgomento, sArgomentoByID, uRipetizione, iRipetizione, sRipetizioneByID;
-     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
+    private PreparedStatement sArgomentiByMateria; 
+    public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
     
@@ -47,6 +50,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sArgomentoByID = connection.prepareStatement("SELECT * FROM argomento WHERE ID=?");
             uRipetizione = connection.prepareStatement("UPDATE ripetizione SET luogo_incontro=?, costo_per_ora=?,descrizione=?,citta=?,utente_ID=?,materia_ID=?");
             iRipetizione = connection.prepareStatement("INSERT INTO ripetizione (luogo_incontro,costo_per_ora,descrizione,citta,utente_ID,materia_ID) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            sArgomentiByMateria = connection.prepareStatement("SELECT a.ID FROM argomento AS a WHERE a.materia_ID=?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         } 
@@ -216,6 +220,22 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
         return null;
     }
+     
+    public List<Argument> getArgomentiByMateria(int materia_key) throws DataLayerException{
+        List<Argument> result = new ArrayList<>();
+        try{
+            sArgomentiByMateria.setInt(1, materia_key);
+            try(ResultSet rs = sArgomentiByMateria.executeQuery()) {
+                while(rs.next()){
+                 result.add((Argument) getArgomento(rs.getInt("ID")));
+
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load projects", ex);
+        }
+        return result; //restituisce in result tutti gli oggetti Project esistenti
+    }
     
     public Repetition getRipetizione(int ripetizione_key) throws DataLayerException {
         try {
@@ -352,7 +372,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     //per leggere la chiave generata dal database
                     //per il record appena inserito, usiamo il metodo
                     //getGeneratedKeys sullo statement.
-                    try (ResultSet keys = iMateria.getGeneratedKeys()) {
+                    try (ResultSet keys = iArgomento.getGeneratedKeys()) {
                         //il valore restituito è un ResultSet con un record
                         //per ciascuna chiave generata (uno solo nel nostro caso)
                         

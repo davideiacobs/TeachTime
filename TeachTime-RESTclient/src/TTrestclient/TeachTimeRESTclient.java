@@ -29,7 +29,7 @@ public class TeachTimeRESTclient {
     private static final String baseURI = "http://localhost:8080/teachTime/MainApplication/rest";
     
     //una entry di esempio, già serializzata in JSON (come farebbe Google Gson, per esempio)
-    private static final String dummy_json_entry = "{\"nome\":\"ameche1\",\"cognome\":\"cognome\",\"email\":\"top@top.com\",\"pwd\":\"564645\",\"dataDiNascita\":\"1995-04-27\",\"città\":\"sora\",\"telefono\":3333333333,\"titoloDiStudi\":\"laureato\",\"imgProfilo\":\"path\"}";
+    private static final String dummy_json_entry = "{\"nome\":\"diocane\",\"cognome\":\"cognome\",\"email\":\"top@top.com\",\"pwd\":\"564645\",\"dataDiNascita\":\"1995-04-27\",\"città\":\"sora\",\"telefono\":3333333333,\"titoloDiStudi\":\"laureato\",\"imgProfilo\":\"path\"}";
     //usiamo Apache Httpclient perchè molto più intuitivo della classi Java.net...
     CloseableHttpClient client = HttpClients.createDefault();
 
@@ -78,7 +78,7 @@ public class TeachTimeRESTclient {
         TeachTimeRESTclient instance = new TeachTimeRESTclient();
         
         //1 -- Lista entries (JSON)
-        System.out.println("1 -- Utente (JSON)");
+        /*System.out.println("1 -- Utente (JSON)");
         //creiamo la richiesta (GET)
         HttpGet get_request = new HttpGet(baseURI + "/users/1");
         get_request.setHeader("Accept", "application/json");
@@ -97,7 +97,13 @@ public class TeachTimeRESTclient {
         post_request.setEntity(payload);
         instance.execute_and_dump(post_request);
 
-        System.out.println();
+        System.out.println();*/
+        
+        HttpPost post = new HttpPost(baseURI + "/subjects/3");
+        HttpEntity payload = new StringEntity("{\"nome\":\"diocane\",\"materia_key\":3}", ContentType.APPLICATION_JSON);
+        post.setEntity(payload);
+        instance.execute_and_dump(post);
+        
     }
     
 }

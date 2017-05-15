@@ -5,12 +5,12 @@
  */
 package REST;
 
+import classes.Argument;
 import classes.TeachTimeDataLayer;
-import classes.User;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.GregorianCalendar;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -29,32 +29,35 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author iacobs
  */
- 
-
-@Path("users")
-public class ResourceUser {
+@Path("subjects")
+public class ResourceSubject {
     
     @Resource(name = "jdbc/teachtime")
     private DataSource ds;
     
-    //Accept: application/json
+    
     @GET
-    @Path("{id: [0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON) 
-    public Response getUser(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException {
+    @Path("{id: [0-9]+}/arguments")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getArgList(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        
-        User utente = datalayer.getUtente(n);
-            
-        return Response.ok(utente).build();
+        List<Argument> list = datalayer.getArgomentiByMateria(n);
+        return Response.ok(list).build();
     }
-
+    
     @POST
+    @Path("{id: [0-9]+}/arguments")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response postUser(@Context UriInfo c, User utente) throws SQLException, NamingException, DataLayerException {
+     public Response postArgomento(@Context UriInfo c, @PathParam("id") int n, Argument argomento) throws SQLException, NamingException, DataLayerException {
             
+        
+        /*int materia_key = argomento.getMateria_key();
+        if(materia_key != n){
+            //vaffanculo 
+        }*/
+        
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         /* 
@@ -63,12 +66,28 @@ public class ResourceUser {
          * (senza parametri), oltre ovviamente ad avere campo
          * mappabil su quelli del JSON del payload.
          */
-        datalayer.storeUser(utente);
+        datalayer.storeArgument(argomento);
+        
         URI u = c.getAbsolutePathBuilder()
-                .path(ResourceUser.class, "getUser")
-                .build(utente.getKey());
+                .path(ResourceSubject.class, "getArgomento")
+                .build(argomento.getMateria_key(),argomento.getKey());
 
         return Response.created(u).build();
     }  
+
     
-}
+    
+    @GET
+    @Path("{id: [0-9]+}/arguments/{id_arg: [0-9]+}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getArgomento(@PathParam("id") int materia, @PathParam("id_arg") int argomento) throws SQLException, NamingException, DataLayerException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        Argument arg = datalayer.getArgomento(argomento);
+        return Response.ok(arg).build();
+    }
+  
+    
+  }  
+   

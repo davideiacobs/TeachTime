@@ -24,6 +24,7 @@ public class MainApplication extends Application {
         //aggiungiamo tutte le *root resurces* (cioè quelle
         //con l'annotazione Path) che vogliamo pubblicare
         c.add(ResourceUser.class);
+        c.add(ResourceSubject.class);
         //aggiungiamo il provider Jackson per poter
         //usare i suoi servizi di serializzazione e 
         //deserializzazione JSON
