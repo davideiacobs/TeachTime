@@ -10,6 +10,7 @@ import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
@@ -53,7 +54,7 @@ public class ResourceRepetition {
      
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepetition(@QueryParam("filtro") String tutor_key) throws SQLException, NamingException, DataLayerException {
+    public Response getRepetition(@QueryParam("tutor") String tutor_key) throws SQLException, NamingException, DataLayerException {
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
@@ -66,13 +67,41 @@ public class ResourceRepetition {
          * su null.
          */
         if (tutor_key != null || tutor_key!="") {
-            List<Repetition> result = datalayer.getRipetizioneByTutor(Integer.parseInt(tutor_key));
+            List<Repetition> result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
             return Response.ok(result).build();
         } else {
             return Response.serverError().build();
         }
     } 
-     
+    
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getRepetition(@QueryParam("city") String città, @QueryParam("subject") String materia
+            , @QueryParam("argument") String argomento) throws SQLException, NamingException, DataLayerException {
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        /*
+         * L'annotazione @QueryParam permette di "iniettare"
+         * su un parametro del metodo il valore effettivo del
+         * parametro della query string col nome indicato. JAX-RS proverà
+         * a convertire il parametro della query string nel tipo richiesto
+         * dal metodo. Se il parametro non è spacificato, verrà impostato
+         * su null.
+         */
+        if (città != null && città != "" && materia != null && materia != ""){
+            List<Repetition> result = new ArrayList();
+            if(argomento != null && argomento != ""){
+                result = datalayer.getRipetizioniByFilter(città, Integer.parseInt(materia), Integer.parseInt(argomento));
+            }else{
+                result = datalayer.getRipetizioniByFilter(città, Integer.parseInt(materia));
+            }
+            return Response.ok(result).build();
+        } else {
+            return Response.serverError().build();
+        }
+    } 
      
      
      
