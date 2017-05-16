@@ -16,8 +16,10 @@ import javax.annotation.Resource;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -97,6 +99,8 @@ public class ResourceRepetition {
             }else{
                 result = datalayer.getRipetizioniByFilter(città, Integer.parseInt(materia));
             }
+            
+
             return Response.ok(result).build();
         } else {
             return Response.serverError().build();
@@ -113,7 +117,31 @@ public class ResourceRepetition {
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         Repetition r = datalayer.getRipetizione(n);
+        r.setTutor(datalayer.getUtente(r.getTutor_key()));  //perchè non funge??
         return Response.ok(r).build();
+    }
+    
+    @DELETE
+    @Path("{id: [0-9]+}")
+    public Response deleteRepetition(@Context UriInfo c) throws SQLException, NamingException, DataLayerException {
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        String k = c.getPath().split("/")[1];
+        datalayer.deleteRipetizione(Integer.parseInt(k));
+        return Response.noContent().build();
+    }
+    
+    
+    @PUT
+    @Path("{id: [0-9]+}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response putUser(Repetition r) throws SQLException, NamingException, DataLayerException {
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        r.setDirty(true);
+        datalayer.storeRepetition(r);
+        //di solito una PUT restituisce NO CONTENT
+        return Response.noContent().build();
     }
     
     

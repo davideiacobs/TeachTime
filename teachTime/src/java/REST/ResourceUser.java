@@ -10,13 +10,13 @@ import classes.User;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.GregorianCalendar;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -71,4 +71,16 @@ public class ResourceUser {
         return Response.created(u).build();
     }  
     
+    
+    @PUT
+    @Path("{id: [0-9]+}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response putUser(User u) throws SQLException, NamingException, DataLayerException {
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        u.setDirty(true);
+        datalayer.storeUser(u);
+        //di solito una PUT restituisce NO CONTENT
+        return Response.noContent().build();
+    }
 }

@@ -14,24 +14,11 @@ Prende in input un token di sessione/autenticazione e chiude la relativa session
 
 
 
-INSERIMENTO NUOVO UTENTE NEL SISTEMA:
+INSERIMENTO NUOVO UTENTE NEL SISTEMA:  (fatto)
 URL: /users
 VERBO: POST
 Inserisce un nuovo utente nel sistema. L’oggetto passato come payload conterrà tutti i dati del profilo utente, ad esempio:
 {
-	"key":123,
-	"nome":"pinco", 
-	"cognome":"pallino", 
-	"email":"pp@gmail.it",
-	"password":"abcdef",
-	"dataDiNascita":"27-04-1995",
-	"città":"Roma",
-	"telefono":3456789012,
-	"titoloDiStudio":"Laurea Base in Informatica",
-	"imgProfilo":"profilo.png"
-}
-
-ex:{
 	"nome":"pinco", 
 	"cognome":"pallino", 
 	"email":"pp@gmail.it",
@@ -46,7 +33,8 @@ ex:{
 
 
 
-ESTRAZIONE UTENTE PER CHIAVE:
+
+ESTRAZIONE UTENTE PER CHIAVE: (fatto)
 URL: /users/{ID}
 VERBO: GET
 Restituisce il profilo dell’utente {ID} sotto forma dello stesso oggetto utilizzato come payload per l’inserimento (POST) tramite la URL 
@@ -55,80 +43,60 @@ Restituisce il profilo dell’utente {ID} sotto forma dello stesso oggetto utili
 
 
 
-AGGIORNAMENTO PROFILO UTENTE (città,telefono,titolo di studio) PER CHIAVE:
+AGGIORNAMENTO PROFILO UTENTE (città,telefono,titolo di studio) PER CHIAVE:     (fatto)
 URL: /users/{ID}
 VERBO: PUT
-Aggiorna il profilo dell’utente {ID}. Il payload è lo stesso oggetto utilizzato per l’inserimento (POST) tramite la URL /users.
+Aggiorna il profilo dell’utente {ID}. Il payload è lo stesso oggetto utilizzato per l’inserimento (POST) tramite la URL /users eccetto: nome,cognome,email,pwd,dataDiNascita.
 
 
 
 
-INSERIMENTO RIPETIZIONE:
+INSERIMENTO RIPETIZIONE:  (fatto)
 URL: /repetitions 
 VERBO: POST
 Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload conterrà tutti i dati della ripetizione, ad esempio:
 {
-	"ID":234,
-	"tutor": {
-		"tutor_ID":123,
-		"nome":"...", 
-		"cognome":"...", 
-		"dataDiNascita":"27-04-1995",
-		"titoloDiStudio":"...",
-		"uri":"..."
-	},
-	"città":"...",
-	"luogoDiIncontro":"...",
-	"prezzoPerOra":12,
-	"descrizione":"...",
-	"materia":"...",
-	"listaArgomenti":[
-				"nome":"...",
-				"nome":"...",
-				"nome":"...",
-	]
-}
-
-ex:
-{
         "tutor_key":1,
 	"tutor": {
                 "key":1,
-		"nome":"davide", 
-		"cognome":"iacobelli", 
+		""nome":"pinco", 
+		"cognome":"pallino",  
 		"dataDiNascita":"1995-04-27",
-		"titoloDiStudi":"magari"
+		"titoloDiStudi":"Lauea Base in Informatica"
 	},
-	"città":"sora",
-	"luogoIncontro":"andotepare",
-	"costo":500,
+	"città":"roma",
+	"luogoIncontro":"a scelta dello studente",
+	"costo":12,
 	"descr":"top",
 	"materia_key":1,
 
 	"argomenti":[
                           {
-                           "key":1,
-                           "nome":"programmazione python",
-                           "materia_key":1},
+                          	"key":1,
+                           	"nome":"programmazione python",
+                           	"materia_key":1
+			  },
                           {
-                          "key":4,
-                          "nome":"database",
-                          "materia_key":1}
+                          	"key":4,
+                          	"nome":"database",
+                          	"materia_key":1
+			  }
 	]
 }
 
 
-ESTRAZIONE RIPETIZIONE PER CHIAVE:
+
+ESTRAZIONE RIPETIZIONE PER CHIAVE:   (fatto)
 URL: /repetitions/{ID}
 VERBO: GET
 Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions.
 
 ex:{
-  "key": 28,
-  "luogoIncontro": "andotepare",
-  "costo": 500,
+  "key": 1,
+  "luogoIncontro": "a scelta dello studente",
+  "costo": 12,
   "descr": "top",
-  "città": "sora",
+  "città": "roma",
   "tutor_key": 1,
   "materia_key": 1,
   "dirty": true,
@@ -156,9 +124,10 @@ ex:{
       "dirty": true
     }
   ]
+}
 
 
-AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):
+AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):  
 URL: /repetitions/{ID}
 VERBO: PUT
 Aggiorna le informazioni relative alla ripetizione {ID}. Il payload è lo stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions, ad esclusione di tutor.
@@ -166,7 +135,7 @@ Aggiorna le informazioni relative alla ripetizione {ID}. Il payload è lo stesso
 
 
 
-LISTA RIPETIZIONI PER CHIAVE TUTOR:
+LISTA RIPETIZIONI PER CHIAVE TUTOR:   (fatto)
 URL: /repetitions?{tutor_ID}
 VERBO: GET
 Restituisce la lista di URI che rappresentano tutte le ripetizioni con informazioni associate al tutor {tutor_ID} presenti nel sistema.
@@ -174,14 +143,14 @@ Restituisce la lista di URI che rappresentano tutte le ripetizioni con informazi
 
 
 
-CANCELLAZIONE RIPETIZIONE PER CHIAVE:
+CANCELLAZIONE RIPETIZIONE PER CHIAVE:  (fatto)
 URL: /repetitions/{ID}
 VERBO: DELETE
 Elimina la ripetizione {ID}.
 
 
 
-LISTA RIPETIZIONI PER MATERIA E CITTA' (ed eventualemente per argomento):
+LISTA RIPETIZIONI PER MATERIA E CITTA' (ed eventualemente per argomento):    (fatto)
 URL: /repetitions?{CITY}&{SUBJECT}&[{ARGUMENT}]
 VERBO: GET 
 Restituisce la lista delle URI che rappresentano tutte le ripetizioni presenti nel sistema, includendo solo quelle con informazioni associate alla città e alla materia specificate in {CITY} e in {SUBJECT}. La lista può essere ulteriormente filtrata tramite il parametro aggiuntivo {ARGUMENT} che può indicare uno specifico argomento che deve essere presente nella lista di argomenti contenuta nella ripetizione.

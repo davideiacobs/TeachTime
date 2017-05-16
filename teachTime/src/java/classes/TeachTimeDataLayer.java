@@ -28,6 +28,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement iArgomento, sArgomentoByID, uRipetizione, iRipetizione, sRipetizioneByID;
     private PreparedStatement sArgomentiByMateria, sArgomentiByRipetizione, iRipetizioneHasArgomento; 
     private PreparedStatement sRipetizioneByTutor, sRipetizioneByCittàMateria, sRipetizioneByFilter;
+    private PreparedStatement dRipetizione,dRipetizioneHasArgomento;
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -40,7 +41,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
 
             //precompiliamo tutte le query utilizzate
 
-            uUtente = connection.prepareStatement("UPDATE utente SET nome=?,cognome=?,email=?,pwd=?,citta=?,telefono=?,data_di_nascita=?,titolo_di_studio=?,img_profilo=? WHERE ID=?");
+            uUtente = connection.prepareStatement("UPDATE utente SET citta=?,telefono=?,titolo_di_studio=?,img_profilo=? WHERE ID=?");
             iUtente = connection.prepareStatement("INSERT INTO utente (nome,cognome,email,pwd,citta,telefono,data_di_nascita,titolo_di_studio,img_profilo) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             sUtenteByID = connection.prepareStatement("SELECT * FROM utente WHERE ID=?");
             sMateriaByID = connection.prepareStatement("SELECT * FROM materia WHERE ID=?");
@@ -49,7 +50,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             uArgomento = connection.prepareStatement("UPDATE argomento SET nome=?, materia_ID=? WHERE ID=?");
             iArgomento = connection.prepareStatement("INSERT INTO argomento (nome, materia_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
             sArgomentoByID = connection.prepareStatement("SELECT * FROM argomento WHERE ID=?");
-            uRipetizione = connection.prepareStatement("UPDATE ripetizione SET luogo_incontro=?, costo_per_ora=?,descrizione=?,citta=?,utente_ID=?,materia_ID=?");
+            uRipetizione = connection.prepareStatement("UPDATE ripetizione SET luogo_incontro=?, costo_per_ora=?,descrizione=?,citta=? WHERE ID=?");
             iRipetizione = connection.prepareStatement("INSERT INTO ripetizione (luogo_incontro,costo_per_ora,descrizione,citta,utente_ID,materia_ID) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             sRipetizioneByID = connection.prepareStatement("SELECT * FROM ripetizione WHERE ID=?");
             sArgomentiByMateria = connection.prepareStatement("SELECT a.ID FROM argomento AS a WHERE a.materia_ID=?");
@@ -58,6 +59,8 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sRipetizioneByTutor = connection.prepareStatement("SELECT ripetizione.ID FROM ripetizione WHERE utente_ID=?");
             sRipetizioneByCittàMateria = connection.prepareStatement("SELECT r.ID FROM ripetizione AS r WHERE citta=? AND materia_ID=?");
             sRipetizioneByFilter = connection.prepareStatement("SELECT r.ID FROM ((SELECT ripetizione_has_argomento.ripetizione_ID FROM ripetizione_has_argomento WHERE ripetizione_has_argomento.argomento_ID=? AND ripetizione_has_argomento.ripetizione_materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");
+            dRipetizione = connection.prepareStatement("DELETE FROM ripetizione WHERE ID=?");
+            dRipetizioneHasArgomento = connection.prepareStatement("DELETE FROM ripetizione_has_argomento WHERE ripetizione_ID=?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         } 
@@ -340,17 +343,11 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 if (!utente.isDirty()) {
                     return;
                 }
-                uUtente.setString(1, utente.getNome());
-                uUtente.setString(2, utente.getCognome());
-                uUtente.setString(3, utente.getEmail());
-                uUtente.setString(4, utente.getPwd());
-                uUtente.setString(5, utente.getCittà());
-                uUtente.setString(6, utente.getTelefono());
-                Date sqldate = new Date(utente.getDataDiNascita().getTimeInMillis());
-                uUtente.setDate(6, sqldate);       
-                uUtente.setString(7, utente.getTitoloDiStudi());
-                uUtente.setString(8, utente.getImgProfilo());
-                uUtente.setInt(9, key);
+                uUtente.setString(1, utente.getCittà());
+                uUtente.setString(2, utente.getTelefono());    
+                uUtente.setString(3, utente.getTitoloDiStudi());
+                uUtente.setString(4, utente.getImgProfilo());
+                uUtente.setInt(5, key);
                 uUtente.executeUpdate();
             } else { //insert
                 iUtente.setString(1, utente.getNome());
@@ -482,9 +479,17 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 uRipetizione.setInt(2, ripetizione.getCosto());
                 uRipetizione.setString(3, ripetizione.getDescr());
                 uRipetizione.setString(4, ripetizione.getCittà());
-                uRipetizione.setInt(5, ripetizione.getTutor_key());
-                uRipetizione.setInt(6, ripetizione.getMateria_key());
-                uRipetizione.executeUpdate();
+                uRipetizione.setInt(5, key);
+                uRipetizione.executeUpdate();   
+                dRipetizioneHasArgomento.setInt(1, key);
+                dRipetizioneHasArgomento.executeUpdate();
+                List<Argument> argomenti = ripetizione.getArgomenti();
+                for(Argument a : argomenti){
+                    iRipetizioneHasArgomento.setInt(1, key);
+                    iRipetizioneHasArgomento.setInt(2, ripetizione.getMateria_key());
+                    iRipetizioneHasArgomento.setInt(3, a.getKey());
+                    iRipetizioneHasArgomento.executeUpdate();
+                }
             } else { //insert
                 iRipetizione.setString(1, ripetizione.getLuogoIncontro());
                 iRipetizione.setInt(2, ripetizione.getCosto());
@@ -513,22 +518,34 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             if (key > 0) {
                 ripetizione.copyFrom(getRipetizione(key));
             }
-            ripetizione.setDirty(false);
-            List<Argument> list = ripetizione.getArgomenti();
-            if(list.size() > 0){
-                for(Argument a : list){
-                    iRipetizioneHasArgomento.setInt(1,key);
-                    iRipetizioneHasArgomento.setInt(2,a.getMateria_key());
-                    iRipetizioneHasArgomento.setInt(3,a.getKey());
-                    if(iRipetizioneHasArgomento.executeUpdate()==1){
-                        int x;
-                    }
-                }    
+            if(!ripetizione.isDirty()){
+                List<Argument> list = ripetizione.getArgomenti();
+                if(list.size() > 0 && !ripetizione.isDirty()){
+                    for(Argument a : list){
+                        iRipetizioneHasArgomento.setInt(1,key);
+                        iRipetizioneHasArgomento.setInt(2,a.getMateria_key());
+                        iRipetizioneHasArgomento.setInt(3,a.getKey());
+                        if(iRipetizioneHasArgomento.executeUpdate()==1){
+                         int x;
+                        }
+                    }    
                
+                }
             }
+            ripetizione.setDirty(false);
+
             
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to store ripetizione", ex);
+        }
+    }
+     
+    public void deleteRipetizione(int ripetizione_key) throws DataLayerException{
+        try{
+            dRipetizione.setInt(1, ripetizione_key);
+            dRipetizione.executeUpdate();
+            }catch (SQLException ex) {
+            throw new DataLayerException("Unable to store article", ex);
         }
     }
 }

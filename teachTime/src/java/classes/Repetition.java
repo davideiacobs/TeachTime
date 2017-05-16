@@ -195,7 +195,7 @@ public class Repetition {
         return tutor;
     }
     
-    public Subject getSubject() throws DataLayerException{
+    /*public Subject getSubject() throws DataLayerException{
         if(materia == null && materia_key > 0){
             materia = ownerdatalayer.getSubject(materia_key);
         }
