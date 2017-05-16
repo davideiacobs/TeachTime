@@ -18,29 +18,27 @@ USE `teachtime`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `argomento`
+-- Table structure for table `materia`
 --
 
-DROP TABLE IF EXISTS `argomento`;
+DROP TABLE IF EXISTS `materia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argomento` (
+CREATE TABLE `materia` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(250) NOT NULL,
-  `materia_ID` int(10) NOT NULL,
-  PRIMARY KEY (`ID`,`materia_ID`),
-  KEY `fk_argomento_materia1_idx` (`materia_ID`),
-  CONSTRAINT `fk_argomento_materia1` FOREIGN KEY (`materia_ID`) REFERENCES `materia` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `nome` varchar(45) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `argomento`
+-- Dumping data for table `materia`
 --
 
-LOCK TABLES `argomento` WRITE;
-/*!40000 ALTER TABLE `argomento` DISABLE KEYS */;
-/*!40000 ALTER TABLE `argomento` ENABLE KEYS */;
+LOCK TABLES `materia` WRITE;
+/*!40000 ALTER TABLE `materia` DISABLE KEYS */;
+INSERT INTO `materia` VALUES (1,'informatica'),(2,'matematica'),(3,'fisica'),(4,'chimica'),(5,'geologia'),(6,'archeologia'),(7,'medicina');
+/*!40000 ALTER TABLE `materia` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-15 22:18:05
+-- Dump completed on 2017-05-16 12:32:21

@@ -19,7 +19,7 @@ URL: /users
 VERBO: POST
 Inserisce un nuovo utente nel sistema. L’oggetto passato come payload conterrà tutti i dati del profilo utente, ad esempio:
 {
-	"ID":123,
+	"key":123,
 	"nome":"pinco", 
 	"cognome":"pallino", 
 	"email":"pp@gmail.it",
@@ -28,7 +28,7 @@ Inserisce un nuovo utente nel sistema. L’oggetto passato come payload conterr�
 	"città":"Roma",
 	"telefono":3456789012,
 	"titoloDiStudio":"Laurea Base in Informatica",
-	"immagineDelProfilo":"profilo.png"
+	"imgProfilo":"profilo.png"
 }
 
 
@@ -81,6 +81,7 @@ ex:
 {
         "tutor_key":1,
 	"tutor": {
+                "key":1,
 		"nome":"davide", 
 		"cognome":"iacobelli", 
 		"dataDiNascita":"1995-04-27",
@@ -90,12 +91,16 @@ ex:
 	"luogoIncontro":"andotepare",
 	"costo":500,
 	"descr":"top",
-	"materia_key":"1",
+	"materia_key":1,
 
 	"argomenti":[
-                          {"nome":"programmazione python",
+                          {
+                           "key":1,
+                           "nome":"programmazione python",
                            "materia_key":1},
-                          {"nome":"database",
+                          {
+                          "key":4,
+                          "nome":"database",
                           "materia_key":1}
 	]
 }
@@ -106,7 +111,39 @@ URL: /repetitions/{ID}
 VERBO: GET
 Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions.
 
-
+ex:{
+  "key": 28,
+  "luogoIncontro": "andotepare",
+  "costo": 500,
+  "descr": "top",
+  "città": "sora",
+  "tutor_key": 1,
+  "materia_key": 1,
+  "dirty": true,
+  "argomenti": [
+    {
+      "key": 1,
+      "nome": "programmazione python",
+      "materia": {
+        "key": 1,
+        "nome": "informatica",
+        "dirty": true
+      },
+      "materia_key": 1,
+      "dirty": true
+    },
+    {
+      "key": 4,
+      "nome": "database",
+      "materia": {
+        "key": 1,
+        "nome": "informatica",
+        "dirty": true
+      },
+      "materia_key": 1,
+      "dirty": true
+    }
+  ]
 
 
 AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):

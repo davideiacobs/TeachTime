@@ -37,7 +37,7 @@ CREATE TABLE `ripetizione` (
   KEY `fk_ripetizione_materia1_idx` (`materia_ID`),
   CONSTRAINT `fk_ripetizione_materia1` FOREIGN KEY (`materia_ID`) REFERENCES `materia` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_ripetizione_utente` FOREIGN KEY (`utente_ID`) REFERENCES `utente` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,6 +46,7 @@ CREATE TABLE `ripetizione` (
 
 LOCK TABLES `ripetizione` WRITE;
 /*!40000 ALTER TABLE `ripetizione` DISABLE KEYS */;
+INSERT INTO `ripetizione` VALUES (4,'andotepare',500,'top','sora',1,1),(5,'andotepare',500,'top','sora',1,1),(6,'andotepare',500,'top','sora',1,1),(7,'andotepare',500,'top','sora',1,1),(8,'andotepare',500,'top','sora',1,1),(9,'andotepare',500,'top','sora',1,1),(10,'andotepare',500,'top','sora',1,1),(11,'andotepare',500,'top','sora',1,1),(12,'andotepare',500,'top','sora',1,1),(13,'andotepare',500,'top','sora',1,1),(14,'andotepare',500,'top','sora',1,1),(15,'andotepare',500,'top','sora',1,1),(16,'andotepare',500,'top','sora',1,1),(17,'andotepare',500,'top','sora',1,1),(18,'andotepare',500,'top','sora',1,1),(19,'andotepare',500,'top','sora',1,1),(20,'andotepare',500,'top','sora',1,1),(21,'andotepare',500,'top','sora',1,1),(22,'andotepare',500,'top','sora',1,1),(23,'andotepare',500,'top','sora',1,1),(24,'andotepare',500,'top','sora',1,1),(25,'andotepare',500,'top','sora',1,1),(26,'andotepare',500,'top','sora',1,1),(27,'andotepare',500,'top','sora',1,1),(28,'andotepare',500,'top','sora',1,1);
 /*!40000 ALTER TABLE `ripetizione` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +59,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-15 22:18:05
+-- Dump completed on 2017-05-16 12:32:21

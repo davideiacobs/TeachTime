@@ -18,34 +18,39 @@ USE `teachtime`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `utente`
+-- Table structure for table `prenotazione`
 --
 
-DROP TABLE IF EXISTS `utente`;
+DROP TABLE IF EXISTS `prenotazione`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `utente` (
-  `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(45) NOT NULL,
-  `cognome` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `pwd` varchar(45) NOT NULL,
-  `citta` varchar(45) DEFAULT 'NULL',
-  `telefono` varchar(45) DEFAULT 'NULL',
-  `data_di_nascita` date NOT NULL,
-  `titolo_di_studio` varchar(250) DEFAULT 'NULL',
-  `img_profilo` varchar(250) DEFAULT 'NULL',
-  PRIMARY KEY (`ID`)
+CREATE TABLE `prenotazione` (
+  `utente_ID` int(10) NOT NULL,
+  `ripetizione_ID` int(10) NOT NULL,
+  `descrizione` text,
+  `stato` int(11) DEFAULT NULL,
+  `data` date DEFAULT NULL,
+  `ora` timestamp NULL DEFAULT NULL,
+  `argomento_ID` int(10) NOT NULL,
+  `voto` int(11) DEFAULT '-1',
+  `recensione` text,
+  PRIMARY KEY (`utente_ID`,`ripetizione_ID`,`argomento_ID`),
+  KEY `fk_utente_has_ripetizione_ripetizione1_idx` (`ripetizione_ID`),
+  KEY `fk_utente_has_ripetizione_utente1_idx` (`utente_ID`),
+  KEY `fk_prenotazione_argomento1_idx` (`argomento_ID`),
+  CONSTRAINT `fk_prenotazione_argomento1` FOREIGN KEY (`argomento_ID`) REFERENCES `argomento` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_utente_has_ripetizione_ripetizione1` FOREIGN KEY (`ripetizione_ID`) REFERENCES `ripetizione` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_utente_has_ripetizione_utente1` FOREIGN KEY (`utente_ID`) REFERENCES `utente` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `utente`
+-- Dumping data for table `prenotazione`
 --
 
-LOCK TABLES `utente` WRITE;
-/*!40000 ALTER TABLE `utente` DISABLE KEYS */;
-/*!40000 ALTER TABLE `utente` ENABLE KEYS */;
+LOCK TABLES `prenotazione` WRITE;
+/*!40000 ALTER TABLE `prenotazione` DISABLE KEYS */;
+/*!40000 ALTER TABLE `prenotazione` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -57,4 +62,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-15 22:18:05
+-- Dump completed on 2017-05-16 12:32:21

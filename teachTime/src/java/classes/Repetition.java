@@ -5,6 +5,7 @@
  */
 package classes;
 
+import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.util.List;
 
 /**
@@ -204,12 +205,12 @@ public class Repetition {
     /**
      * @return the argomenti
      */
-    /*public List<Argument> getArgomenti() {
+    public List<Argument> getArgomenti() throws DataLayerException {
         if(argomenti == null){
             argomenti = ownerdatalayer.getArgomentiByRipetizione(this.key);
         }
         return argomenti;
-    }*/
+    }
     
     /**
      * @param argomenti the argomenti to set

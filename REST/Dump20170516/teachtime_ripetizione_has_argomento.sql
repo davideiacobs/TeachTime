@@ -18,39 +18,34 @@ USE `teachtime`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `prenotazione`
+-- Table structure for table `ripetizione_has_argomento`
 --
 
-DROP TABLE IF EXISTS `prenotazione`;
+DROP TABLE IF EXISTS `ripetizione_has_argomento`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `prenotazione` (
-  `utente_ID` int(10) NOT NULL,
+CREATE TABLE `ripetizione_has_argomento` (
   `ripetizione_ID` int(10) NOT NULL,
-  `descrizione` text,
-  `stato` int(11) DEFAULT NULL,
-  `data` date DEFAULT NULL,
-  `ora` timestamp NULL DEFAULT NULL,
+  `ripetizione_materia_ID` int(10) NOT NULL,
   `argomento_ID` int(10) NOT NULL,
-  `voto` int(11) DEFAULT '-1',
-  `recensione` text,
-  PRIMARY KEY (`utente_ID`,`ripetizione_ID`,`argomento_ID`),
-  KEY `fk_utente_has_ripetizione_ripetizione1_idx` (`ripetizione_ID`),
-  KEY `fk_utente_has_ripetizione_utente1_idx` (`utente_ID`),
-  KEY `fk_prenotazione_argomento1_idx` (`argomento_ID`),
-  CONSTRAINT `fk_prenotazione_argomento1` FOREIGN KEY (`argomento_ID`) REFERENCES `argomento` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_utente_has_ripetizione_ripetizione1` FOREIGN KEY (`ripetizione_ID`) REFERENCES `ripetizione` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_utente_has_ripetizione_utente1` FOREIGN KEY (`utente_ID`) REFERENCES `utente` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_ripetizione_has_argomento_argomento1_idx` (`argomento_ID`),
+  KEY `fk_ripetizione_has_argomento_ripetizione1_idx` (`ripetizione_ID`,`ripetizione_materia_ID`),
+  KEY `fk_ripetizione_has_argomento_ripetizione1_idx1` (`ripetizione_ID`,`ripetizione_materia_ID`,`argomento_ID`),
+  KEY `fk_ripetizione_has_argomento_2_idx` (`ripetizione_materia_ID`),
+  CONSTRAINT `fk_ripetizione_has_argomento_1` FOREIGN KEY (`ripetizione_ID`) REFERENCES `ripetizione` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ripetizione_has_argomento_2` FOREIGN KEY (`ripetizione_materia_ID`) REFERENCES `ripetizione` (`materia_ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ripetizione_has_argomento_argomento1` FOREIGN KEY (`argomento_ID`) REFERENCES `argomento` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `prenotazione`
+-- Dumping data for table `ripetizione_has_argomento`
 --
 
-LOCK TABLES `prenotazione` WRITE;
-/*!40000 ALTER TABLE `prenotazione` DISABLE KEYS */;
-/*!40000 ALTER TABLE `prenotazione` ENABLE KEYS */;
+LOCK TABLES `ripetizione_has_argomento` WRITE;
+/*!40000 ALTER TABLE `ripetizione_has_argomento` DISABLE KEYS */;
+INSERT INTO `ripetizione_has_argomento` VALUES (22,1,1),(27,1,1),(27,1,4),(28,1,1),(28,1,4);
+/*!40000 ALTER TABLE `ripetizione_has_argomento` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -62,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-15 22:18:05
+-- Dump completed on 2017-05-16 12:32:21

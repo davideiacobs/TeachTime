@@ -18,26 +18,35 @@ USE `teachtime`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `materia`
+-- Table structure for table `utente`
 --
 
-DROP TABLE IF EXISTS `materia`;
+DROP TABLE IF EXISTS `utente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `materia` (
+CREATE TABLE `utente` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) NOT NULL,
+  `cognome` varchar(45) NOT NULL,
+  `email` varchar(45) NOT NULL,
+  `pwd` varchar(45) NOT NULL,
+  `citta` varchar(45) DEFAULT 'NULL',
+  `telefono` varchar(45) DEFAULT 'NULL',
+  `data_di_nascita` date NOT NULL,
+  `titolo_di_studio` varchar(250) DEFAULT 'NULL',
+  `img_profilo` varchar(250) DEFAULT 'NULL',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `materia`
+-- Dumping data for table `utente`
 --
 
-LOCK TABLES `materia` WRITE;
-/*!40000 ALTER TABLE `materia` DISABLE KEYS */;
-/*!40000 ALTER TABLE `materia` ENABLE KEYS */;
+LOCK TABLES `utente` WRITE;
+/*!40000 ALTER TABLE `utente` DISABLE KEYS */;
+INSERT INTO `utente` VALUES (1,'davide','iacobelli','top@top.com','564645','sora','3333333333','1995-04-27','magari','path'),(2,'luca','balestrieri','ao@top.com','56343645','sora','3356333333','1995-05-02','magari','path'),(3,'manuel','di pietro','mondiale@top.com','56334','teramo','3332463333','1995-01-02','magari','path'),(4,'andrea','perna','perna@top.com','56334434','sora','33342463333','1995-08-21','magari','path');
+/*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-15 22:18:05
+-- Dump completed on 2017-05-16 12:32:21
