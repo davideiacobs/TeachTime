@@ -31,6 +31,18 @@ Inserisce un nuovo utente nel sistema. L’oggetto passato come payload conterr�
 	"imgProfilo":"profilo.png"
 }
 
+ex:{
+	"nome":"pinco", 
+	"cognome":"pallino", 
+	"email":"pp@gmail.it",
+	"pwd":"abcdef",
+	"dataDiNascita":"1995-04-27",
+	"città":"Roma",
+	"telefono":3456789012,
+	"titoloDiStudi":"Laurea Base in Informatica",
+	"imgProfilo":"profilo.png"
+}
+
 
 
 
