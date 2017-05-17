@@ -69,9 +69,9 @@ public class Subject {
     /**
      * @return the categoria
      */
-    public Category getMateria() throws DataLayerException{
+    public Category getCategoria() throws DataLayerException{
         if(categoria == null && categoria_key > 0){
-            categoria = this.ownerdatalayer.getMateria(categoria_key);
+            categoria = this.ownerdatalayer.getCategoria(categoria_key);
         }
 
         return categoria;

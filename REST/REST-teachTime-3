@@ -68,18 +68,18 @@ Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload cont
 	"luogoIncontro":"a scelta dello studente",
 	"costo":12,
 	"descr":"top",
-	"materia_key":1,
+	"categoria_key":1,
 
-	"argomenti":[
+	"materie":[
                           {
                           	"key":1,
                            	"nome":"programmazione python",
-                           	"materia_key":1
+                           	"categoria_key":1
 			  },
                           {
                           	"key":4,
                           	"nome":"database",
-                          	"materia_key":1
+                          	"categoria_key":1
 			  }
 	]
 }
@@ -98,29 +98,29 @@ ex:{
   "descr": "top",
   "città": "roma",
   "tutor_key": 1,
-  "materia_key": 1,
+  "categoria_key": 1,
   "dirty": true,
-  "argomenti": [
+  "materie": [
     {
       "key": 1,
       "nome": "programmazione python",
-      "materia": {
+      "categoria": {
         "key": 1,
         "nome": "informatica",
         "dirty": true
       },
-      "materia_key": 1,
+      "categoria_key": 1,
       "dirty": true
     },
     {
       "key": 4,
       "nome": "database",
-      "materia": {
+      "categoria": {
         "key": 1,
         "nome": "informatica",
         "dirty": true
       },
-      "materia_key": 1,
+      "categoria_key": 1,
       "dirty": true
     }
   ]
@@ -187,7 +187,7 @@ Inserimento nel sistema di un nuovo feedback ricevuto dal tutor {tutor_ID}. L'og
 	},
 	"data":"21-05-2017",
 	"ora":"16:30",
-	"argomento":"...",
+	"materia":"...",
 	"stato":0
 }
 
@@ -234,7 +234,7 @@ Inserimento nel sistema di una nuova prenotazione alla ripetizione {repetition_I
 	},
 	"data":"21-05-2017",
 	"ora":"16:30",
-	"argomento":"...",
+	"materia":"...",
 	"stato":0
 }
 
@@ -258,17 +258,24 @@ Restituisce le URI che rappresentano tutte le prenotazioni che hanno come studen
 
 
 
-RECUPERO LISTA ARGOMENTI PER MATERIA:
-URL: /subjects/{ID}/arguments
+RECUPERO LISTA MATERIE PER :
+URL: /categories/{ID}/subjects
 VERBO: GET
 
 
 
 INSERIMENTO ARGOMENTO:
-URL: /subjects/{ID}/arguments
+URL: /categories/{ID}/subjects
 VERBO: POST
 
-
+ex: {
+	"nome":"programmazione python",
+	"categoria_key":1,
+	"categoria":{
+			"ID":1,
+			"nome":"informatica"
+		    }
+     }
 
 
 

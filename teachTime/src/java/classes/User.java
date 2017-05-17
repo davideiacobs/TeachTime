@@ -7,6 +7,7 @@ package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.util.GregorianCalendar;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -24,6 +25,7 @@ public class User {
     private String titoloDiStudi;
     private String imgProfilo;
     protected TeachTimeDataLayer ownerdatalayer;
+    @JsonIgnore
     private boolean dirty;
     
     public User(TeachTimeDataLayer datalayer){
@@ -200,6 +202,7 @@ public class User {
     /**
      * @return the dirty
      */
+    @JsonIgnore
     public boolean isDirty() {
         return dirty;
     }
@@ -207,6 +210,7 @@ public class User {
     /**
      * @param dirty the dirty to set
      */
+    @JsonIgnore
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }

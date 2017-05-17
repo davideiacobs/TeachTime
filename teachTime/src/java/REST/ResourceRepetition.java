@@ -48,15 +48,17 @@ public class ResourceRepetition {
         
         datalayer.storeRepetition(ripetizione);
         
-        URI u = c.getAbsolutePathBuilder().path(ResourceRepetition.class, "getRepetition")
+        URI u = c.getAbsolutePathBuilder().path(ResourceRepetition.class, "getRepetitionByKey")
                 .build(ripetizione.getKey());
         
         return Response.created(u).build();
     }  
-     
+    
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepetition(@QueryParam("tutor") String tutor_key) throws SQLException, NamingException, DataLayerException {
+    public Response getRepetition(@QueryParam("city") String città, @QueryParam("category") String categoria
+            , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
@@ -68,40 +70,19 @@ public class ResourceRepetition {
          * dal metodo. Se il parametro non è spacificato, verrà impostato
          * su null.
          */
-        if (tutor_key != null || tutor_key!="") {
-            List<Repetition> result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
-            return Response.ok(result).build();
-        } else {
-            return Response.serverError().build();
-        }
-    } 
-    
-    
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepetition(@QueryParam("city") String città, @QueryParam("subject") String materia
-            , @QueryParam("argument") String argomento) throws SQLException, NamingException, DataLayerException {
-        
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        /*
-         * L'annotazione @QueryParam permette di "iniettare"
-         * su un parametro del metodo il valore effettivo del
-         * parametro della query string col nome indicato. JAX-RS proverà
-         * a convertire il parametro della query string nel tipo richiesto
-         * dal metodo. Se il parametro non è spacificato, verrà impostato
-         * su null.
-         */
-        if (città != null && città != "" && materia != null && materia != ""){
-            List<Repetition> result = new ArrayList();
-            if(argomento != null && argomento != ""){
-                result = datalayer.getRipetizioniByFilter(città, Integer.parseInt(materia), Integer.parseInt(argomento));
-            }else{
-                result = datalayer.getRipetizioniByFilter(città, Integer.parseInt(materia));
-            }
+        if ((città != null && città != "") || (tutor_key != "" && tutor_key != null) ){
             
-
-            return Response.ok(result).build();
+            List<Repetition> result;
+            if(città != "" && città != null){
+                if(materia != null && materia != ""){
+                    result = datalayer.getRipetizioniByMateria(città, Integer.parseInt(materia));
+                }else{
+                    result = datalayer.getRipetizioniByCategoria(città, Integer.parseInt(categoria));
+                }
+            }else{
+                result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
+            }
+            return Response.ok(result).build();            
         } else {
             return Response.serverError().build();
         }
@@ -112,7 +93,7 @@ public class ResourceRepetition {
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepetition(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
+    public Response getRepetitionByKey(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();

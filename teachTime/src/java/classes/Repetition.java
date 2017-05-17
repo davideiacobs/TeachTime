@@ -187,17 +187,24 @@ public class Repetition {
         this.dirty = true;
     }
     
-    /*public User getTutor() throws DataLayerException{
+    public Category getCategoria() throws DataLayerException{
+        if (categoria == null && categoria_key > 0) {
+            categoria = ownerdatalayer.getCategoria(categoria_key);
+        }
+        return categoria;
+    }
+    
+    public User getTutor() throws DataLayerException{
         if (tutor == null && tutor_key > 0) {
-            tutor = ownerdatalayer.getTutor(tutor_key);
+            tutor = ownerdatalayer.getUtente(tutor_key);
         }
       
         return tutor;
     }
     
-    /*public Category getSubject() throws DataLayerException{
+    public Category getCategory() throws DataLayerException{
         if(categoria == null && categoria_key > 0){
-            categoria = ownerdatalayer.getSubject(categoria_key);
+            categoria = ownerdatalayer.getCategoria(categoria_key);
         }
         return categoria;
     }
@@ -225,7 +232,6 @@ public class Repetition {
         città = ripetizione.getCittà();
         costo = ripetizione.getCosto();
         descr = ripetizione.getDescr();
-        categoria_key = ripetizione.getCategoria_key();
         tutor_key = ripetizione.getTutor_key();
         this.dirty = true;
     }

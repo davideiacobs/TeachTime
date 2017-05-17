@@ -121,17 +121,18 @@ public class Prenotation {
     /**
      */
     
-    /*public User getTutor() {
+    public User getTutor() throws DataLayerException {
         if(tutor == null && tutor_key > 0){
-           tutor = this.ownerdatalayer.getTutor(tutor_key);
+           tutor = this.ownerdatalayer.getUtente(tutor_key);
         }
         return tutor;
     }
     
-    public Repetition getRipetizione(){
+    public Repetition getRipetizione() throws DataLayerException{
         if(ripetizione == null && ripetizione_key > 0) {
             ripetizione = this.ownerdatalayer.getRipetizione(ripetizione_key);
         }
+        return ripetizione;
     }
     /**
      * @param tutor the tutor to set
@@ -151,13 +152,13 @@ public class Prenotation {
     /**
      * @return the studente
      */
-    /*public User getStudente() {
+    public User getStudente() throws DataLayerException {
         if(studente == null && studente_key > 0){
-            studente = ownerdatalayer.getStudente(studente_key);
+            studente = ownerdatalayer.getUtente(studente_key);
         }
 
         return studente;
-    }*/
+    }
 
     /**
      * @param studente the studente to set
@@ -216,12 +217,12 @@ public class Prenotation {
     /**
      * @return the materia
      */
-    /*public Subject getArgomento() {
+    public Subject getMateria() throws DataLayerException {
         if(materia == null && materia_key > 0){
-            materia = ownerdatalayer.getArgomento(materia_key);
+            materia = ownerdatalayer.getMateria(materia_key);
         }
         return materia;
-    }*/
+    }
 
     /**
      * @param materia the materia to set

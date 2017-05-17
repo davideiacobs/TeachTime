@@ -29,7 +29,7 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author iacobs
  */
-@Path("subjects")
+@Path("categories")
 public class ResourceSubject {
     
     @Resource(name = "jdbc/teachtime")
@@ -37,20 +37,20 @@ public class ResourceSubject {
     
     
     @GET
-    @Path("{id: [0-9]+}/arguments")
+    @Path("{id: [0-9]+}/subjects")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getArgList(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        List<Subject> list = datalayer.getArgomentiByMateria(n);
+        List<Subject> list = datalayer.getMaterieByCategoria(n);
         return Response.ok(list).build();
     }
     
     @POST
-    @Path("{id: [0-9]+}/arguments")
+    @Path("{id: [0-9]+}/subjects")
     @Consumes(MediaType.APPLICATION_JSON)
-     public Response postArgomento(@Context UriInfo c, @PathParam("id") int n, Subject argomento) throws SQLException, NamingException, DataLayerException {
+     public Response postArgomento(@Context UriInfo c, @PathParam("id") int n, Subject materia) throws SQLException, NamingException, DataLayerException {
             
         
         /*int materia_key = argomento.getMateria_key();
@@ -66,7 +66,7 @@ public class ResourceSubject {
          * (senza parametri), oltre ovviamente ad avere campo
          * mappabil su quelli del JSON del payload.
          */
-        datalayer.storeArgument(argomento);
+        datalayer.storeMateria(materia);
         
         URI u = c.getAbsolutePath();
         
@@ -76,7 +76,7 @@ public class ResourceSubject {
     
     
     /*@GET
-    @Path("{id: [0-9]+}/arguments/{id_arg: [0-9]+}")
+    @Path("{id: [0-9]+}/subjects/{id_arg: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getArgomento(@PathParam("id") int materia, @PathParam("id_arg") int argomento) throws SQLException, NamingException, DataLayerException{
         
