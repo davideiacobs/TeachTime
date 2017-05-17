@@ -1,13 +1,11 @@
-package classes;
-
-import it.univaq.f4i.iw.framework.data.DataLayerException;
-import java.util.List;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package classes;
+
+import it.univaq.f4i.iw.framework.data.DataLayerException;
 
 /**
  *
@@ -16,24 +14,27 @@ import java.util.List;
 public class Subject {
     private int key;
     private String nome;
+    private Category categoria;
+    private int categoria_key;
     protected TeachTimeDataLayer ownerdatalayer;
     private boolean dirty;
-    private List<Argument> argomenti;
     
     public Subject(TeachTimeDataLayer datalayer){
         this.ownerdatalayer = datalayer;
         key = 0;
-        nome = "";   
+        nome = "";
+        categoria = null;
+        categoria_key = 0;
         dirty = false;
-        argomenti = null;
     }
     
     public Subject(){
         this.ownerdatalayer = null;
         key = 0;
-        nome = "";   
+        nome = "";
+        categoria = null;
+        categoria_key = 0;
         dirty = false;
-        argomenti = null;
     }
 
     /**
@@ -63,6 +64,43 @@ public class Subject {
     public void setNome(String nome) {
         this.nome = nome;
         this.dirty = true;
+    }
+
+    /**
+     * @return the categoria
+     */
+    public Category getMateria() throws DataLayerException{
+        if(categoria == null && categoria_key > 0){
+            categoria = this.ownerdatalayer.getMateria(categoria_key);
+        }
+
+        return categoria;
+    }
+
+    /**
+     * @param categoria the categoria to set
+     */
+    public void setCategoria(Category categoria) {
+        this.categoria = categoria;
+        this.categoria_key = categoria.getKey();
+        this.dirty = true;
+
+    }
+
+    /**
+     * @return the categoria_key
+     */
+    public int getCategoria_key() {
+        return categoria_key;
+    }
+
+    /**
+     * @param categoria_key the categoria_key to set
+     */
+    public void setCategoria_key(int categoria_key) {
+        this.categoria_key = categoria_key;
+        this.categoria = null;
+        this.dirty = true;
 
     }
 
@@ -79,28 +117,11 @@ public class Subject {
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
-
-    /**
-     * @return the argomenti
-     */
-   /* public List<Argument> getArgomenti() throws DataLayerException {
-        if(argomenti == null){
-           argomenti = ownerdatalayer.getArgomentiByMateria(this.key);
-        }
-        return argomenti;
-    }*/
-
-    /**
-     * @param argomenti the argomenti to set
-     */
-    public void setArgomenti(List<Argument> argomenti) {
-        this.argomenti = argomenti;
-        this.dirty = true;
-    }
     
-    public void copyFrom(Subject materia){
+     public void copyFrom(Subject materia){
         key = materia.getKey();
         nome = materia.getNome();
+        categoria_key = materia.getCategoria_key();
         this.dirty = true;
     }
 }

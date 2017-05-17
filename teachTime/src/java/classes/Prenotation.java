@@ -5,6 +5,7 @@
  */
 package classes;
 
+import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.sql.Time;
 import java.util.GregorianCalendar;
 
@@ -17,14 +18,15 @@ public class Prenotation {
     private int studente_key;
     private int ripetizione_key;
     private int stato;
+    private int costo;
     private User tutor;
     private User studente;
     private Repetition ripetizione;
     private String descr;
     private GregorianCalendar data;
     private Time ora;
-    private Argument argomento;
-    private int argomento_key;
+    private Subject materia;
+    private int materia_key;
     private int voto;
     private String recensione;
     private boolean dirty;
@@ -40,9 +42,10 @@ public class Prenotation {
         descr = "";
         data = null;
         stato = -1;
+        costo=0;
         ora = null;
-        argomento = null;
-        argomento_key = 0;
+        materia = null;
+        materia_key = 0;
         ripetizione = null;
         ripetizione_key = 0;
         voto = 0;
@@ -59,9 +62,10 @@ public class Prenotation {
         descr = "";
         data = null;
         stato = -1;
+        costo=0;
         ora = null;
-        argomento = null;
-        argomento_key = 0;
+        materia = null;
+        materia_key = 0;
         ripetizione = null;
         ripetizione_key = 0;
         voto = 0;
@@ -73,6 +77,9 @@ public class Prenotation {
      * @return the tutor_key
      */
     public int getTutor_key() {
+        if(tutor != null ){
+            tutor_key = tutor.getKey();
+        }
         return tutor_key;
     }
     
@@ -81,10 +88,10 @@ public class Prenotation {
     }
 
     /**
-     * @param tutor_key the tutor_key to set
+     * @param ripetizione_key the tutor_key to set
      */
-    public void setTutor_key(int tutor_key) {
-        this.tutor_key = tutor_key;
+    public void setTutor_key(int ripetizione_key) throws DataLayerException{
+        this.tutor_key = ownerdatalayer.getTutorByRipetizione(studente_key);
         this.tutor = null;
         this.dirty = true;
     }
@@ -112,7 +119,6 @@ public class Prenotation {
     }
 
     /**
-     * @return the tutor
      */
     
     /*public User getTutor() {
@@ -208,37 +214,37 @@ public class Prenotation {
     }
 
     /**
-     * @return the argomento
+     * @return the materia
      */
-    /*public Argument getArgomento() {
-        if(argomento == null && argomento_key > 0){
-            argomento = ownerdatalayer.getArgomento(argomento_key);
+    /*public Subject getArgomento() {
+        if(materia == null && materia_key > 0){
+            materia = ownerdatalayer.getArgomento(materia_key);
         }
-        return argomento;
+        return materia;
     }*/
 
     /**
-     * @param argomento the argomento to set
+     * @param materia the materia to set
      */
-    public void setArgomento(Argument argomento) {
-        this.argomento = argomento;
-        this.argomento_key = argomento.getKey();
+    public void setMateria(Subject materia) {
+        this.materia = materia;
+        this.materia_key = materia.getKey();
         this.dirty = true;
     }
 
     /**
-     * @return the argomento_key
+     * @return the materia_key
      */
-    public int getArgomento_key() {
-        return argomento_key;
+    public int getMateria_key() {
+        return materia_key;
     }
 
     /**
-     * @param argomento_key the argomento_key to set
+     * @param materia_key the materia_key to set
      */
-    public void setArgomento_key(int argomento_key) {
-        this.argomento_key = argomento_key;
-        this.argomento = null;
+    public void setMateria_key(int materia_key) {
+        this.materia_key = materia_key;
+        this.materia = null;
         this.dirty = true;
     }
 
@@ -298,6 +304,21 @@ public class Prenotation {
      */
     public void setStato(int stato) {
         this.stato = stato;
+    }
+
+    /**
+     * @return the costo
+     */
+    public int getCosto() {
+        return costo;
+    }
+
+    /**
+     * @param costo the costo to set
+     */
+    public void setCosto(int costo) {
+        this.costo = costo;
+        this.dirty = true;
     }
     
 }

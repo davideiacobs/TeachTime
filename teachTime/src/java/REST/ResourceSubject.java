@@ -5,7 +5,7 @@
  */
 package REST;
 
-import classes.Argument;
+import classes.Subject;
 import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
@@ -43,14 +43,14 @@ public class ResourceSubject {
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        List<Argument> list = datalayer.getArgomentiByMateria(n);
+        List<Subject> list = datalayer.getArgomentiByMateria(n);
         return Response.ok(list).build();
     }
     
     @POST
     @Path("{id: [0-9]+}/arguments")
     @Consumes(MediaType.APPLICATION_JSON)
-     public Response postArgomento(@Context UriInfo c, @PathParam("id") int n, Argument argomento) throws SQLException, NamingException, DataLayerException {
+     public Response postArgomento(@Context UriInfo c, @PathParam("id") int n, Subject argomento) throws SQLException, NamingException, DataLayerException {
             
         
         /*int materia_key = argomento.getMateria_key();
@@ -82,7 +82,7 @@ public class ResourceSubject {
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        Argument arg = datalayer.getArgomento(argomento);
+        Subject arg = datalayer.getArgomento(argomento);
         return Response.ok(arg).build();
     }
     */

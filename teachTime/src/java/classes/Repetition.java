@@ -20,11 +20,11 @@ public class Repetition {
     private String città;
     private User tutor;
     private int tutor_key;
-    private Subject materia;
-    private int materia_key;
+    private Category categoria;
+    private int categoria_key;
     protected TeachTimeDataLayer ownerdatalayer;
     private boolean dirty;
-    private List<Argument> argomenti;
+    private List<Subject> materie;
     
     public Repetition(TeachTimeDataLayer datalayer){
         this.ownerdatalayer = datalayer;
@@ -35,10 +35,10 @@ public class Repetition {
         città = "";
         tutor = null;
         tutor_key = 0;
-        materia = null;
-        materia_key = 0;       
+        categoria = null;
+        categoria_key = 0;       
         dirty = false;
-        argomenti = null;
+        materie = null;
     }
     
      public Repetition(){
@@ -50,10 +50,10 @@ public class Repetition {
         città = "";
         tutor = null;
         tutor_key = 0;
-        materia = null;
-        materia_key = 0;       
+        categoria = null;
+        categoria_key = 0;       
         dirty = false;
-        argomenti = null;
+        materie = null;
     }
 
     /**
@@ -147,17 +147,17 @@ public class Repetition {
     }
 
     /**
-     * @return the materia_ID
+     * @return the categoria_ID
      */
-    public int getMateria_key() {
-        return materia_key;
+    public int getCategoria_key() {
+        return categoria_key;
     }
 
     /**
-     * @param materia_ID the materia_ID to set
+     * @param categoria_ID the categoria_ID to set
      */
-    public void setMateria_key(int materia_ID) {
-        this.materia_key = materia_ID;
+    public void setCategoria_key(int categoria_ID) {
+        this.categoria_key = categoria_ID;
         this.dirty = true;
     }
 
@@ -181,9 +181,9 @@ public class Repetition {
         this.dirty = true;
     }
     
-    public void setSubject(Subject materia){
-        this.materia = materia;
-        this.materia_key = materia.getKey();
+    public void setCategoria(Category categoria){
+        this.categoria = categoria;
+        this.categoria_key = categoria.getKey();
         this.dirty = true;
     }
     
@@ -195,28 +195,28 @@ public class Repetition {
         return tutor;
     }
     
-    /*public Subject getSubject() throws DataLayerException{
-        if(materia == null && materia_key > 0){
-            materia = ownerdatalayer.getSubject(materia_key);
+    /*public Category getSubject() throws DataLayerException{
+        if(categoria == null && categoria_key > 0){
+            categoria = ownerdatalayer.getSubject(categoria_key);
         }
-        return materia;
+        return categoria;
     }
 
     /**
-     * @return the argomenti
+     * @return the materie
      */
-    public List<Argument> getArgomenti() throws DataLayerException {
-        if(argomenti == null){
-            argomenti = ownerdatalayer.getArgomentiByRipetizione(this.key);
+    public List<Subject> getMaterie() throws DataLayerException {
+        if(materie == null){
+            materie = ownerdatalayer.getMaterieByRipetizione(this.key);
         }
-        return argomenti;
+        return materie;
     }
     
     /**
-     * @param argomenti the argomenti to set
+     * @param materie the materie to set
      */
-    public void setArgomenti(List<Argument> argomenti) {
-        this.argomenti = argomenti;
+    public void setMaterie(List<Subject> materie) {
+        this.materie = materie;
     }
     
     public void copyFrom(Repetition ripetizione){
@@ -225,7 +225,7 @@ public class Repetition {
         città = ripetizione.getCittà();
         costo = ripetizione.getCosto();
         descr = ripetizione.getDescr();
-        materia_key = ripetizione.getMateria_key();
+        categoria_key = ripetizione.getCategoria_key();
         tutor_key = ripetizione.getTutor_key();
         this.dirty = true;
     }
