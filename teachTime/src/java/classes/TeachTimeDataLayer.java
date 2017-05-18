@@ -28,7 +28,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement iMateria, sMateriaByID, uRipetizione, iRipetizione, sRipetizioneByID;
     private PreparedStatement sMaterieByCategoria, sMaterieByRipetizione, iRipetizioneHasMateria; 
     private PreparedStatement sRipetizioneByTutor, sRipetizioneByCategoria, sRipetizioneByMateria;
-    private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione;
+    private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione, sMateriaByNome;
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -49,6 +49,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             iCategoria = connection.prepareStatement("INSERT INTO categoria (nome) VALUES(?)", Statement.RETURN_GENERATED_KEYS);
             uMateria = connection.prepareStatement("UPDATE materia SET nome=?, categoria_ID=? WHERE ID=?");
             iMateria = connection.prepareStatement("INSERT INTO materia (nome, categoria_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
+            sMateriaByNome = connection.prepareStatement("SELECT * FROM materia WHERE nome=?");
             sMateriaByID = connection.prepareStatement("SELECT * FROM materia WHERE ID=?");
             uRipetizione = connection.prepareStatement("UPDATE ripetizione SET luogo_incontro=?, costo_per_ora=?,descrizione=?,citta=? WHERE ID=?");
             iRipetizione = connection.prepareStatement("INSERT INTO ripetizione (luogo_incontro,costo_per_ora,descrizione,citta,tutor_ID) VALUES (?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -531,27 +532,22 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             }
             if (key > 0) {
                 ripetizione.copyFrom(getRipetizione(key));
-                List<Subject> materie = ripetizione.getMaterie();
-                for(Subject a : materie){
-                    iRipetizioneHasMateria.setInt(1, key);
-                    iRipetizioneHasMateria.setInt(2, a.getKey());
-                    iRipetizioneHasMateria.executeUpdate();
-                }
             }
-            if(!ripetizione.isDirty()){
-                List<Subject> list = ripetizione.getMaterie();
-                if(list.size() > 0 && !ripetizione.isDirty()){
-                    for(Subject a : list){
-                        iRipetizioneHasMateria.setInt(1,key);
-                        iRipetizioneHasMateria.setInt(2,a.getCategoria_key());
-                        iRipetizioneHasMateria.setInt(3,a.getKey());
-                        if(iRipetizioneHasMateria.executeUpdate()==1){
-                         int x;
-                        }
-                    }    
+            List<Subject> materie = ripetizione.getMaterie();
+            for(Subject m : materie){
+                sMateriaByNome.setString(1, m.getNome());
+                try(ResultSet rs = sMateriaByNome.executeQuery()){
+                    if(!rs.next()){
+                        iMateria.setString(1, m.getNome());
+                        iMateria.setInt(2, m.getCategoria_key());
+                        iMateria.executeUpdate();
+                    }
+                }
+                iRipetizioneHasMateria.setInt(1, key);
+                iRipetizioneHasMateria.setInt(2, m.getKey());
+                iRipetizioneHasMateria.executeUpdate();
+            }
                
-                }
-            }
             ripetizione.setDirty(false);
 
             

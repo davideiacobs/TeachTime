@@ -56,28 +56,18 @@ URL: /repetitions
 VERBO: POST
 Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload conterrà tutti i dati della ripetizione, ad esempio:
 {
-        "tutor_key":1,
-	"tutor": {
-                "key":1,
-		"nome":"pinco", 
-		"cognome":"pallino",  
-		"dataDiNascita":"1995-04-27",
-		"titoloDiStudi":"Lauea Base in Informatica"
-	},
+    "tutor_key":1,
 	"città":"roma",
 	"luogoIncontro":"a scelta dello studente",
 	"costo":12,
 	"descr":"top",
 	"categoria_key":1,
-
 	"materie":[
                           {
-                          	"key":1,
                            	"nome":"programmazione python",
                            	"categoria_key":1
 			  },
                           {
-                          	"key":4,
                           	"nome":"database",
                           	"categoria_key":1
 			  }
