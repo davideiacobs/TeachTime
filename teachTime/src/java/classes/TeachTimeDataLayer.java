@@ -58,8 +58,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sMaterieByRipetizione = connection.prepareStatement("SELECT rha.materia_ID FROM ripetizione_has_materia AS rha WHERE ripetizione_ID=?");
             iRipetizioneHasMateria = connection.prepareStatement("INSERT INTO ripetizione_has_materia (ripetizione_ID,materia_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
             sRipetizioneByTutor = connection.prepareStatement("SELECT ripetizione.ID FROM ripetizione WHERE tutor_ID=?");
-            sRipetizioneByCategoria = connection.prepareStatement("SELECT r.ID FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?"); 
-            
+            sRipetizioneByCategoria = connection.prepareStatement("SELECT r.ID FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");      
             sRipetizioneByMateria = connection.prepareStatement("SELECT r.ID FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");
             dRipetizione = connection.prepareStatement("DELETE FROM ripetizione WHERE ID=?");
             dRipetizioneHasMateria = connection.prepareStatement("DELETE FROM ripetizione_has_materia WHERE ripetizione_ID=?");
@@ -555,6 +554,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             throw new DataLayerException("Unable to store ripetizione", ex);
         }
     }
+     
      
     public void deleteRipetizione(int ripetizione_key) throws DataLayerException{
         try{
