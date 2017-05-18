@@ -6,6 +6,7 @@
 package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -17,6 +18,7 @@ public class Subject {
     private Category categoria;
     private int categoria_key;
     protected TeachTimeDataLayer ownerdatalayer;
+    @JsonIgnore
     private boolean dirty;
     
     public Subject(TeachTimeDataLayer datalayer){
@@ -107,6 +109,7 @@ public class Subject {
     /**
      * @return the dirty
      */
+    @JsonIgnore    
     public boolean isDirty() {
         return dirty;
     }
@@ -114,6 +117,7 @@ public class Subject {
     /**
      * @param dirty the dirty to set
      */
+    @JsonIgnore    
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }

@@ -2,6 +2,7 @@ package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.util.List;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -17,6 +18,7 @@ public class Category {
     private int key;
     private String nome;
     protected TeachTimeDataLayer ownerdatalayer;
+    @JsonIgnore
     private boolean dirty;
     private List<Subject> materie;
     
@@ -69,6 +71,7 @@ public class Category {
     /**
      * @return the dirty
      */
+    @JsonIgnore    
     public boolean isDirty() {
         return dirty;
     }
@@ -76,6 +79,7 @@ public class Category {
     /**
      * @param dirty the dirty to set
      */
+    @JsonIgnore    
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }

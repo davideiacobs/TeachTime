@@ -6,11 +6,11 @@
 package REST;
 
 import classes.Repetition;
+import classes.Subject;
 import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
@@ -98,7 +98,9 @@ public class ResourceRepetition {
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         Repetition r = datalayer.getRipetizione(n);
-        r.setTutor(datalayer.getUtente(r.getTutor_key()));  //perchè non funge??
+        r.setTutor(datalayer.getUtente(r.getTutor_key()));  
+        List<Subject> materie = r.getMaterie();
+        r.setMaterie(materie);
         return Response.ok(r).build();
     }
     

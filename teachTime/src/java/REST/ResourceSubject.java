@@ -47,7 +47,7 @@ public class ResourceSubject {
         return Response.ok(list).build();
     }
     
-    @POST
+    /*@POST
     @Path("{id: [0-9]+}/subjects")
     @Consumes(MediaType.APPLICATION_JSON)
      public Response postArgomento(@Context UriInfo c, @PathParam("id") int n, Subject materia) throws SQLException, NamingException, DataLayerException {
@@ -58,21 +58,16 @@ public class ResourceSubject {
             //vaffanculo 
         }*/
         
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+    /*    TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        /* 
-         * Attenzione: per poter essere deserializzato l'oggetto
-         * deve essere dotato di un construttore di default 
-         * (senza parametri), oltre ovviamente ad avere campo
-         * mappabil su quelli del JSON del payload.
-         */
+        
         datalayer.storeMateria(materia);
         
         URI u = c.getAbsolutePath();
         
         return Response.created(u).build();
     }  
-
+    */
     
     
     /*@GET

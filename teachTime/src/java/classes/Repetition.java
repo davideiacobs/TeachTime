@@ -7,6 +7,7 @@ package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.util.List;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -20,7 +21,9 @@ public class Repetition {
     private String città;
     private User tutor;
     private int tutor_key;
+    @JsonIgnore
     private Category categoria;
+    @JsonIgnore
     private int categoria_key;
     protected TeachTimeDataLayer ownerdatalayer;
     private boolean dirty;
@@ -149,6 +152,7 @@ public class Repetition {
     /**
      * @return the categoria_ID
      */
+   @JsonIgnore
     public int getCategoria_key() {
         return categoria_key;
     }
@@ -156,6 +160,7 @@ public class Repetition {
     /**
      * @param categoria_ID the categoria_ID to set
      */
+    @JsonIgnore
     public void setCategoria_key(int categoria_ID) {
         this.categoria_key = categoria_ID;
         this.dirty = true;
@@ -164,6 +169,7 @@ public class Repetition {
     /**
      * @return the dirty
      */
+    @JsonIgnore
     public boolean isDirty() {
         return dirty;
     }
@@ -171,6 +177,7 @@ public class Repetition {
     /**
      * @param dirty the dirty to set
      */
+    @JsonIgnore
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
@@ -181,12 +188,14 @@ public class Repetition {
         this.dirty = true;
     }
     
+    @JsonIgnore
     public void setCategoria(Category categoria){
         this.categoria = categoria;
         this.categoria_key = categoria.getKey();
         this.dirty = true;
     }
     
+    @JsonIgnore
     public Category getCategoria() throws DataLayerException{
         if (categoria == null && categoria_key > 0) {
             categoria = ownerdatalayer.getCategoria(categoria_key);
@@ -202,12 +211,8 @@ public class Repetition {
         return tutor;
     }
     
-    public Category getCategory() throws DataLayerException{
-        if(categoria == null && categoria_key > 0){
-            categoria = ownerdatalayer.getCategoria(categoria_key);
-        }
-        return categoria;
-    }
+    
+    
 
     /**
      * @return the materie

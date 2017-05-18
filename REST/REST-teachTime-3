@@ -81,40 +81,44 @@ URL: /repetitions/{ID}
 VERBO: GET
 Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions.
 
-ex:{
-  "key": 1,
-  "luogoIncontro": "a scelta dello studente",
-  "costo": 12,
-  "descr": "top",
-  "città": "roma",
-  "tutor_key": 1,
-  "categoria_key": 1,
-  "dirty": true,
-  "materie": [
+ex:
+
     {
-      "key": 1,
-      "nome": "programmazione python",
-      "categoria": {
-        "key": 1,
-        "nome": "informatica",
-        "dirty": true
-      },
-      "categoria_key": 1,
-      "dirty": true
-    },
-    {
-      "key": 4,
-      "nome": "database",
-      "categoria": {
-        "key": 1,
-        "nome": "informatica",
-        "dirty": true
-      },
-      "categoria_key": 1,
-      "dirty": true
+        "key": 17,
+        "luogoIncontro": "a scelta dello studente",
+        "costo": 12,
+        "descr": "top",
+        "città": "roma",
+        "tutor":
+        {
+            "key": 1,
+            "nome": "pinco",
+            "cognome": "pallino",
+            "email": "pp@gmail.it",
+            "pwd": "abcdef",
+            "città": "Roma",
+            "telefono": "3456789012",
+            "dataDiNascita": 798933600000,
+            "titoloDiStudi": "Laurea Base in Informatica",
+            "imgProfilo": "profilo.png"
+        },
+        "tutor_key": 1,
+        "materie":
+        [
+            {
+                "key": 1,
+                "nome": "programmazione python",
+                "categoria":
+                {
+                    "key": 1,
+                    "nome": "informatica"
+                },
+                "categoria_key": 1
+            }
+        ]
     }
-  ]
-}
+
+
 
 
 AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):  
