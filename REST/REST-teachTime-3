@@ -59,7 +59,7 @@ Inserisce una nuova ripetizione nel sistema. L'oggetto passato come payload cont
         "tutor_key":1,
 	"tutor": {
                 "key":1,
-		""nome":"pinco", 
+		"nome":"pinco", 
 		"cognome":"pallino",  
 		"dataDiNascita":"1995-04-27",
 		"titoloDiStudi":"Lauea Base in Informatica"
@@ -272,7 +272,7 @@ ex: {
 	"nome":"programmazione python",
 	"categoria_key":1,
 	"categoria":{
-			"ID":1,
+			"key":1,
 			"nome":"informatica"
 		    }
      }
