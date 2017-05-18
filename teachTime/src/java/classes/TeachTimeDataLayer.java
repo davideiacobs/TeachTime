@@ -540,6 +540,16 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                         iMateria.setString(1, m.getNome());
                         iMateria.setInt(2, m.getCategoria_key());
                         iMateria.executeUpdate();
+                        try (ResultSet keys = iMateria.getGeneratedKeys()) {
+                            if (keys.next()) {
+                                m.setKey(keys.getInt(1));
+                            }
+                        
+                        }
+                    }else{
+                        m.setKey(rs.getInt("ID"));
+                        m.setNome(rs.getString("nome"));
+                        m.setCategoria_key(rs.getInt("categoria_ID"));
                     }
                 }
                 iRipetizioneHasMateria.setInt(1, key);
