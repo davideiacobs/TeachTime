@@ -5,6 +5,7 @@
  */
 package REST;
 
+import classes.Prenotation;
 import classes.Repetition;
 import classes.Subject;
 import classes.TeachTimeDataLayer;
@@ -127,5 +128,28 @@ public class ResourceRepetition {
         return Response.noContent().build();
     }
     
+    /*@Path("{id: [0-9]+}/bookings")
+    public ResourceBooking toResourceBooking() {
+        return new ResourceBooking();
+    }*/
+    
+    @Path("{id: [0-9]+}/bookings/{studente_id: [0-9]+}")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)    
+    public Response postBooking(@Context UriInfo c, Prenotation prenotazione, @PathParam("id") int ripetizione_key,
+        @PathParam("studente_id") int studente_key) throws SQLException, DataLayerException, NamingException {
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        prenotazione.setRipetizione_key(ripetizione_key);
+        prenotazione.setStudente_key(studente_key);
+
+        datalayer.storePrenotazione(prenotazione);
+        
+        
+        URI u = c.getAbsolutePath();
+        return Response.created(u).build();    
+    }
     
 }

@@ -7,6 +7,7 @@ package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.sql.Time;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -24,7 +25,6 @@ public class Prenotation {
     private Repetition ripetizione;
     private String descr;
     private GregorianCalendar data;
-    private Time ora;
     private Subject materia;
     private int materia_key;
     private int voto;
@@ -43,7 +43,6 @@ public class Prenotation {
         data = null;
         stato = -1;
         costo=0;
-        ora = null;
         materia = null;
         materia_key = 0;
         ripetizione = null;
@@ -63,7 +62,6 @@ public class Prenotation {
         data = null;
         stato = -1;
         costo=0;
-        ora = null;
         materia = null;
         materia_key = 0;
         ripetizione = null;
@@ -199,20 +197,6 @@ public class Prenotation {
         this.dirty = true;
     }
 
-    /**
-     * @return the ora
-     */
-    public Time getOra() {
-        return ora;
-    }
-
-    /**
-     * @param ora the ora to set
-     */
-    public void setOra(Time ora) {
-        this.ora = ora;
-        this.dirty = true;
-    }
 
     /**
      * @return the materia
@@ -310,15 +294,31 @@ public class Prenotation {
     /**
      * @return the costo
      */
-    public int getCosto() {
-        return costo;
+    public int getCosto() throws DataLayerException {
+        if(ripetizione_key > 0 && ownerdatalayer != null){
+            return ownerdatalayer.getRipetizione(ripetizione_key).getCosto();
+        }else{
+            return -1;
+        }
     }
-
+    
     /**
      * @param costo the costo to set
      */
-    public void setCosto(int costo) {
+    public void setCosto(int costo)  {
         this.costo = costo;
+        this.dirty = true;
+    }
+    
+    public void copyFrom(Prenotation prenotazione) throws DataLayerException{
+        ripetizione_key = prenotazione.getRipetizione_key();
+        studente_key = prenotazione.getStudente_key();
+        costo = prenotazione.getCosto();
+        descr = prenotazione.getDescr();
+        stato = prenotazione.getStato();
+        data = prenotazione.getData();
+        materia_key = prenotazione.getMateria_key();
+   
         this.dirty = true;
     }
     

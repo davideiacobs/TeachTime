@@ -152,6 +152,59 @@ Restituisce la lista delle URI che rappresentano tutte le ripetizioni presenti n
 
 
 
+INSERIMENTO PRENOTAZIONE:
+URL: repetitions/{repetition_ID}/bookings
+VERBO: POST
+Inserimento nel sistema di una nuova prenotazione alla ripetizione {repetition_ID}. L'oggetto passato come payload conterrà tutti i dati della prenotazione, ad esempio:
+{
+	"ID":345,
+	"studente":{
+		 "student_ID":"232",
+		 "uri_studente": "..."  
+	},                  
+	"ripetizione":{
+			"tutor": {
+				"nome":"...", 
+				"cognome":"...", 
+				"email":"...",
+				"uri_tutor":...
+			},
+			"città":"...",
+			"luogoDiIncontro":"...",
+			"prezzoPerOra":12
+	},
+	"data":"21-05-2017",
+	"ora":"16:30",
+	"materia":"...",
+	"stato":0
+}
+
+ex:{
+	"data":"2007-09-25T15:40:51",
+	"materia_key":2,
+	"stato":0,
+        "descr":"ripetizione descrizione"
+}
+
+
+ESTRAZIONE PRENOTAZIONI PER CHIAVE STUDENTE:
+URL: /bookings/{ID}
+VERBO: GET
+Restituisce le informazioni relative alla prenotazione con {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitons/{repetition_ID}/bookings.
+
+
+
+
+
+ESTRAZIONE PRENOTAZIONI PER CHIAVE STUDENTE:
+URL: /bookings?{student_ID}
+VERBO: GET
+Restituisce le URI che rappresentano tutte le prenotazioni che hanno come studente {student_ID} (quelle con stato "completato senza feedback" poichè serve a visualizzare le ripetizioni per la quaale lo studente può rilasciare feedback)
+
+
+
+
+
 LISTA FEEDBACK RICEVUTI DA UN TUTOR:
 URL: /feedbacks?{tutor_ID}
 VERBO: GET
@@ -188,6 +241,8 @@ Inserimento nel sistema di un nuovo feedback ricevuto dal tutor {tutor_ID}. L'og
 
 
 
+
+
 ESTRAZIONE VOTO MEDIO TUTOR:
 URL: /users/{ID}/feedbacks/vote
 VERBO: GET
@@ -196,80 +251,13 @@ Calcola e restituisce il voto medio dell'utente a partire dai voti contenuti in 
 
 
 
-/***non serve più***/
-ESTRAZIONE INFORMAZIONI TUTOR PER CHIAVE RIPETIZIONE:
-URL: /repetitions/{ID}/user
-VERBO: GET
-Restituisce le informazioni relative allo user contenuto nella ripetizione {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /users, ad esclusione della password.
-/******************/
 
 
 
-INSERIMENTO PRENOTAZIONE:
-URL: repetitions/{repetition_ID}/bookings
-VERBO: POST
-Inserimento nel sistema di una nuova prenotazione alla ripetizione {repetition_ID}. L'oggetto passato come payload conterrà tutti i dati della prenotazione, ad esempio:
-{
-	"ID":345,
-	"studente":{
-		 "student_ID":"232",
-		 "uri_studente": "..."  
-	},                  
-	"ripetizione":{
-			"tutor": {
-				"nome":"...", 
-				"cognome":"...", 
-				"email":"...",
-				"uri_tutor":...
-			},
-			"città":"...",
-			"luogoDiIncontro":"...",
-			"prezzoPerOra":12
-	},
-	"data":"21-05-2017",
-	"ora":"16:30",
-	"materia":"...",
-	"stato":0
-}
-
-
-
-
-ESTRAZIONE PRENOTAZIONI PER CHIAVE STUDENTE:
-URL: /bookings/{ID}
-VERBO: GET
-Restituisce le informazioni relative alla prenotazione con {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitons/{repetition_ID}/bookings.
-
-
-
-
-
-ESTRAZIONE PRENOTAZIONI PER CHIAVE STUDENTE:
-URL: /bookings?{student_ID}
-VERBO: GET
-Restituisce le URI che rappresentano tutte le prenotazioni che hanno come studente {student_ID} (quelle con stato "completato senza feedback" poichè serve a visualizzare le ripetizioni per la quaale lo studente può rilasciare feedback)
-
-
-
-
-RECUPERO LISTA MATERIE PER :
+RECUPERO LISTA MATERIE PER CATEGORIA (fatto) :
 URL: /categories/{ID}/subjects
 VERBO: GET
 
-
-
-INSERIMENTO ARGOMENTO:
-URL: /categories/{ID}/subjects
-VERBO: POST
-
-ex: {
-	"nome":"programmazione python",
-	"categoria_key":1,
-	"categoria":{
-			"key":1,
-			"nome":"informatica"
-		    }
-     }
 
 
 
