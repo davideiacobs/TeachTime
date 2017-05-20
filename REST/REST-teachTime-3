@@ -117,7 +117,7 @@ Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello ste
 AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):  (fatto)
 URL: /repetitions/{ID}
 VERBO: PUT
-Aggiorna le informazioni relative alla ripetizione {ID}. Il payload è lo stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions, ad esclusione di "tutor_key" e di "tutor".
+Aggiorna le informazioni relative alla ripetizione {ID}. Il payload è lo stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions, ad esclusione di "tutor_key".
 
 
 
@@ -131,8 +131,12 @@ Elimina la ripetizione {ID} dal sistema.
 LISTA RIPETIZIONI PER MATERIA E CITTA' (ed eventualemente per argomento):    (fatto)
 URL: /repetitions?[{CITY}]&[{CATEGORY}]&[{SUBJECT}]&[{tutor_ID}]
 VERBO: GET 
-Restituisce la lista di tutte le ripetizioni presenti nel sistema, filtrate per città, per città e categoria, per città, categoria e materia oppure per tutor, sottoforma di lista di oggetti della stessa forma di quelli restituiti dal recupero (GET) di una ripetizione tramite la url /repetitions/{ID}
-
+Restituisce la lista di tutte le ripetizioni presenti nel sistema filtrate per:
+-città 
+-città e categoria
+-città, categoria e materia 
+-tutor
+sottoforma di lista di oggetti della stessa forma di quelli restituiti dal recupero (GET) di una ripetizione tramite la url /repetitions/{ID}
 
 
 
@@ -149,20 +153,23 @@ Inserimento nel sistema di una nuova prenotazione alla ripetizione {ID}. L'ogget
     "studente_key":1
 }
 
+dove studente_key è la chiave dello studente che sta richiedendo la prenotazione.
+
 
 
 AGGIORNAMENTO PRENOTAZIONE:  
 URL: repetitions/{ID}/bookings
 VERBO: PUT
-Aggiornamento dello stato, della data ed eventualmente del voto e della recensione. Nel caso di aggiornamento del voto e della recensione serve ad inserire nel sistema il feedback relativo alla ripetizione effettuata, poichè le informazioni relative al feedback sono contenute nell'oggetto prenotazione.
+Aggiornamento dello stato, della data e, eventualmente, del voto e della recensione. Nel caso di aggiornamento del voto e della recensione serve ad inserire nel sistema il feedback relativo alla ripetizione effettuata, poichè le informazioni relative al feedback sono contenute nell'oggetto prenotazione. 
+L'oggetto passato come payload avrà lo stess formato di quello usato per l'inserimento (POST) di una prenotazione tramite la url repetitions/{ID}/bookings, avente eventualmente in aggiunta i campi voto e recensione.
 
 
 
 ESTRAZIONE PRENOTAZIONI PER CHIAVE STUDENTE: 
 URL: users/{ID}/bookings
 VERBO: GET
-Restituisce la lista delle prenotazioni effettuate dallo studente {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitons/{ID}/bookings, con l'aggiunta delle informazioni riguardanti la ripetizione relativa alla ripetizione e il tutor che la offre.
-Questa API serve a recuperare la lista delle prenotazioni effettuate da uno studente per le quali lo studente non ha ancora rilasciato un feedback.
+Restituisce la lista delle prenotazioni effettuate dallo studente {ID} sotto forma dello stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitons/{ID}/bookings, con l'aggiunta delle informazioni riguardanti la ripetizione relativa alla prenotazione e il tutor che la offre.
+(Questa API serve a recuperare la lista delle prenotazioni effettuate da uno studente per le quali lo studente non ha ancora rilasciato un feedback.)
 
 
 
@@ -172,6 +179,7 @@ VERBO: GET
 Restituisce la lista dei feedback ricevuti dal tutor {ID} (ovvero la lista degli oggetti prenotazioni relativi a ripetizioni offerte dal tutor {ID} per le quali sono stati rilasciati dei feedback).
 
 
+
 ESTRAZIONE VOTO MEDIO TUTOR:
 URL: /users/{ID}/feedbacks/vote
 VERBO: GET
@@ -179,15 +187,7 @@ Calcola e restituisce il voto medio dell'utente a partire dai voti contenuti in 
 
 
 
-RECUPERO LISTA MATERIE PER CATEGORIA (fatto) :
+RECUPERO LISTA MATERIE PER CATEGORIA:
 URL: /categories/{ID}/subjects
 VERBO: GET
-
-
-
-
-
-
-
-
-
+Restituisce la lista delle materie appartenenti alla categoria {ID}.
