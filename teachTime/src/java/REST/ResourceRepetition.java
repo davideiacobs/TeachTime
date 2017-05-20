@@ -107,11 +107,10 @@ public class ResourceRepetition {
     
     @DELETE
     @Path("{id: [0-9]+}")
-    public Response deleteRepetition(@Context UriInfo c) throws SQLException, NamingException, DataLayerException {
+    public Response deleteRepetition(@Context UriInfo c, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException {
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        String k = c.getPath().split("/")[1];
-        datalayer.deleteRipetizione(Integer.parseInt(k));
+        datalayer.deleteRipetizione(ripetizione_key);
         return Response.noContent().build();
     }
     
@@ -119,9 +118,12 @@ public class ResourceRepetition {
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putUser(Repetition r) throws SQLException, NamingException, DataLayerException {
+    public Response putUser(@PathParam("id") int ripetizione_key, Repetition r) throws SQLException, NamingException, DataLayerException {
+        
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
+        
+        r.setKey(ripetizione_key);
         r.setDirty(true);
         datalayer.storeRepetition(r);
         //di solito una PUT restituisce NO CONTENT

@@ -77,10 +77,11 @@ public class ResourceUser {
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putUser(User u) throws SQLException, NamingException, DataLayerException {
+    public Response putUser(@PathParam("id") int utente_key, User u) throws SQLException, NamingException, DataLayerException {
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         u.setDirty(true);
+        u.setKey(utente_key);
         datalayer.storeUser(u);
         //di solito una PUT restituisce NO CONTENT
         return Response.noContent().build();
@@ -121,5 +122,17 @@ public class ResourceUser {
         List<Prenotation> prenotazioni = datalayer.getFeedbacksByTutor(tutor_key);
         
         return Response.ok(prenotazioni).build();
+    }
+    
+    @Path("{tutor_id: [0-9]+}/feedbacks/vote")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getUserVote(@PathParam("tutor_id") int tutor_key) throws SQLException, NamingException, DataLayerException, NamingException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        String voto = datalayer.getVoto(tutor_key);
+        return Response.ok(voto).build();
     }
 }

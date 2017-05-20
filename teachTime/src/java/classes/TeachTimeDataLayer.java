@@ -30,7 +30,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement sRipetizioneByTutor, sRipetizioneByCategoria, sRipetizioneByMateria;
     private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione, sMateriaByNome;
     private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà;
-    private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor;
+    private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto;
     
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -72,6 +72,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sRipetizioneByCittà = connection.prepareStatement("SELECT ripetizione.ID FROM ripetizione WHERE citta=?");
             sPrenotazioneByUtente = connection.prepareStatement("SELECT prenotazione.* FROM prenotazione WHERE studente_ID=? AND stato=1 AND data <= CURDATE()");
             sFeedbacksByTutor = connection.prepareStatement("SELECT p.* FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID=r.ID) WHERE r.tutor_ID=? AND p.stato=2");
+            sVoto = connection.prepareStatement("SELECT AVG(p.voto) AS media FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID = r.ID) WHERE r.tutor_ID=? AND p.voto>0");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         } 
@@ -431,6 +432,20 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return result;
     }
     
+    
+    public String getVoto(int tutor_key) throws DataLayerException{
+        try{
+            sVoto.setInt(1,tutor_key);
+            try(ResultSet rs = sVoto.executeQuery()){
+                if(rs.next()){
+                    return rs.getString("media");
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load repetition by filter", ex);
+        }
+        return null;
+    }
     
      public void storeUser(User utente) throws DataLayerException {
         int key = utente.getKey();
