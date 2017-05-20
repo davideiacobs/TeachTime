@@ -5,11 +5,13 @@
  */
 package REST;
 
+import classes.Prenotation;
 import classes.TeachTimeDataLayer;
 import classes.User;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.List;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -82,5 +84,42 @@ public class ResourceUser {
         datalayer.storeUser(u);
         //di solito una PUT restituisce NO CONTENT
         return Response.noContent().build();
+    }
+    
+    /*@Path("{user_id: [0-9]+}/bookings")
+    public ResourceBooking toResourceBooking() {
+        return new ResourceBooking();
+    }*/
+    
+    @Path("{user_id: [0-9]+}/bookings")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBookingByUser(@PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        List<Prenotation> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
+        
+        return Response.ok(prenotazioni).build();
+        
+    }
+    
+    /*@Path("{user_id: [0-9]+}/feedbacks")
+    public ResourceBooking toResouceFeedback() {
+        return new ResourceFeedback();
+    }*/
+    
+    @Path("{tutor_id: [0-9]+}/feedbacks")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFeedbacksList(@PathParam("tutor_id") int tutor_key) throws SQLException, NamingException, DataLayerException, NamingException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        List<Prenotation> prenotazioni = datalayer.getFeedbacksByTutor(tutor_key);
+        
+        return Response.ok(prenotazioni).build();
     }
 }

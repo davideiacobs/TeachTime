@@ -27,26 +27,24 @@ import javax.ws.rs.core.UriInfo;
  * @author david
  */
 public class ResourceBooking {
+    
     @Resource(name = "jdbc/teachtime")
     private DataSource ds;
     
     
-   @Path("{studente_id: [0-9]+}")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)    
-    public Response postBooking(@Context UriInfo c, Prenotation prenotazione, @PathParam("id") int ripetizione_key,
-        @PathParam("studente_id") int studente_key) throws SQLException, DataLayerException, NamingException {
+    public Response postBooking(@Context UriInfo c, Prenotation prenotazione, @PathParam("id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
         prenotazione.setRipetizione_key(ripetizione_key);
-        prenotazione.setStudente_key(studente_key);
 
         datalayer.storePrenotazione(prenotazione);
         
         
-        URI u = c.getAbsolutePath();
+        URI u = c.getAbsolutePathBuilder().path(ResourceRepetition.class).build();
         return Response.created(u).build();    
 }
 }

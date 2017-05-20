@@ -61,24 +61,24 @@ public class ResourceRepetition {
     public Response getRepetition(@QueryParam("city") String città, @QueryParam("category") String categoria
             , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
         
+        //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        /*
-         * L'annotazione @QueryParam permette di "iniettare"
-         * su un parametro del metodo il valore effettivo del
-         * parametro della query string col nome indicato. JAX-RS proverà
-         * a convertire il parametro della query string nel tipo richiesto
-         * dal metodo. Se il parametro non è spacificato, verrà impostato
-         * su null.
-         */
-        if ((città != null && città != "") || (tutor_key != "" && tutor_key != null) ){
-            
+        
+        if ((città != null && !"".equals(città)) || (!"".equals(tutor_key) && tutor_key != null) ){            
             List<Repetition> result;
-            if(città != "" && città != null){
-                if(materia != null && materia != ""){
+            if(!"".equals(città) && città != null){
+                if(materia != null && !"".equals(materia)){
+                    //filtro per città, categoria e materia
                     result = datalayer.getRipetizioniByMateria(città, Integer.parseInt(materia));
                 }else{
-                    result = datalayer.getRipetizioniByCategoria(città, Integer.parseInt(categoria));
+                    if(categoria != null && !"".equals(categoria)){
+                        //filtro per città e categoria
+                        result = datalayer.getRipetizioniByCategoria(città, Integer.parseInt(categoria));
+                    }else{
+                        //filtro per città
+                        result = datalayer.getRipetizioniByCittà(città);
+                    }
                 }
             }else{
                 result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
@@ -133,23 +133,35 @@ public class ResourceRepetition {
         return new ResourceBooking();
     }*/
     
-    @Path("{id: [0-9]+}/bookings/{studente_id: [0-9]+}")
+    @Path("{id: [0-9]+}/bookings")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)    
-    public Response postBooking(@Context UriInfo c, Prenotation prenotazione, @PathParam("id") int ripetizione_key,
-        @PathParam("studente_id") int studente_key) throws SQLException, DataLayerException, NamingException {
+    public Response postBooking(@Context UriInfo c, Prenotation prenotazione, @PathParam("id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
         prenotazione.setRipetizione_key(ripetizione_key);
-        prenotazione.setStudente_key(studente_key);
-
         datalayer.storePrenotazione(prenotazione);
         
         
         URI u = c.getAbsolutePath();
         return Response.created(u).build();    
+    }
+    
+    @Path("{id: [0-9]+}/bookings")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response putBooking(Prenotation prenotazione, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        prenotazione.setRipetizione_key(ripetizione_key);
+        prenotazione.setDirty(true);
+        datalayer.storePrenotazione(prenotazione);
+        
+        return Response.noContent().build();
     }
     
 }

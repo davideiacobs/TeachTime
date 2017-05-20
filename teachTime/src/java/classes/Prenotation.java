@@ -6,21 +6,18 @@
 package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
-import java.sql.Time;
-import java.util.Date;
 import java.util.GregorianCalendar;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
  * @author david
  */
 public class Prenotation {
-    private int tutor_key;
     private int studente_key;
     private int ripetizione_key;
     private int stato;
     private int costo;
-    private User tutor;
     private User studente;
     private Repetition ripetizione;
     private String descr;
@@ -29,15 +26,14 @@ public class Prenotation {
     private int materia_key;
     private int voto;
     private String recensione;
+    @JsonIgnore
     private boolean dirty;
     protected TeachTimeDataLayer ownerdatalayer;
     
     
     public Prenotation(TeachTimeDataLayer datalayer){
         this.ownerdatalayer = datalayer;
-        tutor_key = 0;
         studente_key = 0;
-        tutor = null;
         studente = null;
         descr = "";
         data = null;
@@ -54,9 +50,7 @@ public class Prenotation {
     
      public Prenotation(){
         this.ownerdatalayer = null;
-        tutor_key = 0;
         studente_key = 0;
-        tutor = null;
         studente = null;
         descr = "";
         data = null;
@@ -71,28 +65,12 @@ public class Prenotation {
         dirty = false;
     }
 
-    /**
-     * @return the tutor_key
-     */
-    public int getTutor_key() {
-        if(tutor != null ){
-            tutor_key = tutor.getKey();
-        }
-        return tutor_key;
-    }
+    
     
     public int getRipetizione_key() {
         return ripetizione_key;
     }
 
-    /**
-     * @param ripetizione_key the tutor_key to set
-     */
-    public void setTutor_key(int ripetizione_key) throws DataLayerException{
-        this.tutor_key = ownerdatalayer.getTutorByRipetizione(studente_key);
-        this.tutor = null;
-        this.dirty = true;
-    }
     
     public void setRipetizione_key(int ripetizione_key){
         this.ripetizione_key = ripetizione_key;
@@ -116,15 +94,6 @@ public class Prenotation {
 
     }
 
-    /**
-     */
-    
-    public User getTutor() throws DataLayerException {
-        if(tutor == null && tutor_key > 0){
-           tutor = this.ownerdatalayer.getUtente(tutor_key);
-        }
-        return tutor;
-    }
     
     public Repetition getRipetizione() throws DataLayerException{
         if(ripetizione == null && ripetizione_key > 0) {
@@ -136,11 +105,6 @@ public class Prenotation {
      * @param tutor the tutor to set
      */
     
-    public void setTutor(User tutor) {
-        this.tutor = tutor;
-        this.tutor_key = tutor.getKey();
-        this.dirty = true;
-    }
     
     public void setRipetizione(Repetition ripetizione) {
         this.ripetizione = ripetizione;
@@ -266,6 +230,7 @@ public class Prenotation {
     /**
      * @return the dirty
      */
+    @JsonIgnore
     public boolean isDirty() {
         return dirty;
     }
@@ -273,6 +238,7 @@ public class Prenotation {
     /**
      * @param dirty the dirty to set
      */
+    @JsonIgnore
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
