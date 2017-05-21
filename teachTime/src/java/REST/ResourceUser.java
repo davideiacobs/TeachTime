@@ -42,7 +42,7 @@ public class ResourceUser {
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON) 
     public Response getUser(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException {
-        
+        //recupero utente per id
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
@@ -54,16 +54,12 @@ public class ResourceUser {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postUser(@Context UriInfo c, User utente) throws SQLException, NamingException, DataLayerException {
-            
+        //inserimento utente nel sistema
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        /* 
-         * Attenzione: per poter essere deserializzato l'oggetto
-         * deve essere dotato di un construttore di default 
-         * (senza parametri), oltre ovviamente ad avere campo
-         * mappabil su quelli del JSON del payload.
-         */
+        
         datalayer.storeUser(utente);
+        //restituiamo la uri per recuperare le info relative all'utente appena creato
         URI u = c.getAbsolutePathBuilder()
                 .path(ResourceUser.class, "getUser")
                 .build(utente.getKey());
@@ -76,17 +72,18 @@ public class ResourceUser {
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response putUser(@PathParam("id") int utente_key, User u) throws SQLException, NamingException, DataLayerException {
+        //aggiornament info utente
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         u.setDirty(true);
         u.setKey(utente_key);
         datalayer.storeUser(u);
-        //di solito una PUT restituisce NO CONTENT
         return Response.noContent().build();
     }
     
     @Path("{user_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
+        //passaggio alla risorsa bookings che gestisce le prenotazioni
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         return new ResourceBooking(datalayer);
@@ -94,6 +91,7 @@ public class ResourceUser {
     
     @Path("{tutor_id: [0-9]+}/feedbacks")
     public ResourceFeedback toResouceFeedback() throws SQLException, NamingException, DataLayerException {
+        //passaggio alla risorsa feedbacks che gestisce i feedback
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         return new ResourceFeedback(datalayer);

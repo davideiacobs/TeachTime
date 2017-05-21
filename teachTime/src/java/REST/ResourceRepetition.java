@@ -42,7 +42,7 @@ public class ResourceRepetition {
      @POST
      @Consumes(MediaType.APPLICATION_JSON)
      public Response postRepetition(@Context UriInfo c, Repetition ripetizione) throws SQLException, NamingException, DataLayerException {
-        
+        //inserimento ripetizione nel sistema
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
@@ -94,7 +94,7 @@ public class ResourceRepetition {
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getRepetitionByKey(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
-        
+        //recupero ripetizione per id
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         Repetition r = datalayer.getRipetizione(n);
@@ -107,6 +107,7 @@ public class ResourceRepetition {
     @DELETE
     @Path("{id: [0-9]+}")
     public Response deleteRepetition(@Context UriInfo c, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException {
+        //cancellazione della ripetizione id dal sistema
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         datalayer.deleteRipetizione(ripetizione_key);
@@ -118,7 +119,7 @@ public class ResourceRepetition {
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response putUser(@PathParam("id") int ripetizione_key, Repetition r) throws SQLException, NamingException, DataLayerException {
-        
+        //aggiornamento info relative alla ripetizione id
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
@@ -131,6 +132,7 @@ public class ResourceRepetition {
     
     @Path("{repetition_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
+        //passaggio alla risorsa bookings che gestisce le prenotazioni
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         return new ResourceBooking(datalayer);

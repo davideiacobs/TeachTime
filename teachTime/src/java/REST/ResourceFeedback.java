@@ -31,7 +31,7 @@ public class ResourceFeedback {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFeedbacksList(@PathParam("tutor_id") int tutor_key) throws DataLayerException{
-            
+        //recupero lista di feedback per tutor id     
         List<Prenotation> prenotazioni = this.datalayer.getFeedbacksByTutor(tutor_key);
         
         return Response.ok(prenotazioni).build();
@@ -42,7 +42,7 @@ public class ResourceFeedback {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response getUserVote(@PathParam("tutor_id") int tutor_key) throws DataLayerException{
-        
+        //recupero voto medio tutor per id 
         String voto = this.datalayer.getVoto(tutor_key);
         return Response.ok(voto).build();
     }
