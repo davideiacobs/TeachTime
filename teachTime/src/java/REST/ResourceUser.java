@@ -87,12 +87,14 @@ public class ResourceUser {
         return Response.noContent().build();
     }
     
-    /*@Path("{user_id: [0-9]+}/bookings")
-    public ResourceBooking toResourceBooking() {
-        return new ResourceBooking();
-    }*/
-    
     @Path("{user_id: [0-9]+}/bookings")
+    public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        return new ResourceBooking(datalayer);
+    }
+    
+    /*@Path("{user_id: [0-9]+}/bookings")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBookingByUser(@PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
@@ -104,14 +106,16 @@ public class ResourceUser {
         
         return Response.ok(prenotazioni).build();
         
-    }
-    
-    /*@Path("{user_id: [0-9]+}/feedbacks")
-    public ResourceBooking toResouceFeedback() {
-        return new ResourceFeedback();
     }*/
     
     @Path("{tutor_id: [0-9]+}/feedbacks")
+    public ResourceFeedback toResouceFeedback() throws SQLException, NamingException, DataLayerException {
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        return new ResourceFeedback(datalayer);
+    }
+    
+    /*@Path("{tutor_id: [0-9]+}/feedbacks")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFeedbacksList(@PathParam("tutor_id") int tutor_key) throws SQLException, NamingException, DataLayerException, NamingException{
@@ -134,5 +138,5 @@ public class ResourceUser {
         
         String voto = datalayer.getVoto(tutor_key);
         return Response.ok(voto).build();
-    }
+    }*/
 }

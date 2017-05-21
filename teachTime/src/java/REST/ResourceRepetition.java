@@ -39,7 +39,7 @@ public class ResourceRepetition {
     
     @Resource(name = "jdbc/teachtime")
     private DataSource ds;
-     
+
      @POST
      @Consumes(MediaType.APPLICATION_JSON)
      public Response postRepetition(@Context UriInfo c, Repetition ripetizione) throws SQLException, NamingException, DataLayerException {
@@ -130,12 +130,14 @@ public class ResourceRepetition {
         return Response.noContent().build();
     }
     
-    /*@Path("{id: [0-9]+}/bookings")
-    public ResourceBooking toResourceBooking() {
-        return new ResourceBooking();
-    }*/
+    @Path("{repetition_id: [0-9]+}/bookings")
+    public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        return new ResourceBooking(datalayer);
+    }
     
-    @Path("{id: [0-9]+}/bookings")
+    /*@Path("{id: [0-9]+}/bookings")
     @POST
     @Consumes(MediaType.APPLICATION_JSON)    
     public Response postBooking(@Context UriInfo c, Prenotation prenotazione, @PathParam("id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
@@ -165,5 +167,5 @@ public class ResourceRepetition {
         
         return Response.noContent().build();
     }
-    
+    */
 }
