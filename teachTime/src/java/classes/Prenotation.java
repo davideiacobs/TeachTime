@@ -5,6 +5,7 @@
  */
 package classes;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.util.Date;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -21,6 +22,7 @@ public class Prenotation {
     private User studente;
     private Repetition ripetizione;
     private String descr;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date data;
     private Subject materia;
     private int materia_key;

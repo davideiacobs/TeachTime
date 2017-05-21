@@ -690,8 +690,9 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     iPrenotazione.setInt(3, getRipetizione(ripetizione_key).getCosto());
                     iPrenotazione.setString(4, prenotazione.getDescr());
                     iPrenotazione.setInt(5, prenotazione.getStato());
-                    Date sqldate = new Date(prenotazione.getData().getTime());
-                    iPrenotazione.setDate(6, sqldate);
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String currentTime = sdf.format(prenotazione.getData());
+                    iPrenotazione.setString(6, currentTime);
                     iPrenotazione.setInt(7, materia_key);
                     iPrenotazione.setInt(8, categoria_key);
                     if(iPrenotazione.executeUpdate()==1){
