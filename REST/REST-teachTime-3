@@ -114,21 +114,21 @@ Restituisce le informazioni relative alla ripetizione {ID} sotto forma dello ste
 
 
 
-AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti):  (fatto)
+AGGIORNAMENTO RIPETIZIONE PER CHIAVE (prezzo/ora,descrizione,luogo incontro, lista argomenti): 
 URL: /repetitions/{ID}
 VERBO: PUT
 Aggiorna le informazioni relative alla ripetizione {ID}. Il payload è lo stesso oggetto utilizzato come payload dell'inserimento (POST) tramite la url /repetitions, ad esclusione di "tutor_key".
 
 
 
-CANCELLAZIONE RIPETIZIONE PER CHIAVE:  (fatto)
+CANCELLAZIONE RIPETIZIONE PER CHIAVE:  
 URL: /repetitions/{ID}
 VERBO: DELETE
 Elimina la ripetizione {ID} dal sistema.
 
 
 
-LISTA RIPETIZIONI PER MATERIA E CITTA' (ed eventualemente per argomento):    (fatto)
+LISTA RIPETIZIONI PER FILTRO (varie combinazioni possibili):    
 URL: /repetitions?[{CITY}]&[{CATEGORY}]&[{SUBJECT}]&[{tutor_ID}]
 VERBO: GET 
 Restituisce la lista di tutte le ripetizioni presenti nel sistema filtrate per:
@@ -140,7 +140,7 @@ sottoforma di lista di oggetti della stessa forma di quelli restituiti dal recup
 
 
 
-INSERIMENTO PRENOTAZIONE:    
+INSERIMENTO PRENOTAZIONE RELATIVA AD UNA RIPETIZIONE:    
 URL: repetitions/{ID}/bookings
 VERBO: POST
 Inserimento nel sistema di una nuova prenotazione alla ripetizione {ID}. L'oggetto passato come payload conterrà tutti i dati della prenotazione, ad esempio:
@@ -157,7 +157,7 @@ dove studente_key è la chiave dello studente che sta richiedendo la prenotazion
 
 
 
-AGGIORNAMENTO PRENOTAZIONE:  
+AGGIORNAMENTO PRENOTAZIONE RELATIVA AD UNA RIPETIZIONE:  
 URL: repetitions/{ID}/bookings
 VERBO: PUT
 Aggiornamento dello stato, della data e, eventualmente, del voto e della recensione. Nel caso di aggiornamento del voto e della recensione serve ad inserire nel sistema il feedback relativo alla ripetizione effettuata, poichè le informazioni relative al feedback sono contenute nell'oggetto prenotazione. 
