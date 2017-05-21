@@ -144,8 +144,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             GregorianCalendar data = new GregorianCalendar();
             java.sql.Date datasql;
             datasql = rs.getDate("data");
-            data.setTime(datasql);
-            a.setData(data); 
+            a.setData(datasql); 
             a.setMateria_key(rs.getInt("materia_ID"));
             a.setVoto(rs.getInt("voto"));
             a.setRecensione(rs.getString("recensione"));
@@ -173,11 +172,9 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             a.setCittà(rs.getString("citta"));
             a.setEmail(rs.getString("email"));
             a.setTelefono(rs.getString("telefono"));
-            GregorianCalendar dataNascita = new GregorianCalendar();
             java.sql.Date date;
             date = rs.getDate("data_di_nascita");
-            dataNascita.setTime(date);
-            a.setDataDiNascita(dataNascita);
+            a.setDataDiNascita(date);
             a.setTitoloDiStudi(rs.getString("titolo_di_studio"));
             a.setImgProfilo(rs.getString("img_profilo"));
             return a;
@@ -467,7 +464,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 iUtente.setString(4, utente.getPwd());
                 iUtente.setString(5, utente.getCittà());
                 iUtente.setString(6, utente.getTelefono());
-                Date sqldate = new Date(utente.getDataDiNascita().getTimeInMillis());
+                Date sqldate = new Date(utente.getDataDiNascita().getTime());
                 iUtente.setDate(7, sqldate);       
                 iUtente.setString(8, utente.getTitoloDiStudi());
                 iUtente.setString(9, utente.getImgProfilo());
@@ -693,7 +690,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     iPrenotazione.setInt(3, getRipetizione(ripetizione_key).getCosto());
                     iPrenotazione.setString(4, prenotazione.getDescr());
                     iPrenotazione.setInt(5, prenotazione.getStato());
-                    Date sqldate = new Date(prenotazione.getData().getTimeInMillis());
+                    Date sqldate = new Date(prenotazione.getData().getTime());
                     iPrenotazione.setDate(6, sqldate);
                     iPrenotazione.setInt(7, materia_key);
                     iPrenotazione.setInt(8, categoria_key);

@@ -5,7 +5,6 @@
  */
 package REST;
 
-import classes.Prenotation;
 import classes.Repetition;
 import classes.Subject;
 import classes.TeachTimeDataLayer;

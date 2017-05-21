@@ -6,7 +6,7 @@
 package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
-import java.util.GregorianCalendar;
+import java.util.Date;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -21,7 +21,7 @@ public class Prenotation {
     private User studente;
     private Repetition ripetizione;
     private String descr;
-    private GregorianCalendar data;
+    private Date data;
     private Subject materia;
     private int materia_key;
     private int voto;
@@ -149,14 +149,14 @@ public class Prenotation {
     /**
      * @return the data
      */
-    public GregorianCalendar getData() {
+    public Date getData() {
         return data;
     }
 
     /**
      * @param data the data to set
      */
-    public void setData(GregorianCalendar data) {
+    public void setData(Date data) {
         this.data = data;
         this.dirty = true;
     }

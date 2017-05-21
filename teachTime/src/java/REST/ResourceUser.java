@@ -5,13 +5,11 @@
  */
 package REST;
 
-import classes.Prenotation;
 import classes.TeachTimeDataLayer;
 import classes.User;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.List;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -94,6 +92,13 @@ public class ResourceUser {
         return new ResourceBooking(datalayer);
     }
     
+    @Path("{tutor_id: [0-9]+}/feedbacks")
+    public ResourceFeedback toResouceFeedback() throws SQLException, NamingException, DataLayerException {
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        return new ResourceFeedback(datalayer);
+    }
+    
     /*@Path("{user_id: [0-9]+}/bookings")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -108,12 +113,6 @@ public class ResourceUser {
         
     }*/
     
-    @Path("{tutor_id: [0-9]+}/feedbacks")
-    public ResourceFeedback toResouceFeedback() throws SQLException, NamingException, DataLayerException {
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        return new ResourceFeedback(datalayer);
-    }
     
     /*@Path("{tutor_id: [0-9]+}/feedbacks")
     @GET
