@@ -40,6 +40,7 @@ public class ResourceBooking {
         //recupero prenotazioni per la quale non sono stati rilasciati feedback per id studente
         List<Booking> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
         
+        //evitiamo di restituire i dati superflui riguardanti la ripetizione (es: lista materie)
         return Response.ok(prenotazioni).build();
         
     }
@@ -50,6 +51,7 @@ public class ResourceBooking {
     public Response postBooking(@Context UriInfo c, Booking prenotazione, @PathParam("repetition_id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
         //inserimento prenotazione alla ripetizione nel sistema
         prenotazione.setRipetizione_key(ripetizione_key);
+        prenotazione.setDirty(false);
         datalayer.storePrenotazione(prenotazione);
         
         URI u = c.getAbsolutePath();
@@ -61,6 +63,9 @@ public class ResourceBooking {
     public Response putBooking(Booking prenotazione, @PathParam("repetition_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
         //aggiornamento prentazione per id 
         prenotazione.setRipetizione_key(ripetizione_key);
+        if(prenotazione.getVoto()!=-1){
+            prenotazione.setStato(2);
+        }
         prenotazione.setDirty(true);
         datalayer.storePrenotazione(prenotazione);
         

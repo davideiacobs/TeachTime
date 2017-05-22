@@ -60,16 +60,16 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sMaterieByCategoria = connection.prepareStatement("SELECT a.ID FROM materia AS a WHERE a.categoria_ID=?");
             sMaterieByRipetizione = connection.prepareStatement("SELECT rha.materia_ID FROM ripetizione_has_materia AS rha WHERE ripetizione_ID=?");
             iRipetizioneHasMateria = connection.prepareStatement("INSERT INTO ripetizione_has_materia (ripetizione_ID,materia_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-            sRipetizioneByTutor = connection.prepareStatement("SELECT ripetizione.ID FROM ripetizione WHERE tutor_ID=?");
-            sRipetizioneByCategoria = connection.prepareStatement("SELECT r.ID FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");      
-            sRipetizioneByMateria = connection.prepareStatement("SELECT r.ID FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");
+            sRipetizioneByTutor = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE tutor_ID=?");
+            sRipetizioneByCategoria = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");      
+            sRipetizioneByMateria = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");
             dRipetizione = connection.prepareStatement("DELETE FROM ripetizione WHERE ID=?");
             dRipetizioneHasMateria = connection.prepareStatement("DELETE FROM ripetizione_has_materia WHERE ripetizione_ID=?");
             sTutorByRipetizione = connection.prepareStatement("SELECT ripetizione.tutor_ID FROM ripetizione WHERE ID=?");
             sPrenotazioneBySuperkey = connection.prepareStatement("SELECT * FROM prenotazione WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=?");
             uPrenotazione = connection.prepareStatement("UPDATE prenotazione SET stato=?, voto=?, recensione=? WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=?");
             iPrenotazione = connection.prepareStatement("INSERT INTO prenotazione (ripetizione_ID, studente_ID, costo, descrizione, stato, data, materia_ID, materia_categoria_ID) VALUES (?,?,?,?,?,?,?,?)");
-            sRipetizioneByCittà = connection.prepareStatement("SELECT ripetizione.ID FROM ripetizione WHERE citta=?");
+            sRipetizioneByCittà = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE citta=?");
             sPrenotazioneByUtente = connection.prepareStatement("SELECT prenotazione.* FROM prenotazione WHERE studente_ID=? AND stato=1 AND data <= CURDATE()");
             sFeedbacksByTutor = connection.prepareStatement("SELECT p.* FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID=r.ID) WHERE r.tutor_ID=? AND p.stato=2");
             sVoto = connection.prepareStatement("SELECT AVG(p.voto) AS media FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID = r.ID) WHERE r.tutor_ID=? AND p.voto>0");
@@ -624,7 +624,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 try(ResultSet rs = sMateriaByNome.executeQuery()){
                     if(!rs.next()){
                         iMateria.setString(1, m.getNome());
-                        iMateria.setInt(2, m.getCategoria_key());
+                        iMateria.setInt(2, ripetizione.getCategoria_key());
                         iMateria.executeUpdate();
                         try (ResultSet keys = iMateria.getGeneratedKeys()) {
                             if (keys.next()) {

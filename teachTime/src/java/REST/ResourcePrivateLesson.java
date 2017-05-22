@@ -33,7 +33,7 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author iacobs
  */
-@Path("privateLesson")
+@Path("privateLessons")
 public class ResourcePrivateLesson {
     
     @Resource(name = "jdbc/teachtime")
@@ -46,6 +46,10 @@ public class ResourcePrivateLesson {
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
+        for(Subject m : ripetizione.getMaterie()){
+            m.setCategoria_key(ripetizione.getCategoria_key());
+        }
+        ripetizione.setDirty(false);
         datalayer.storeRipetizione(ripetizione);
         
         URI u = c.getAbsolutePathBuilder().path(ResourcePrivateLesson.class, "getPrivateLessonByKey")
@@ -82,7 +86,12 @@ public class ResourcePrivateLesson {
             }else{
                 result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
             }
-            return Response.ok(result).build();            
+            for(PrivateLesson r : result){ 
+                r.setTutor(datalayer.getUtente(r.getTutor_key()));
+                List<Subject> materie = r.getMaterie();
+                r.setMaterie(materie);
+                r.setCategoria_key(materie.get(0).getCategoria_key());
+            }return Response.ok(result).build();            
         } else {
             return Response.serverError().build();
         }
@@ -98,9 +107,10 @@ public class ResourcePrivateLesson {
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         PrivateLesson r = datalayer.getRipetizione(n);
-        r.setTutor(datalayer.getUtente(r.getTutor_key()));  
+        r.setTutor(datalayer.getUtente(r.getTutor_key()));
         List<Subject> materie = r.getMaterie();
         r.setMaterie(materie);
+        r.setCategoria_key(materie.get(0).getCategoria_key());
         return Response.ok(r).build();
     }
     

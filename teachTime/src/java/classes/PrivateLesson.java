@@ -23,7 +23,6 @@ public class PrivateLesson {
     private int tutor_key;
     @JsonIgnore
     private Category categoria;
-    @JsonIgnore
     private int categoria_key;
     protected TeachTimeDataLayer ownerdatalayer;
     private boolean dirty;
@@ -152,7 +151,6 @@ public class PrivateLesson {
     /**
      * @return the categoria_ID
      */
-   @JsonIgnore
     public int getCategoria_key() {
         return categoria_key;
     }
@@ -160,7 +158,6 @@ public class PrivateLesson {
     /**
      * @param categoria_ID the categoria_ID to set
      */
-    @JsonIgnore
     public void setCategoria_key(int categoria_ID) {
         this.categoria_key = categoria_ID;
         this.dirty = true;

@@ -39,13 +39,13 @@ public class Booking {
         studente = null;
         descr = "";
         data = null;
-        stato = -1;
+        stato = 0;
         costo=0;
         materia = null;
         materia_key = 0;
         ripetizione = null;
         ripetizione_key = 0;
-        voto = 0;
+        voto = -1;
         recensione = "";
         dirty = false;
     }
@@ -56,13 +56,13 @@ public class Booking {
         studente = null;
         descr = "";
         data = null;
-        stato = -1;
+        stato = 0;
         costo=0;
         materia = null;
         materia_key = 0;
         ripetizione = null;
         ripetizione_key = 0;
-        voto = 0;
+        voto = -1;
         recensione = "";
         dirty = false;
     }
