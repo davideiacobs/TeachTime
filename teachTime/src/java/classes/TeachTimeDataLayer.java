@@ -30,7 +30,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement sRipetizioneByTutor, sRipetizioneByCategoria, sRipetizioneByMateria;
     private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione, sMateriaByNome;
     private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà;
-    private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto;
+    private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail;
     
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -73,6 +73,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sPrenotazioneByUtente = connection.prepareStatement("SELECT prenotazione.* FROM prenotazione WHERE studente_ID=? AND stato=1 AND data <= CURDATE()");
             sFeedbacksByTutor = connection.prepareStatement("SELECT p.* FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID=r.ID) WHERE r.tutor_ID=? AND p.stato=2");
             sVoto = connection.prepareStatement("SELECT AVG(p.voto) AS media FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID = r.ID) WHERE r.tutor_ID=? AND p.voto>0");
+            sUtenteByMail = connection.prepareStatement("SELECT utente.* FROM utente WHERE email=?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         } 
@@ -202,6 +203,25 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
         return null;
     }
+    
+     
+    public User getUteneByMail(String mail) throws DataLayerException{
+        try {
+            sUtenteByMail.setString(1, mail); //setta primo parametro query a project_key
+            try (ResultSet rs = sUtenteByMail.executeQuery()) {
+                if (rs.next()) {
+                    //notare come utilizziamo il costrutture
+                    //"helper" della classe AuthorImpl
+                    //per creare rapidamente un'istanza a
+                    //partire dal record corrente
+                    return createUtente(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load utente by ID", ex);
+        }
+        return null;
+    } 
      
     public Booking getPrenotazione(int ripetizione, int studente, int materia) throws DataLayerException{
         try{
