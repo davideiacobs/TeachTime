@@ -5,7 +5,7 @@
  */
 package REST;
 
-import classes.Prenotation;
+import classes.Booking;
 import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
@@ -38,7 +38,7 @@ public class ResourceBooking {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBookingByUser(@PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
         //recupero prenotazioni per la quale non sono stati rilasciati feedback per id studente
-        List<Prenotation> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
+        List<Booking> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
         
         return Response.ok(prenotazioni).build();
         
@@ -47,7 +47,7 @@ public class ResourceBooking {
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)    
-    public Response postBooking(@Context UriInfo c, Prenotation prenotazione, @PathParam("repetition_id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
+    public Response postBooking(@Context UriInfo c, Booking prenotazione, @PathParam("repetition_id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
         //inserimento prenotazione alla ripetizione nel sistema
         prenotazione.setRipetizione_key(ripetizione_key);
         datalayer.storePrenotazione(prenotazione);
@@ -58,7 +58,7 @@ public class ResourceBooking {
     
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putBooking(Prenotation prenotazione, @PathParam("repetition_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
+    public Response putBooking(Booking prenotazione, @PathParam("repetition_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
         //aggiornamento prentazione per id 
         prenotazione.setRipetizione_key(ripetizione_key);
         prenotazione.setDirty(true);

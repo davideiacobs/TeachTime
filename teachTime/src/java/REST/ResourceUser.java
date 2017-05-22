@@ -58,7 +58,7 @@ public class ResourceUser {
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
-        datalayer.storeUser(utente);
+        datalayer.storeUtente(utente);
         //restituiamo la uri per recuperare le info relative all'utente appena creato
         URI u = c.getAbsolutePathBuilder()
                 .path(ResourceUser.class, "getUser")
@@ -77,7 +77,7 @@ public class ResourceUser {
         datalayer.init();
         u.setDirty(true);
         u.setKey(utente_key);
-        datalayer.storeUser(u);
+        datalayer.storeUtente(u);
         return Response.noContent().build();
     }
     

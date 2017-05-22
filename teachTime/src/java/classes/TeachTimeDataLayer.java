@@ -78,13 +78,13 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         } 
     }
        
-   public Repetition createRepetition() {
-        return new Repetition(this);
+   public PrivateLesson createRipetizione() {
+        return new PrivateLesson(this);
     }
 
-    public Repetition createRepetition(ResultSet rs) throws DataLayerException {
+    public PrivateLesson createRipetizione(ResultSet rs) throws DataLayerException {
         try {
-            Repetition a = new Repetition(this);
+            PrivateLesson a = new PrivateLesson(this);
             a.setKey(rs.getInt("ID"));
             a.setLuogoIncontro(rs.getString("luogo_incontro"));
             a.setCosto(rs.getInt("costo_per_ora"));
@@ -93,15 +93,15 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             a.setTutor_key(rs.getInt("tutor_ID"));
             return a;
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to create repetition object form ResultSet", ex);
+            throw new DataLayerException("Unable to create ripetizione object form ResultSet", ex);
         }
     }
     
-    public Category createCategory(){
+    public Category createCategoria(){
         return new Category(this);
     }
     
-    public Category createCategory(ResultSet rs) throws DataLayerException{
+    public Category createCategoria(ResultSet rs) throws DataLayerException{
         try{
             Category a = new Category(this);
             a.setKey(rs.getInt("ID"));
@@ -112,11 +112,11 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             }
     }
     
-    public Subject createSubject(){
+    public Subject createMateria(){
         return new Subject(this);
     }
     
-    public Subject createSubject(ResultSet rs) throws  DataLayerException{
+    public Subject createMateria(ResultSet rs) throws  DataLayerException{
         try{
             Subject a = new Subject(this);
             a.setKey(rs.getInt("ID"));
@@ -128,13 +128,13 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
     }
     
-     public Prenotation createPrenotation(){
-        return new Prenotation(this);
+     public Booking createPrenotation(){
+        return new Booking(this);
     }
     
-    public Prenotation createPrenotation(ResultSet rs) throws DataLayerException{
+    public Booking createPrenotazione(ResultSet rs) throws DataLayerException{
         try{
-            Prenotation a = new Prenotation(this);
+            Booking a = new Booking(this);
             a.setStudente_key(rs.getInt("studente_ID"));
             a.setRipetizione_key(rs.getInt("ripetizione_ID"));
             //manca il set tutor key
@@ -156,12 +156,12 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     
     
     
-    public User createUser(){
+    public User createUtente(){
         return new User(this);
     }
     
     
-     public User createUser(ResultSet rs) throws  DataLayerException{
+     public User createUtente(ResultSet rs) throws  DataLayerException{
         try{
             User a = new User(this);
             a.setKey(rs.getInt("ID"));
@@ -194,7 +194,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     //"helper" della classe AuthorImpl
                     //per creare rapidamente un'istanza a
                     //partire dal record corrente
-                    return createUser(rs);
+                    return createUtente(rs);
                 }
             }
         } catch (SQLException ex) {
@@ -203,14 +203,14 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return null;
     }
      
-    public Prenotation getPrenotazione(int ripetizione, int studente, int materia) throws DataLayerException{
+    public Booking getPrenotazione(int ripetizione, int studente, int materia) throws DataLayerException{
         try{
             sPrenotazioneBySuperkey.setInt(1, ripetizione);
             sPrenotazioneBySuperkey.setInt(2, studente);
             sPrenotazioneBySuperkey.setInt(3, materia);
             try(ResultSet rs = sPrenotazioneBySuperkey.executeQuery()){
                 if(rs.next()) {
-                  return createPrenotation(rs);
+                  return createPrenotazione(rs);
                 }
             }
         }catch (SQLException ex) {
@@ -219,13 +219,13 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return null;
     }
     
-    public List<Prenotation> getPrenotazioneByUtente(int utente_key) throws DataLayerException{
-        List<Prenotation> result = new ArrayList();
+    public List<Booking> getPrenotazioneByUtente(int utente_key) throws DataLayerException{
+        List<Booking> result = new ArrayList();
         try{
             sPrenotazioneByUtente.setInt(1, utente_key);
             try(ResultSet rs = sPrenotazioneByUtente.executeQuery()){
                 while(rs.next()){
-                    result.add((Prenotation) getPrenotazione(rs.getInt("ripetizione_ID"), rs.getInt("studente_ID"), rs.getInt("materia_ID")));                
+                    result.add((Booking) getPrenotazione(rs.getInt("ripetizione_ID"), rs.getInt("studente_ID"), rs.getInt("materia_ID")));                
                 }
                 
             }
@@ -235,13 +235,13 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return result;
     }
      
-    public List<Prenotation> getFeedbacksByTutor(int tutor_key) throws DataLayerException{
-        List<Prenotation> result = new ArrayList();
+    public List<Booking> getFeedbacksByTutor(int tutor_key) throws DataLayerException{
+        List<Booking> result = new ArrayList();
         try{
             sFeedbacksByTutor.setInt(1, tutor_key);
             try(ResultSet rs = sFeedbacksByTutor.executeQuery()){
                 while(rs.next()){
-                    result.add((Prenotation) getPrenotazione(rs.getInt("ripetizione_ID"), rs.getInt("studente_ID"), rs.getInt("materia_ID")));                
+                    result.add((Booking) getPrenotazione(rs.getInt("ripetizione_ID"), rs.getInt("studente_ID"), rs.getInt("materia_ID")));                
                 }
             }
         }catch (SQLException ex) {
@@ -260,7 +260,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     //"helper" della classe AuthorImpl
                     //per creare rapidamente un'istanza a
                     //partire dal record corrente
-                    return createCategory(rs);
+                    return createCategoria(rs);
                 }
             }
         } catch (SQLException ex) {
@@ -278,7 +278,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     //"helper" della classe AuthorImpl
                     //per creare rapidamente un'istanza a
                     //partire dal record corrente
-                    return createSubject(rs);
+                    return createMateria(rs);
                 }
             }
         } catch (SQLException ex) {
@@ -341,7 +341,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return result;
     }
     
-    public Repetition getRipetizione(int ripetizione_key) throws DataLayerException {
+    public PrivateLesson getRipetizione(int ripetizione_key) throws DataLayerException {
         try {
             sRipetizioneByID.setInt(1, ripetizione_key); //setta primo parametro query a project_key
             try (ResultSet rs = sRipetizioneByID.executeQuery()) {
@@ -350,7 +350,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     //"helper" della classe AuthorImpl
                     //per creare rapidamente un'istanza a
                     //partire dal record corrente
-                    return createRepetition(rs);
+                    return createRipetizione(rs);
                 }
             }
         } catch (SQLException ex) {
@@ -359,13 +359,13 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return null;
     }
     
-    public List<Repetition> getRipetizioniByTutor(int tutor_key) throws DataLayerException{
-        List<Repetition> result = new ArrayList<>();
+    public List<PrivateLesson> getRipetizioniByTutor(int tutor_key) throws DataLayerException{
+        List<PrivateLesson> result = new ArrayList<>();
         try {
             sRipetizioneByTutor.setInt(1, tutor_key); //setta primo parametro query a project_key
             try (ResultSet rs = sRipetizioneByTutor.executeQuery()) {
                 while(rs.next()){
-                 result.add((Repetition) getRipetizione(rs.getInt("ID")));
+                 result.add((PrivateLesson) getRipetizione(rs.getInt("ID")));
 
                 }
             }
@@ -376,13 +376,13 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     }
     
     
-     public List<Repetition> getRipetizioniByCittà(String città) throws DataLayerException{
-        List<Repetition> result = new ArrayList<>();
+     public List<PrivateLesson> getRipetizioniByCittà(String città) throws DataLayerException{
+        List<PrivateLesson> result = new ArrayList<>();
         try {
             sRipetizioneByCittà.setString(1, città); //setta primo parametro query a project_key
             try (ResultSet rs = sRipetizioneByCittà.executeQuery()) {
                 while(rs.next()){
-                 result.add((Repetition) getRipetizione(rs.getInt("ID")));
+                 result.add((PrivateLesson) getRipetizione(rs.getInt("ID")));
 
                 }
             }
@@ -393,15 +393,15 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     }
     
      
-    public List<Repetition> getRipetizioniByCategoria(String città, int categoria) throws DataLayerException{
-        List<Repetition> result = new ArrayList<>();
+    public List<PrivateLesson> getRipetizioniByCategoria(String città, int categoria) throws DataLayerException{
+        List<PrivateLesson> result = new ArrayList<>();
         try {
             sRipetizioneByCategoria.setInt(1, categoria);
             sRipetizioneByCategoria.setString(2, città);
 
             try (ResultSet rs = sRipetizioneByCategoria.executeQuery()) {
                 while(rs.next()){
-                 result.add((Repetition) getRipetizione(rs.getInt("ID")));
+                 result.add((PrivateLesson) getRipetizione(rs.getInt("ID")));
 
                 }
             }
@@ -411,15 +411,15 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return result;
     }
     
-    public List<Repetition> getRipetizioniByMateria(String città, int materia) throws DataLayerException{
-        List<Repetition> result = new ArrayList<>();
+    public List<PrivateLesson> getRipetizioniByMateria(String città, int materia) throws DataLayerException{
+        List<PrivateLesson> result = new ArrayList<>();
         try {
             sRipetizioneByMateria.setInt(1, materia);
             sRipetizioneByMateria.setString(2, città);
 
             try (ResultSet rs = sRipetizioneByMateria.executeQuery()) {
                 while(rs.next()){
-                 result.add((Repetition) getRipetizione(rs.getInt("ID")));
+                 result.add((PrivateLesson) getRipetizione(rs.getInt("ID")));
 
                 }
             }
@@ -444,7 +444,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return null;
     }
     
-     public void storeUser(User utente) throws DataLayerException {
+     public void storeUtente(User utente) throws DataLayerException {
         int key = utente.getKey();
         try {
             if (key > 0) {
@@ -576,7 +576,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
     }
      
-     public void storeRepetition(Repetition ripetizione) throws DataLayerException {
+     public void storeRipetizione(PrivateLesson ripetizione) throws DataLayerException {
         int key = ripetizione.getKey();
         try {
             if (key > 0) {
@@ -661,7 +661,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
     }
 
-     public void storePrenotazione(Prenotation prenotazione) throws DataLayerException {
+     public void storePrenotazione(Booking prenotazione) throws DataLayerException {
         int ripetizione_key = prenotazione.getRipetizione_key();
         int studente_key = prenotazione.getStudente_key();
         int materia_key = prenotazione.getMateria_key();

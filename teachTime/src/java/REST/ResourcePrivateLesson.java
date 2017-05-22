@@ -5,7 +5,7 @@
  */
 package REST;
 
-import classes.Repetition;
+import classes.PrivateLesson;
 import classes.Subject;
 import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
@@ -33,22 +33,22 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author iacobs
  */
-@Path("repetitions")
-public class ResourceRepetition {
+@Path("privateLesson")
+public class ResourcePrivateLesson {
     
     @Resource(name = "jdbc/teachtime")
     private DataSource ds;
 
      @POST
      @Consumes(MediaType.APPLICATION_JSON)
-     public Response postRepetition(@Context UriInfo c, Repetition ripetizione) throws SQLException, NamingException, DataLayerException {
+     public Response postPrivateLesson(@Context UriInfo c, PrivateLesson ripetizione) throws SQLException, NamingException, DataLayerException {
         //inserimento ripetizione nel sistema
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
-        datalayer.storeRepetition(ripetizione);
+        datalayer.storeRipetizione(ripetizione);
         
-        URI u = c.getAbsolutePathBuilder().path(ResourceRepetition.class, "getRepetitionByKey")
+        URI u = c.getAbsolutePathBuilder().path(ResourcePrivateLesson.class, "getPrivateLessonByKey")
                 .build(ripetizione.getKey());
         
         return Response.created(u).build();
@@ -57,7 +57,7 @@ public class ResourceRepetition {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepetition(@QueryParam("city") String città, @QueryParam("category") String categoria
+    public Response getPrivateLesson(@QueryParam("city") String città, @QueryParam("category") String categoria
             , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
         
         //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
@@ -65,7 +65,7 @@ public class ResourceRepetition {
         datalayer.init();
         
         if ((città != null && !"".equals(città)) || (!"".equals(tutor_key) && tutor_key != null) ){            
-            List<Repetition> result;
+            List<PrivateLesson> result;
             if(!"".equals(città) && città != null){
                 if(materia != null && !"".equals(materia)){
                     //filtro per città, categoria e materia
@@ -93,11 +93,11 @@ public class ResourceRepetition {
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepetitionByKey(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
+    public Response getPrivateLessonByKey(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
         //recupero ripetizione per id
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        Repetition r = datalayer.getRipetizione(n);
+        PrivateLesson r = datalayer.getRipetizione(n);
         r.setTutor(datalayer.getUtente(r.getTutor_key()));  
         List<Subject> materie = r.getMaterie();
         r.setMaterie(materie);
@@ -106,7 +106,7 @@ public class ResourceRepetition {
     
     @DELETE
     @Path("{id: [0-9]+}")
-    public Response deleteRepetition(@Context UriInfo c, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException {
+    public Response deletePrivateLesson(@Context UriInfo c, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException {
         //cancellazione della ripetizione id dal sistema
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
@@ -118,14 +118,14 @@ public class ResourceRepetition {
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putUser(@PathParam("id") int ripetizione_key, Repetition r) throws SQLException, NamingException, DataLayerException {
+    public Response putUser(@PathParam("id") int ripetizione_key, PrivateLesson r) throws SQLException, NamingException, DataLayerException {
         //aggiornamento info relative alla ripetizione id
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
         r.setKey(ripetizione_key);
         r.setDirty(true);
-        datalayer.storeRepetition(r);
+        datalayer.storeRipetizione(r);
         //di solito una PUT restituisce NO CONTENT
         return Response.noContent().build();
     }

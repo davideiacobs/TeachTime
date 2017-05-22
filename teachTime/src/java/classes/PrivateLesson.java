@@ -13,7 +13,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  *
  * @author david
  */
-public class Repetition {
+public class PrivateLesson {
     private int key;
     private String luogoIncontro;
     private int costo;
@@ -29,7 +29,7 @@ public class Repetition {
     private boolean dirty;
     private List<Subject> materie;
     
-    public Repetition(TeachTimeDataLayer datalayer){
+    public PrivateLesson(TeachTimeDataLayer datalayer){
         this.ownerdatalayer = datalayer;
         key = 0;
         luogoIncontro = "";
@@ -44,7 +44,7 @@ public class Repetition {
         materie = null;
     }
     
-     public Repetition(){
+     public PrivateLesson(){
         this.ownerdatalayer = null;
         key = 0;
         luogoIncontro = "";
@@ -231,7 +231,7 @@ public class Repetition {
         this.materie = materie;
     }
     
-    public void copyFrom(Repetition ripetizione){
+    public void copyFrom(PrivateLesson ripetizione){
         key = ripetizione.getKey();
         luogoIncontro = ripetizione.getLuogoIncontro();
         città = ripetizione.getCittà();

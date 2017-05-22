@@ -5,7 +5,7 @@
  */
 package REST;
 
-import classes.Prenotation;
+import classes.Booking;
 import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.util.List;
@@ -32,13 +32,13 @@ public class ResourceFeedback {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFeedbacksList(@PathParam("tutor_id") int tutor_key) throws DataLayerException{
         //recupero lista di feedback per tutor id     
-        List<Prenotation> prenotazioni = this.datalayer.getFeedbacksByTutor(tutor_key);
+        List<Booking> prenotazioni = this.datalayer.getFeedbacksByTutor(tutor_key);
         
         return Response.ok(prenotazioni).build();
     }
     
     
-    @Path("vote")
+    @Path("avg")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response getUserVote(@PathParam("tutor_id") int tutor_key) throws DataLayerException{

@@ -14,13 +14,13 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  *
  * @author david
  */
-public class Prenotation {
+public class Booking {
     private int studente_key;
     private int ripetizione_key;
     private int stato;
     private int costo;
     private User studente;
-    private Repetition ripetizione;
+    private PrivateLesson ripetizione;
     private String descr;
     //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date data;
@@ -33,7 +33,7 @@ public class Prenotation {
     protected TeachTimeDataLayer ownerdatalayer;
     
     
-    public Prenotation(TeachTimeDataLayer datalayer){
+    public Booking(TeachTimeDataLayer datalayer){
         this.ownerdatalayer = datalayer;
         studente_key = 0;
         studente = null;
@@ -50,7 +50,7 @@ public class Prenotation {
         dirty = false;
     }
     
-     public Prenotation(){
+     public Booking(){
         this.ownerdatalayer = null;
         studente_key = 0;
         studente = null;
@@ -97,7 +97,7 @@ public class Prenotation {
     }
 
     
-    public Repetition getRipetizione() throws DataLayerException{
+    public PrivateLesson getRipetizione() throws DataLayerException{
         if(ripetizione == null && ripetizione_key > 0) {
             ripetizione = this.ownerdatalayer.getRipetizione(ripetizione_key);
         }
@@ -108,7 +108,7 @@ public class Prenotation {
      */
     
     
-    public void setRipetizione(Repetition ripetizione) {
+    public void setRipetizione(PrivateLesson ripetizione) {
         this.ripetizione = ripetizione;
         this.ripetizione_key = ripetizione.getKey();
         this.dirty = true;
@@ -278,7 +278,7 @@ public class Prenotation {
         this.dirty = true;
     }
     
-    public void copyFrom(Prenotation prenotazione) throws DataLayerException{
+    public void copyFrom(Booking prenotazione) throws DataLayerException{
         ripetizione_key = prenotazione.getRipetizione_key();
         studente_key = prenotazione.getStudente_key();
         costo = prenotazione.getCosto();
