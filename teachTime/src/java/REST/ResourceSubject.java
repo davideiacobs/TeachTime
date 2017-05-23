@@ -41,6 +41,7 @@ public class ResourceSubject {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getArgList(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
         
+        //inserimento materia relativa alla categoria per id categoria
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         List<Subject> list = datalayer.getMaterieByCategoria(n);

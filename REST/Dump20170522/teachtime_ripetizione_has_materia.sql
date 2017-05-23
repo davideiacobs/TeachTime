@@ -18,29 +18,31 @@ USE `teachtime`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `materia`
+-- Table structure for table `ripetizione_has_materia`
 --
 
-DROP TABLE IF EXISTS `materia`;
+DROP TABLE IF EXISTS `ripetizione_has_materia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `materia` (
-  `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(250) NOT NULL,
-  `categoria_ID` int(10) NOT NULL,
-  PRIMARY KEY (`ID`,`categoria_ID`),
-  KEY `fk_argomento_materia1_idx` (`categoria_ID`),
-  CONSTRAINT `fk_argomento_materia1` FOREIGN KEY (`categoria_ID`) REFERENCES `categoria` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+CREATE TABLE `ripetizione_has_materia` (
+  `ripetizione_ID` int(10) NOT NULL,
+  `materia_ID` int(10) NOT NULL,
+  PRIMARY KEY (`ripetizione_ID`,`materia_ID`),
+  KEY `fk_ripetizione_has_materia_materia2_idx` (`materia_ID`),
+  KEY `fk_ripetizione_has_materia_ripetizione2_idx` (`ripetizione_ID`),
+  CONSTRAINT `fk_ripetizione_has_materia_materia2` FOREIGN KEY (`materia_ID`) REFERENCES `materia` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_ripetizione_has_materia_ripetizione2` FOREIGN KEY (`ripetizione_ID`) REFERENCES `ripetizione` (`ID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `materia`
+-- Dumping data for table `ripetizione_has_materia`
 --
 
-LOCK TABLES `materia` WRITE;
-/*!40000 ALTER TABLE `materia` DISABLE KEYS */;
-/*!40000 ALTER TABLE `materia` ENABLE KEYS */;
+LOCK TABLES `ripetizione_has_materia` WRITE;
+/*!40000 ALTER TABLE `ripetizione_has_materia` DISABLE KEYS */;
+INSERT INTO `ripetizione_has_materia` VALUES (15,1),(17,1),(18,3),(19,4),(24,9),(24,10);
+/*!40000 ALTER TABLE `ripetizione_has_materia` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-17 15:23:27
+-- Dump completed on 2017-05-22 15:05:23

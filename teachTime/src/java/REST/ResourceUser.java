@@ -42,7 +42,7 @@ public class ResourceUser {
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON) 
     public Response getUser(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException {
-        
+        //recupero utente per id
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
@@ -54,16 +54,12 @@ public class ResourceUser {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postUser(@Context UriInfo c, User utente) throws SQLException, NamingException, DataLayerException {
-            
+        //inserimento utente nel sistema
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        /* 
-         * Attenzione: per poter essere deserializzato l'oggetto
-         * deve essere dotato di un construttore di default 
-         * (senza parametri), oltre ovviamente ad avere campo
-         * mappabil su quelli del JSON del payload.
-         */
-        datalayer.storeUser(utente);
+        
+        datalayer.storeUtente(utente);
+        //restituiamo la uri per recuperare le info relative all'utente appena creato
         URI u = c.getAbsolutePathBuilder()
                 .path(ResourceUser.class, "getUser")
                 .build(utente.getKey());
@@ -75,12 +71,69 @@ public class ResourceUser {
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putUser(User u) throws SQLException, NamingException, DataLayerException {
+    public Response putUser(@PathParam("id") int utente_key, User u) throws SQLException, NamingException, DataLayerException {
+        //aggiornament info utente
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         u.setDirty(true);
-        datalayer.storeUser(u);
-        //di solito una PUT restituisce NO CONTENT
+        u.setKey(utente_key);
+        datalayer.storeUtente(u);
         return Response.noContent().build();
     }
+    
+    @Path("{user_id: [0-9]+}/bookings")
+    public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
+        //passaggio alla risorsa bookings che gestisce le prenotazioni
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        return new ResourceBooking(datalayer);
+    }
+    
+    @Path("{tutor_id: [0-9]+}/feedbacks")
+    public ResourceFeedback toResouceFeedback() throws SQLException, NamingException, DataLayerException {
+        //passaggio alla risorsa feedbacks che gestisce i feedback
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        return new ResourceFeedback(datalayer);
+    }
+    
+    /*@Path("{user_id: [0-9]+}/bookings")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBookingByUser(@PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        List<Prenotation> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
+        
+        return Response.ok(prenotazioni).build();
+        
+    }*/
+    
+    
+    /*@Path("{tutor_id: [0-9]+}/feedbacks")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFeedbacksList(@PathParam("tutor_id") int tutor_key) throws SQLException, NamingException, DataLayerException, NamingException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        List<Prenotation> prenotazioni = datalayer.getFeedbacksByTutor(tutor_key);
+        
+        return Response.ok(prenotazioni).build();
+    }
+    
+    @Path("{tutor_id: [0-9]+}/feedbacks/vote")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getUserVote(@PathParam("tutor_id") int tutor_key) throws SQLException, NamingException, DataLayerException, NamingException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        String voto = datalayer.getVoto(tutor_key);
+        return Response.ok(voto).build();
+    }*/
 }

@@ -5,94 +5,74 @@
  */
 package classes;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
-import java.sql.Time;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
  * @author david
  */
-public class Prenotation {
-    private int tutor_key;
+public class Booking {
     private int studente_key;
     private int ripetizione_key;
     private int stato;
     private int costo;
-    private User tutor;
     private User studente;
-    private Repetition ripetizione;
+    private PrivateLesson ripetizione;
     private String descr;
-    private GregorianCalendar data;
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    private Date data;
     private Subject materia;
     private int materia_key;
     private int voto;
     private String recensione;
+    @JsonIgnore
     private boolean dirty;
     protected TeachTimeDataLayer ownerdatalayer;
     
     
-    public Prenotation(TeachTimeDataLayer datalayer){
+    public Booking(TeachTimeDataLayer datalayer){
         this.ownerdatalayer = datalayer;
-        tutor_key = 0;
         studente_key = 0;
-        tutor = null;
         studente = null;
         descr = "";
         data = null;
-        stato = -1;
+        stato = 0;
         costo=0;
         materia = null;
         materia_key = 0;
         ripetizione = null;
         ripetizione_key = 0;
-        voto = 0;
+        voto = -1;
         recensione = "";
         dirty = false;
     }
     
-     public Prenotation(){
+     public Booking(){
         this.ownerdatalayer = null;
-        tutor_key = 0;
         studente_key = 0;
-        tutor = null;
         studente = null;
         descr = "";
         data = null;
-        stato = -1;
+        stato = 0;
         costo=0;
         materia = null;
         materia_key = 0;
         ripetizione = null;
         ripetizione_key = 0;
-        voto = 0;
+        voto = -1;
         recensione = "";
         dirty = false;
     }
 
-    /**
-     * @return the tutor_key
-     */
-    public int getTutor_key() {
-        if(tutor != null ){
-            tutor_key = tutor.getKey();
-        }
-        return tutor_key;
-    }
+    
     
     public int getRipetizione_key() {
         return ripetizione_key;
     }
 
-    /**
-     * @param ripetizione_key the tutor_key to set
-     */
-    public void setTutor_key(int ripetizione_key) throws DataLayerException{
-        this.tutor_key = ownerdatalayer.getTutorByRipetizione(studente_key);
-        this.tutor = null;
-        this.dirty = true;
-    }
     
     public void setRipetizione_key(int ripetizione_key){
         this.ripetizione_key = ripetizione_key;
@@ -116,17 +96,8 @@ public class Prenotation {
 
     }
 
-    /**
-     */
     
-    public User getTutor() throws DataLayerException {
-        if(tutor == null && tutor_key > 0){
-           tutor = this.ownerdatalayer.getUtente(tutor_key);
-        }
-        return tutor;
-    }
-    
-    public Repetition getRipetizione() throws DataLayerException{
+    public PrivateLesson getRipetizione() throws DataLayerException{
         if(ripetizione == null && ripetizione_key > 0) {
             ripetizione = this.ownerdatalayer.getRipetizione(ripetizione_key);
         }
@@ -136,13 +107,8 @@ public class Prenotation {
      * @param tutor the tutor to set
      */
     
-    public void setTutor(User tutor) {
-        this.tutor = tutor;
-        this.tutor_key = tutor.getKey();
-        this.dirty = true;
-    }
     
-    public void setRipetizione(Repetition ripetizione) {
+    public void setRipetizione(PrivateLesson ripetizione) {
         this.ripetizione = ripetizione;
         this.ripetizione_key = ripetizione.getKey();
         this.dirty = true;
@@ -185,14 +151,14 @@ public class Prenotation {
     /**
      * @return the data
      */
-    public GregorianCalendar getData() {
+    public Date getData() {
         return data;
     }
 
     /**
      * @param data the data to set
      */
-    public void setData(GregorianCalendar data) {
+    public void setData(Date data) {
         this.data = data;
         this.dirty = true;
     }
@@ -266,6 +232,7 @@ public class Prenotation {
     /**
      * @return the dirty
      */
+    @JsonIgnore
     public boolean isDirty() {
         return dirty;
     }
@@ -273,6 +240,7 @@ public class Prenotation {
     /**
      * @param dirty the dirty to set
      */
+    @JsonIgnore
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
@@ -310,7 +278,7 @@ public class Prenotation {
         this.dirty = true;
     }
     
-    public void copyFrom(Prenotation prenotazione) throws DataLayerException{
+    public void copyFrom(Booking prenotazione) throws DataLayerException{
         ripetizione_key = prenotazione.getRipetizione_key();
         studente_key = prenotazione.getStudente_key();
         costo = prenotazione.getCosto();

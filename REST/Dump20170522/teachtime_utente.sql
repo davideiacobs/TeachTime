@@ -36,7 +36,7 @@ CREATE TABLE `utente` (
   `titolo_di_studio` varchar(250) DEFAULT 'NULL',
   `img_profilo` varchar(250) DEFAULT 'NULL',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,6 +45,7 @@ CREATE TABLE `utente` (
 
 LOCK TABLES `utente` WRITE;
 /*!40000 ALTER TABLE `utente` DISABLE KEYS */;
+INSERT INTO `utente` VALUES (1,'pinco','pallino','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(2,'andrea','perna','adp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(3,'luca','bale','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(4,'luca','bale','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(5,'luca','bale','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(6,'luca','bale','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(7,'abab','bebeb','ababebeb@gmail.it','abcdef','Firenze','3456789000','1998-08-19','Laurea Base in Fisica','profilo2.png'),(8,'pinco','pallino','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(9,'pinco','pallino','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(10,'pinco','pallino','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png'),(11,'pinco','pallino','pp@gmail.it','abcdef','Roma','3456789012','1995-04-27','Laurea Base in Informatica','profilo.png');
 /*!40000 ALTER TABLE `utente` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-17 15:23:28
+-- Dump completed on 2017-05-22 15:05:23

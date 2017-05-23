@@ -13,7 +13,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  *
  * @author david
  */
-public class Repetition {
+public class PrivateLesson {
     private int key;
     private String luogoIncontro;
     private int costo;
@@ -23,13 +23,12 @@ public class Repetition {
     private int tutor_key;
     @JsonIgnore
     private Category categoria;
-    @JsonIgnore
     private int categoria_key;
     protected TeachTimeDataLayer ownerdatalayer;
     private boolean dirty;
     private List<Subject> materie;
     
-    public Repetition(TeachTimeDataLayer datalayer){
+    public PrivateLesson(TeachTimeDataLayer datalayer){
         this.ownerdatalayer = datalayer;
         key = 0;
         luogoIncontro = "";
@@ -44,7 +43,7 @@ public class Repetition {
         materie = null;
     }
     
-     public Repetition(){
+     public PrivateLesson(){
         this.ownerdatalayer = null;
         key = 0;
         luogoIncontro = "";
@@ -152,7 +151,6 @@ public class Repetition {
     /**
      * @return the categoria_ID
      */
-   @JsonIgnore
     public int getCategoria_key() {
         return categoria_key;
     }
@@ -160,7 +158,6 @@ public class Repetition {
     /**
      * @param categoria_ID the categoria_ID to set
      */
-    @JsonIgnore
     public void setCategoria_key(int categoria_ID) {
         this.categoria_key = categoria_ID;
         this.dirty = true;
@@ -231,7 +228,7 @@ public class Repetition {
         this.materie = materie;
     }
     
-    public void copyFrom(Repetition ripetizione){
+    public void copyFrom(PrivateLesson ripetizione){
         key = ripetizione.getKey();
         luogoIncontro = ripetizione.getLuogoIncontro();
         città = ripetizione.getCittà();

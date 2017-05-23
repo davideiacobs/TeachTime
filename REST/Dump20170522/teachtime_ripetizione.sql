@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `teachtime` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `teachtime`;
--- MySQL dump 10.13  Distrib 5.7.17, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: teachtime
 -- ------------------------------------------------------
--- Server version	5.7.18-0ubuntu0.17.04.1
+-- Server version	5.7.18-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -30,14 +30,11 @@ CREATE TABLE `ripetizione` (
   `costo_per_ora` int(11) NOT NULL,
   `descrizione` text,
   `citta` varchar(45) NOT NULL,
-  `utente_ID` int(10) NOT NULL,
-  `materia_ID` int(10) NOT NULL,
-  PRIMARY KEY (`ID`,`materia_ID`),
-  KEY `fk_ripetizione_utente_idx` (`utente_ID`),
-  KEY `fk_ripetizione_materia1_idx` (`materia_ID`),
-  CONSTRAINT `fk_ripetizione_materia1` FOREIGN KEY (`materia_ID`) REFERENCES `materia` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ripetizione_utente` FOREIGN KEY (`utente_ID`) REFERENCES `utente` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+  `tutor_ID` int(10) DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  KEY `fk_ripetizione_utente_idx` (`tutor_ID`),
+  CONSTRAINT `fk_ripetizione_utente` FOREIGN KEY (`tutor_ID`) REFERENCES `utente` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -46,7 +43,7 @@ CREATE TABLE `ripetizione` (
 
 LOCK TABLES `ripetizione` WRITE;
 /*!40000 ALTER TABLE `ripetizione` DISABLE KEYS */;
-INSERT INTO `ripetizione` VALUES (4,'andotepare',500,'top','sora',1,1),(5,'andotepare',500,'top','sora',1,1),(6,'andotepare',500,'top','sora',1,1),(7,'andotepare',500,'top','sora',1,1),(8,'andotepare',500,'top','sora',1,1),(9,'andotepare',500,'top','sora',1,1),(10,'andotepare',500,'top','sora',1,1),(11,'andotepare',500,'top','sora',1,1),(12,'andotepare',500,'top','sora',1,1),(13,'andotepare',500,'top','sora',1,1),(14,'andotepare',500,'top','sora',1,1),(15,'andotepare',500,'top','sora',1,1),(16,'andotepare',500,'top','sora',1,1),(17,'andotepare',500,'top','sora',1,1),(18,'andotepare',500,'top','sora',1,1),(19,'andotepare',500,'top','sora',1,1),(20,'andotepare',500,'top','sora',1,1),(21,'andotepare',500,'top','sora',1,1),(22,'andotepare',500,'top','sora',1,1),(23,'andotepare',500,'top','sora',1,1),(24,'andotepare',500,'top','sora',1,1),(25,'andotepare',500,'top','sora',1,1),(26,'andotepare',500,'top','sora',1,1),(27,'andotepare',500,'top','sora',1,1),(28,'andotepare',500,'top','sora',1,1);
+INSERT INTO `ripetizione` VALUES (9,'a scelta dello studente',12,'top','roma',1),(10,'a scelta dello studente',12,'top','roma',1),(11,'a scelta dello studente',12,'top','roma',1),(12,'a scelta dello studente',12,'top','roma',1),(13,'a scelta dello studente',12,'top','roma',1),(14,'a scelta dello studente',12,'top','roma',1),(15,'a scelta dello studente',12,'top','roma',1),(17,'a scelta dello studente',12,'top','roma',1),(18,'casa mia ',9,'top','sora',2),(19,'casa tua',11,'top','l\'aquila',3),(20,'a scelta dello studente',12,'descrizione della ripetizione','Roma',7),(21,'a scelta dello studente',12,'descrizione della ripetizione','Roma',7),(22,'a scelta dello studente',12,'descrizione della ripetizione','Firenze',7),(23,'a scelta dello studente',12,'descrizione della ripetizione','Firenze',7),(24,'a scelta dello studente',12,'descrizione della ripetizione','Firenze',7);
 /*!40000 ALTER TABLE `ripetizione` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -59,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-16 12:32:21
+-- Dump completed on 2017-05-22 15:05:22

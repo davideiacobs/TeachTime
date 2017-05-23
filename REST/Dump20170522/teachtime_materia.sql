@@ -18,26 +18,30 @@ USE `teachtime`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `categoria`
+-- Table structure for table `materia`
 --
 
-DROP TABLE IF EXISTS `categoria`;
+DROP TABLE IF EXISTS `materia`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `categoria` (
+CREATE TABLE `materia` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
-  `nome` varchar(45) NOT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `nome` varchar(250) NOT NULL,
+  `categoria_ID` int(10) NOT NULL,
+  PRIMARY KEY (`ID`,`categoria_ID`),
+  KEY `fk_argomento_materia1_idx` (`categoria_ID`),
+  CONSTRAINT `fk_argomento_materia1` FOREIGN KEY (`categoria_ID`) REFERENCES `categoria` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `categoria`
+-- Dumping data for table `materia`
 --
 
-LOCK TABLES `categoria` WRITE;
-/*!40000 ALTER TABLE `categoria` DISABLE KEYS */;
-/*!40000 ALTER TABLE `categoria` ENABLE KEYS */;
+LOCK TABLES `materia` WRITE;
+/*!40000 ALTER TABLE `materia` DISABLE KEYS */;
+INSERT INTO `materia` VALUES (1,'programmazione python',1),(2,'programmazione java',1),(3,'database',1),(4,'analisi 1',2),(9,'meccanica',3),(10,'quantistica',3);
+/*!40000 ALTER TABLE `materia` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -49,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-05-17 15:23:27
+-- Dump completed on 2017-05-22 15:05:22

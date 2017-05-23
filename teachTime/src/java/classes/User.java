@@ -6,7 +6,7 @@
 package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
-import java.util.GregorianCalendar;
+import java.util.Date;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -21,7 +21,7 @@ public class User {
     private String pwd;
     private String città;
     private String telefono;
-    private GregorianCalendar dataDiNascita;
+    private Date dataDiNascita;
     private String titoloDiStudi;
     private String imgProfilo;
     protected TeachTimeDataLayer ownerdatalayer;
@@ -146,14 +146,14 @@ public class User {
     /**
      * @return the dataDiNascita
      */
-    public GregorianCalendar getDataDiNascita() {
+    public Date getDataDiNascita() {
         return dataDiNascita;
     }
 
     /**
      * @param dataDiNascita the dataDiNascita to set
      */
-    public void setDataDiNascita(GregorianCalendar dataDiNascita) {
+    public void setDataDiNascita(Date dataDiNascita) {
         this.dataDiNascita = dataDiNascita;
     }
 
