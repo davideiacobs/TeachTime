@@ -5,13 +5,14 @@
  */
 package REST;
 
-import classes.Auth;
+import classes.Session;
 import classes.TeachTimeDataLayer;
+import classes.User;
+import classes.Utility;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.sql.SQLException;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -32,17 +33,37 @@ public class ResourceAuth {
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response getAuth(Auth auth) throws DataLayerException, SQLException, NamingException{
+    public Response postAuth(User u) throws SQLException, NamingException, DataLayerException{
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
-        auth.setUtente(datalayer.getUteneByMail(auth.getMail()));
-        if(auth.getUtente().getPwd().equals(auth.getPwd())){
-            //login
-        }else{
-            //error
+        User utente = datalayer.getUtenteByMail(u.getEmail());
+        if(utente != null && utente.getPwd().equals(u.getPwd())){
+            Session session = new Session(); 
+            session.setUtente(utente);
+            session.setToken(Utility.generateToken());
+            datalayer.storeSessione(session);
+            return Response.ok(session.getToken()).build();
+        } else {
+            return Response.serverError().build();
+  
         }
-        return Response.ok().build();
+    }
+     
+    @POST
+    @Path("logout")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postAuthDestroy(Session sessione) throws SQLException, NamingException, DataLayerException{
+        
+        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        
+        datalayer.deleteSessione(sessione.getToken());
+        
+        return Response.noContent().build();
+ 
+        
+        
     }
 }

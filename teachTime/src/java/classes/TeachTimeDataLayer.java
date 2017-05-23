@@ -30,8 +30,8 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement sRipetizioneByTutor, sRipetizioneByCategoria, sRipetizioneByMateria;
     private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione, sMateriaByNome;
     private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà;
-    private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail;
-    
+    private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail, iSessione;
+    private PreparedStatement sSessioneById, dSessione;
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -74,6 +74,9 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sFeedbacksByTutor = connection.prepareStatement("SELECT p.* FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID=r.ID) WHERE r.tutor_ID=? AND p.stato=2");
             sVoto = connection.prepareStatement("SELECT AVG(p.voto) AS media FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID = r.ID) WHERE r.tutor_ID=? AND p.voto>0");
             sUtenteByMail = connection.prepareStatement("SELECT utente.* FROM utente WHERE email=?");
+            iSessione = connection.prepareStatement("INSERT INTO sessione (token, utente_ID) VALUES (?,?)",Statement.RETURN_GENERATED_KEYS);
+            sSessioneById = connection.prepareStatement("SELECT * FROM sessione WHERE ID=?");
+            dSessione = connection.prepareStatement("DELETE FROM sessione WHERE token=?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         } 
@@ -183,7 +186,18 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             throw new DataLayerException("Unable to create user object from ResultSet",ex);
         }
     }
-     
+    
+    public Session createSessione(ResultSet rs) throws DataLayerException {
+        try{
+            Session a = new Session(this);
+            a.setId(rs.getInt("ID"));
+            a.setToken(rs.getString("token"));
+            a.setUtente_key(rs.getInt("utente_ID"));
+            return a;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to create session object from ResultSet",ex);
+        }
+    }
      
    
      public User getUtente(int utente_key) throws DataLayerException {
@@ -205,7 +219,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     }
     
      
-    public User getUteneByMail(String mail) throws DataLayerException{
+    public User getUtenteByMail(String mail) throws DataLayerException{
         try {
             sUtenteByMail.setString(1, mail); //setta primo parametro query a project_key
             try (ResultSet rs = sUtenteByMail.executeQuery()) {
@@ -299,6 +313,24 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     //per creare rapidamente un'istanza a
                     //partire dal record corrente
                     return createMateria(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load materia by ID", ex);
+        }
+        return null;
+    }
+     
+    public Session getSessione(int id) throws DataLayerException {
+        try {
+            sSessioneById.setInt(1, id); //setta primo parametro query a project_key
+            try (ResultSet rs = sSessioneById.executeQuery()) {
+                if (rs.next()) {
+                    //notare come utilizziamo il costrutture
+                    //"helper" della classe AuthorImpl
+                    //per creare rapidamente un'istanza a
+                    //partire dal record corrente
+                    return createSessione(rs);
                 }
             }
         } catch (SQLException ex) {
@@ -596,6 +628,28 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
     }
      
+     
+    public void storeSessione(Session sessione) throws DataLayerException, SQLException {
+        int key = sessione.getId();
+        if(key>0){
+            return;
+        }else{
+            iSessione.setString(1,sessione.getToken());
+            iSessione.setInt(2, sessione.getUtente_key());
+            if(iSessione.executeUpdate()==1) {
+                try(ResultSet keys = iSessione.getGeneratedKeys()) {
+                    if(keys.next()){
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+        }
+        if (key > 0) {
+                sessione.copyFrom(getSessione(key));
+            }
+    } 
+     
+     
      public void storeRipetizione(PrivateLesson ripetizione) throws DataLayerException {
         int key = ripetizione.getKey();
         try {
@@ -678,6 +732,15 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             dRipetizione.executeUpdate();
             }catch (SQLException ex) {
             throw new DataLayerException("Unable to delete rioetizione", ex);
+        }
+    }
+    
+    public void deleteSessione(String token) throws DataLayerException {
+        try{
+            dSessione.setString(1, token);
+            dSessione.executeUpdate();
+        }catch (SQLException ex) {
+            throw new DataLayerException("Unable to delete sessione", ex);
         }
     }
 

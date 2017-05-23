@@ -26,6 +26,7 @@ public class MainApplication extends Application {
         c.add(ResourceUser.class);
         c.add(ResourceSubject.class);
         c.add(ResourcePrivateLesson.class);
+        c.add(ResourceAuth.class);
         //aggiungiamo il provider Jackson per poter
         //usare i suoi servizi di serializzazione e 
         //deserializzazione JSON

@@ -10,11 +10,7 @@
         driverClassName="com.mysql.jdbc.Driver"
         url="jdbc:mysql://localhost:3306/teachtime"
         username="root"
-<<<<<<< HEAD
-        password="root"
-=======
         password="lebronjames1995"
->>>>>>> 3d7c40de5573ed52d3888c0c2ab0082e96f65bde
         maxActive="10"
         maxIdle="5"
         maxWait="10000"
