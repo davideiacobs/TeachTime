@@ -31,7 +31,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione, sMateriaByNome;
     private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà;
     private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail, iSessione;
-    private PreparedStatement sSessioneById, dSessione;
+    private PreparedStatement sSessioneById, dSessione, sSessioneByUtente, sSessioneByToken;
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -77,6 +77,8 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             iSessione = connection.prepareStatement("INSERT INTO sessione (token, utente_ID) VALUES (?,?)",Statement.RETURN_GENERATED_KEYS);
             sSessioneById = connection.prepareStatement("SELECT * FROM sessione WHERE ID=?");
             dSessione = connection.prepareStatement("DELETE FROM sessione WHERE token=?");
+            sSessioneByUtente = connection.prepareStatement("SELECT sessione.token FROM sessione INNER JOIN utente ON(sessione.utente_ID = utente.ID) WHERE utente.ID=?");
+            sSessioneByToken = connection.prepareStatement("SELECT sessione.* FROM sessione WHERE token=?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         } 
@@ -338,6 +340,24 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
         return null;
     }
+    
+    public Session getSessionByToken(String token) throws DataLayerException{
+        try {
+            sSessioneByToken.setString(1, token); //setta primo parametro query a project_key
+            try (ResultSet rs = sSessioneByToken.executeQuery()) {
+                if (rs.next()) {
+                    //notare come utilizziamo il costrutture
+                    //"helper" della classe AuthorImpl
+                    //per creare rapidamente un'istanza a
+                    //partire dal record corrente
+                    return createSessione(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load materia by ID", ex);
+        }
+        return null;
+    }
      
     public int getTutorByRipetizione(int studente_key) throws DataLayerException{
         try {
@@ -479,6 +499,20 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             throw new DataLayerException("Unable to load repetition by filter", ex);
         }
         return result;
+    }
+    
+    public String getTokenByUtente(int utente_key) throws DataLayerException{
+        try{
+            sSessioneByUtente.setInt(1, utente_key);
+            try(ResultSet rs = sSessioneByUtente.executeQuery()) {
+                if(rs.next()){
+                    return rs.getString("token");
+                }
+            }
+        }catch (SQLException ex) {
+            throw new DataLayerException("Unable to get session token by user_ID", ex);
+        }
+        return null;
     }
     
     
