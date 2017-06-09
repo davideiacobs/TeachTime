@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package REST;
 
 import classes.PrivateLesson;
@@ -18,6 +13,7 @@ import javax.annotation.Resource;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -58,60 +54,34 @@ public class ResourceAuth {
         }
     }
      
+    
     @POST
     @Path("logout")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response postAuthDestroy(Session sessione) throws SQLException, NamingException, DataLayerException{
+    public Response postAuthDestroy(String token) throws SQLException, NamingException, DataLayerException{
         
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
-        datalayer.deleteSessione(sessione.getToken());
+        datalayer.deleteSessione(token);
         
         return Response.noContent().build();   
     }
     
-    //RIMUOVERE QUELLA CHE NON SERVE IN RESOURCE USER
-    @PUT
-    @Path("{SID: [0-9]+}/users/{id: [0-9]+}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response putUser(@PathParam("SID") String session_id, @PathParam("id") int utente_key, User u) throws SQLException, NamingException, DataLayerException {
-        //aggiornament info utente
+    
+    @Path("{SID: [0-9]+}/users")
+    public ResourceUser toResourceUser() throws SQLException, NamingException, DataLayerException {
+        //passaggio alla risorsa bookings che gestisce le prenotazioni
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        //controllare se session id è uguale a quello dell'utente
-        //if(datalayer.getTokenByUtente(utente_key).equals(String.valueOf(session_id))){
-        if(datalayer.getTokenByUtente(utente_key).equals(session_id)){
-            u.setDirty(true);
-            u.setKey(utente_key);
-            datalayer.storeUtente(u);
-            return Response.noContent().build();
-        }
-        return Response.serverError().build();
+        return new ResourceUser(datalayer);
     }
     
-    //RIMUOVERE QUELLA CHE NON SERVE IN RESOURCE PRIVATE LESSON
-    @Path("{SID: [0-9]+}/privateLessons") 
-    @POST
-     @Consumes(MediaType.APPLICATION_JSON)
-     public Response postPrivateLesson(@PathParam("SID") String session_id, @Context UriInfo c, PrivateLesson ripetizione) throws SQLException, NamingException, DataLayerException {
-        //inserimento ripetizione nel sistema
+    @Path("{SID: [0-9]+}/privateLessons")
+    public ResourcePrivateLesson toResourcePrivateLesson() throws DataLayerException, SQLException, NamingException{
         TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
-        
-        //recupero l'utente relativo alla sessione
-        int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
-        
-        for(Subject m : ripetizione.getMaterie()){
-            m.setCategoria_key(ripetizione.getCategoria_key());
-        }
-        ripetizione.setTutor_key(user_key);
-        ripetizione.setDirty(false);
-        datalayer.storeRipetizione(ripetizione);
-        
-        URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione.getKey()));
-
-        return Response.created(u).build();
-    }  
+        return new ResourcePrivateLesson(datalayer);
+    }
     
 }

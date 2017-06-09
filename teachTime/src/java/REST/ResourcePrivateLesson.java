@@ -38,23 +38,35 @@ public class ResourcePrivateLesson {
     
     @Resource(name = "jdbc/teachtime")
     private DataSource ds;
-
+    private TeachTimeDataLayer datalayer;
+    
+    public ResourcePrivateLesson() throws SQLException, NamingException, DataLayerException{
+        this.datalayer = new TeachTimeDataLayer(ds);
+        this.datalayer.init();
+    }
+    
+    public ResourcePrivateLesson(TeachTimeDataLayer datalayer) throws SQLException, NamingException, DataLayerException{
+        this.datalayer = datalayer;          
+    }
+    
+    
      @POST
      @Consumes(MediaType.APPLICATION_JSON)
-     public Response postPrivateLesson(@Context UriInfo c, PrivateLesson ripetizione) throws SQLException, NamingException, DataLayerException {
+     public Response postPrivateLesson(@PathParam("SID") String session_id, @Context UriInfo c, PrivateLesson ripetizione) throws SQLException, NamingException, DataLayerException {
         //inserimento ripetizione nel sistema
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
+        
+        //recupero l'utente relativo alla sessione
+        int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
         
         for(Subject m : ripetizione.getMaterie()){
             m.setCategoria_key(ripetizione.getCategoria_key());
         }
+        ripetizione.setTutor_key(user_key);
         ripetizione.setDirty(false);
         datalayer.storeRipetizione(ripetizione);
         
-        URI u = c.getAbsolutePathBuilder().path(ResourcePrivateLesson.class, "getPrivateLessonByKey")
-                .build(ripetizione.getKey());
-        
+        URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione.getKey()));
+
         return Response.created(u).build();
     }  
     
@@ -116,35 +128,47 @@ public class ResourcePrivateLesson {
     
     @DELETE
     @Path("{id: [0-9]+}")
-    public Response deletePrivateLesson(@Context UriInfo c, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException {
+    public Response deletePrivateLesson(@Context UriInfo c, @PathParam("SID") String token, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException {
         //cancellazione della ripetizione id dal sistema
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        datalayer.deleteRipetizione(ripetizione_key);
-        return Response.noContent().build();
+        if(datalayer.getTokenByUtente(datalayer.getRipetizione(ripetizione_key).getTutor_key()).equals(token)){
+            datalayer.deleteRipetizione(ripetizione_key);
+            return Response.noContent().build();
+        }
+        return Response.serverError().build();
+       
     }
     
     
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putUser(@PathParam("id") int ripetizione_key, PrivateLesson r) throws SQLException, NamingException, DataLayerException {
+    public Response putPrivateLesson(@PathParam("SID") String token, @PathParam("id") int ripetizione_key, PrivateLesson r) throws SQLException, NamingException, DataLayerException {
+        /******NB******
+        si DEVONO indicare le materie anche se non ne sono state aggiunte altre
+        e si deve indicare la categoria_key 
+        (alternativa: r.setCategoria_Key(datalayer.getRipetizione(ripetizione_key))
+        ***************/
+
         //aggiornamento info relative alla ripetizione id
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        
-        r.setKey(ripetizione_key);
-        r.setDirty(true);
-        datalayer.storeRipetizione(r);
-        //di solito una PUT restituisce NO CONTENT
-        return Response.noContent().build();
+        //recuperiamo la chiave del tutor e verifichiamo se il token di sessione corrisponde
+        PrivateLesson c = datalayer.getRipetizione(ripetizione_key);
+        int tutor_key = c.getTutor_key();
+        //int categoria_key = c.getCategoria_key();
+        if(datalayer.getTokenByUtente(tutor_key).equals(token)){
+            r.setDirty(true);
+            r.setKey(ripetizione_key);
+            r.setTutor_key(tutor_key);            
+            //r.setCategoria_key(categoria_key);
+            datalayer.storeRipetizione(r);
+            return Response.noContent().build();
+        }
+        return Response.serverError().build();
     }
+    
     
     @Path("{repetition_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
         //passaggio alla risorsa bookings che gestisce le prenotazioni
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
         return new ResourceBooking(datalayer);
     }
     

@@ -34,6 +34,7 @@ public class ResourceBooking {
         this.datalayer = datalayer;
     }
     
+    //QUI SERVE CONTROLLARE SE È LOGGATO!
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBookingByUser(@PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
@@ -48,28 +49,38 @@ public class ResourceBooking {
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)    
-    public Response postBooking(@Context UriInfo c, Booking prenotazione, @PathParam("repetition_id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
+    public Response postBooking(@Context UriInfo c, Booking prenotazione, @PathParam("SID") String token,
+            @PathParam("repetition_id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
         //inserimento prenotazione alla ripetizione nel sistema
-        prenotazione.setRipetizione_key(ripetizione_key);
-        prenotazione.setDirty(false);
-        datalayer.storePrenotazione(prenotazione);
         
-        URI u = c.getAbsolutePath();
-        return Response.created(u).build();    
-    }    
+        //controllo se il token di sessione è lo stesso dell'utente che si sta prentoando
+        if(datalayer.getTokenByUtente(prenotazione.getStudente_key()).equals(token)){
+            prenotazione.setRipetizione_key(ripetizione_key);
+            prenotazione.setDirty(false);
+            datalayer.storePrenotazione(prenotazione);
+            URI u = c.getAbsolutePath();
+            return Response.created(u).build();    
+        }
+        return Response.serverError().build();
+    }
+    
     
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putBooking(Booking prenotazione, @PathParam("repetition_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
-        //aggiornamento prentazione per id 
+    public Response putBooking(Booking prenotazione, @PathParam("SID") String token,
+            @PathParam("repetition_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
+        //aggiornamento prenotazione per id 
         prenotazione.setRipetizione_key(ripetizione_key);
-        if(prenotazione.getVoto()!=-1){
-            prenotazione.setStato(2);
+        if(datalayer.getTokenByUtente(prenotazione.getStudente_key()).equals(token)){
+            if(prenotazione.getVoto()!=-1){
+                prenotazione.setStato(2);
+            }
+            prenotazione.setDirty(true);
+            datalayer.storePrenotazione(prenotazione);
+
+            return Response.noContent().build();
         }
-        prenotazione.setDirty(true);
-        datalayer.storePrenotazione(prenotazione);
-        
-        return Response.noContent().build();
+        return Response.serverError().build();
     }
     
 }

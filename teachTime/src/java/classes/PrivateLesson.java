@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
@@ -216,7 +211,7 @@ public class PrivateLesson {
      */
     public List<Subject> getMaterie() throws DataLayerException {
         if(materie == null){
-            materie = ownerdatalayer.getMaterieByRipetizione(this.key);
+            materie = ownerdatalayer.getMaterieByRipetizione(key);
         }
         return materie;
     }

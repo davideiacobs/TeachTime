@@ -727,6 +727,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 ripetizione.copyFrom(getRipetizione(key));
             }
             List<Subject> materie = ripetizione.getMaterie();
+            
             for(Subject m : materie){
                 sMateriaByNome.setString(1, m.getNome());
                 try(ResultSet rs = sMateriaByNome.executeQuery()){
@@ -790,7 +791,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sPrenotazioneBySuperkey.setInt(3, materia_key);
             try(ResultSet rs = sPrenotazioneBySuperkey.executeQuery()){
                 if(rs.next()){
-                    //la ripetizione esiste già --> update
+                    //la prenotazione esiste già  --> update
                     if (!prenotazione.isDirty()) {
                         return;
                     }

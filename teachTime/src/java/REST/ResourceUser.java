@@ -33,9 +33,18 @@ import javax.ws.rs.core.UriInfo;
 
 @Path("users")
 public class ResourceUser {
-    
     @Resource(name = "jdbc/teachtime")
-    private DataSource ds;
+    public DataSource ds; 
+    private TeachTimeDataLayer datalayer;
+    
+    public ResourceUser() throws SQLException, NamingException, DataLayerException{
+        this.datalayer = new TeachTimeDataLayer(ds);
+        this.datalayer.init();
+    }
+    
+    public ResourceUser(TeachTimeDataLayer datalayer) throws SQLException, NamingException, DataLayerException{
+        this.datalayer = datalayer;          
+    }
     
     
     //Accept: application/json
@@ -72,16 +81,19 @@ public class ResourceUser {
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putUser(@PathParam("id") int utente_key, User u) throws SQLException, NamingException, DataLayerException {
-        //aggiornament info utente
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        u.setDirty(true);
-        u.setKey(utente_key);
-        datalayer.storeUtente(u);
-        return Response.noContent().build();
+    public Response putUser(@PathParam("SID") String session_id, @PathParam("id") int utente_key, User u) throws SQLException, NamingException, DataLayerException {
+       
+        //controllare se session id è uguale a quello dell'utente
+        if(this.datalayer.getTokenByUtente(utente_key).equals(session_id)){
+            u.setDirty(true);
+            u.setKey(utente_key);
+            datalayer.storeUtente(u);
+            return Response.noContent().build();
+        }
+        return Response.serverError().build();
     }
     
+    //QUI SERVE CONTROLLARE SE È LOGGATO!
     @Path("{user_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
         //passaggio alla risorsa bookings che gestisce le prenotazioni
