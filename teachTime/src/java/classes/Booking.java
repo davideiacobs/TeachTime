@@ -15,6 +15,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author david
  */
 public class Booking {
+    private int key;
     private int studente_key;
     private int ripetizione_key;
     private int stato;
@@ -35,6 +36,7 @@ public class Booking {
     
     public Booking(TeachTimeDataLayer datalayer){
         this.ownerdatalayer = datalayer;
+        key = 0;
         studente_key = 0;
         studente = null;
         descr = "";
@@ -52,6 +54,7 @@ public class Booking {
     
      public Booking(){
         this.ownerdatalayer = null;
+        key = 0;
         studente_key = 0;
         studente = null;
         descr = "";
@@ -287,6 +290,21 @@ public class Booking {
         data = prenotazione.getData();
         materia_key = prenotazione.getMateria_key();
    
+        this.dirty = true;
+    }
+
+    /**
+     * @return the key
+     */
+    public int getKey() {
+        return key;
+    }
+
+    /**
+     * @param key the key to set
+     */
+    public void setKey(int key) {
+        this.key = key;
         this.dirty = true;
     }
     

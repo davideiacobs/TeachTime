@@ -1,27 +1,19 @@
 package REST;
 
-import classes.PrivateLesson;
 import classes.Session;
-import classes.Subject;
 import classes.TeachTimeDataLayer;
 import classes.User;
 import classes.Utility;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
-import java.net.URI;
 import java.sql.SQLException;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 /**
  *
@@ -33,6 +25,7 @@ public class ResourceAuth {
     @Resource(name = "jdbc/teachtime")
     private DataSource ds;
     
+    //testato
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -54,7 +47,7 @@ public class ResourceAuth {
         }
     }
      
-    
+    //testato
     @POST
     @Path("logout")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -68,7 +61,7 @@ public class ResourceAuth {
         return Response.noContent().build();   
     }
     
-    
+    //testato
     @Path("{SID: [0-9]+}/users")
     public ResourceUser toResourceUser() throws SQLException, NamingException, DataLayerException {
         //passaggio alla risorsa bookings che gestisce le prenotazioni

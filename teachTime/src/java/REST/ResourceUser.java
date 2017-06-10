@@ -38,8 +38,8 @@ public class ResourceUser {
     private TeachTimeDataLayer datalayer;
     
     public ResourceUser() throws SQLException, NamingException, DataLayerException{
-        this.datalayer = new TeachTimeDataLayer(ds);
-        this.datalayer.init();
+        //this.datalayer = new TeachTimeDataLayer(ds);
+        //this.datalayer.init();
     }
     
     public ResourceUser(TeachTimeDataLayer datalayer) throws SQLException, NamingException, DataLayerException{
@@ -47,13 +47,13 @@ public class ResourceUser {
     }
     
     
-    //Accept: application/json
+    //testato
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON) 
     public Response getUser(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException {
         //recupero utente per id
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
         User utente = datalayer.getUtente(n);
@@ -61,11 +61,12 @@ public class ResourceUser {
         return Response.ok(utente).build();
     }
 
+    //testato
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postUser(@Context UriInfo c, User utente) throws SQLException, NamingException, DataLayerException {
         //inserimento utente nel sistema
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
         datalayer.storeUtente(utente);
@@ -77,7 +78,7 @@ public class ResourceUser {
         return Response.created(u).build();
     }  
     
-    
+    //testato
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -93,12 +94,12 @@ public class ResourceUser {
         return Response.serverError().build();
     }
     
-    //QUI SERVE CONTROLLARE SE È LOGGATO!
+    
     @Path("{user_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
         //passaggio alla risorsa bookings che gestisce le prenotazioni
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
+        //che recupererà la lista delle ripetizioni a cui lo studente ha partecipato
+        //e per le quali non ha rilasciato ancora feedback
         return new ResourceBooking(datalayer);
     }
     

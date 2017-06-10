@@ -38,6 +38,16 @@ public class ResourceFeedback {
     }
     
     
+    /*@GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFeedbacksList(@PathParam("SID") String token, @PathParam("tutor_id") int tutor_key) throws DataLayerException{
+        //recupero lista di feedback per tutor id     
+        List<Booking> prenotazioni = this.datalayer.getFeedbacksByTutor(tutor_key);
+        
+        return Response.ok(prenotazioni).build();
+    }*/
+    
+    
     @Path("avg")
     @GET
     @Produces(MediaType.TEXT_PLAIN)

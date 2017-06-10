@@ -6,16 +6,20 @@
 package REST;
 
 import classes.Booking;
+import classes.PrivateLesson;
 import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.naming.NamingException;
+import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -28,49 +32,73 @@ import javax.ws.rs.core.UriInfo;
  * @author david
  */
 public class ResourceBooking {
-    private final TeachTimeDataLayer datalayer;
-    
+    @Resource(name = "jdbc/teachtime")
+    public DataSource ds; 
+    private TeachTimeDataLayer datalayer;
+  
     ResourceBooking(TeachTimeDataLayer datalayer){
         this.datalayer = datalayer;
     }
     
-    //QUI SERVE CONTROLLARE SE È LOGGATO!
+    //testato
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getBookingByUser(@PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
-        //recupero prenotazioni per la quale non sono stati rilasciati feedback per id studente
-        List<Booking> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
+    public Response getBookingByUser(@PathParam("SID") String token, @PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
+        //controllo se l'utente che richiede di vedere la lista delle ripetizioni per cui non sono 
+        //stati rilasciati feedback è loggato 
+        if(datalayer.getTokenByUtente(utente_key).equals(token)){
+            //recupero prenotazioni per la quale non sono stati rilasciati feedback per id studente
+            List<Booking> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
         
-        //evitiamo di restituire i dati superflui riguardanti la ripetizione (es: lista materie)
-        return Response.ok(prenotazioni).build();
-        
+            //evitiamo di restituire i dati superflui riguardanti la ripetizione (es: lista materie)
+            return Response.ok(prenotazioni).build();
+        }
+        return Response.serverError().build();
     }
     
+    /*@Path("{id: [0-9]+}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBooking(@PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key) throws DataLayerException, SQLException, NamingException{
+        TeachTimeDataLayer datalayer2 = new TeachTimeDataLayer(ds);
+        datalayer2.init();
+        Booking b = datalayer2.getPrenotazione(key);
+        //b.setRipetizione(datalayer.getRipetizione(ripetizione_key));
+        return Response.ok(b).build();
+    }*/
     
+    //testato
     @POST
     @Consumes(MediaType.APPLICATION_JSON)    
     public Response postBooking(@Context UriInfo c, Booking prenotazione, @PathParam("SID") String token,
-            @PathParam("repetition_id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
+            @PathParam("privateLesson_id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
         //inserimento prenotazione alla ripetizione nel sistema
         
         //controllo se il token di sessione è lo stesso dell'utente che si sta prentoando
         if(datalayer.getTokenByUtente(prenotazione.getStudente_key()).equals(token)){
             prenotazione.setRipetizione_key(ripetizione_key);
-            prenotazione.setDirty(false);
-            datalayer.storePrenotazione(prenotazione);
-            URI u = c.getAbsolutePath();
+            prenotazione.setDirty(true);
+            int key = datalayer.storePrenotazione(prenotazione);
+            if(key == 0){
+                //l'utente ha già effettuato la stessa identica prenotazione
+                return Response.serverError().build();
+            }
+            URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione_key)+"/bookings/"+String.valueOf(key));
             return Response.created(u).build();    
         }
         return Response.serverError().build();
     }
     
-    
+    //testata --> inserire studente_key nel payload oppure fare in modo che lo setti ricavandolo dal token
+    @Path("{booking_id: [0-9]+}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response putBooking(Booking prenotazione, @PathParam("SID") String token,
-            @PathParam("repetition_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
+    public Response putBooking(Booking prenotazione,@PathParam("booking_id") int key, @PathParam("SID") String token,
+            @PathParam("privateLesson_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
         //aggiornamento prenotazione per id 
+        prenotazione.setKey(key);
         prenotazione.setRipetizione_key(ripetizione_key);
+        
         if(datalayer.getTokenByUtente(prenotazione.getStudente_key()).equals(token)){
             if(prenotazione.getVoto()!=-1){
                 prenotazione.setStato(2);

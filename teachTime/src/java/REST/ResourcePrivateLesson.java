@@ -5,6 +5,7 @@
  */
 package REST;
 
+import classes.Booking;
 import classes.PrivateLesson;
 import classes.Subject;
 import classes.TeachTimeDataLayer;
@@ -41,15 +42,15 @@ public class ResourcePrivateLesson {
     private TeachTimeDataLayer datalayer;
     
     public ResourcePrivateLesson() throws SQLException, NamingException, DataLayerException{
-        this.datalayer = new TeachTimeDataLayer(ds);
-        this.datalayer.init();
+        //this.datalayer = new TeachTimeDataLayer(ds);
+        //this.datalayer.init();
     }
     
     public ResourcePrivateLesson(TeachTimeDataLayer datalayer) throws SQLException, NamingException, DataLayerException{
         this.datalayer = datalayer;          
     }
     
-    
+     //testato
      @POST
      @Consumes(MediaType.APPLICATION_JSON)
      public Response postPrivateLesson(@PathParam("SID") String session_id, @Context UriInfo c, PrivateLesson ripetizione) throws SQLException, NamingException, DataLayerException {
@@ -77,7 +78,7 @@ public class ResourcePrivateLesson {
             , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
         
         //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         
         if ((città != null && !"".equals(città)) || (!"".equals(tutor_key) && tutor_key != null) ){            
@@ -110,13 +111,13 @@ public class ResourcePrivateLesson {
     } 
      
      
-     
+    //testato
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPrivateLessonByKey(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
         //recupero ripetizione per id
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
+        datalayer = new TeachTimeDataLayer(ds);
         datalayer.init();
         PrivateLesson r = datalayer.getRipetizione(n);
         r.setTutor(datalayer.getUtente(r.getTutor_key()));
@@ -126,6 +127,7 @@ public class ResourcePrivateLesson {
         return Response.ok(r).build();
     }
     
+    //testato
     @DELETE
     @Path("{id: [0-9]+}")
     public Response deletePrivateLesson(@Context UriInfo c, @PathParam("SID") String token, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException {
@@ -138,7 +140,7 @@ public class ResourcePrivateLesson {
        
     }
     
-    
+    //testato
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -153,20 +155,28 @@ public class ResourcePrivateLesson {
         //recuperiamo la chiave del tutor e verifichiamo se il token di sessione corrisponde
         PrivateLesson c = datalayer.getRipetizione(ripetizione_key);
         int tutor_key = c.getTutor_key();
-        //int categoria_key = c.getCategoria_key();
         if(datalayer.getTokenByUtente(tutor_key).equals(token)){
             r.setDirty(true);
             r.setKey(ripetizione_key);
             r.setTutor_key(tutor_key);            
-            //r.setCategoria_key(categoria_key);
             datalayer.storeRipetizione(r);
             return Response.noContent().build();
         }
         return Response.serverError().build();
     }
     
+    @Path("{privateLesson_id: [0-9]+}/bookings/{id: [0-9]+}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getBooking(@PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key) throws DataLayerException, SQLException, NamingException{
+        datalayer = new TeachTimeDataLayer(ds);
+        datalayer.init();
+        Booking b = datalayer.getPrenotazione(key);
+        //b.setRipetizione(datalayer.getRipetizione(ripetizione_key));
+        return Response.ok(b).build();
+    }
     
-    @Path("{repetition_id: [0-9]+}/bookings")
+    @Path("{privateLesson_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
         //passaggio alla risorsa bookings che gestisce le prenotazioni
         return new ResourceBooking(datalayer);

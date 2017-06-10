@@ -8,22 +8,17 @@ package REST;
 import classes.Subject;
 import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 /**
  *

@@ -29,7 +29,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement sMaterieByCategoria, sMaterieByRipetizione, iRipetizioneHasMateria; 
     private PreparedStatement sRipetizioneByTutor, sRipetizioneByCategoria, sRipetizioneByMateria;
     private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione, sMateriaByNome;
-    private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà;
+    private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà, sPrenotazioneByKey;
     private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail, iSessione;
     private PreparedStatement sSessioneById, dSessione, sSessioneByUtente, sSessioneByToken;
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
@@ -66,11 +66,16 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             dRipetizione = connection.prepareStatement("DELETE FROM ripetizione WHERE ID=?");
             dRipetizioneHasMateria = connection.prepareStatement("DELETE FROM ripetizione_has_materia WHERE ripetizione_ID=?");
             sTutorByRipetizione = connection.prepareStatement("SELECT ripetizione.tutor_ID FROM ripetizione WHERE ID=?");
-            sPrenotazioneBySuperkey = connection.prepareStatement("SELECT * FROM prenotazione WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=?");
-            uPrenotazione = connection.prepareStatement("UPDATE prenotazione SET stato=?, voto=?, recensione=? WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=?");
-            iPrenotazione = connection.prepareStatement("INSERT INTO prenotazione (ripetizione_ID, studente_ID, costo, descrizione, stato, data, materia_ID, materia_categoria_ID) VALUES (?,?,?,?,?,?,?,?)");
+            
+            sPrenotazioneByKey = connection.prepareStatement("SELECT * FROM prenotazione WHERE ID=?");
+            sPrenotazioneBySuperkey = connection.prepareStatement("SELECT * FROM prenotazione WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=? AND data=?");
+            //uPrenotazione = connection.prepareStatement("UPDATE prenotazione SET stato=?, voto=?, recensione=? WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=?");
+            uPrenotazione = connection.prepareStatement("UPDATE prenotazione SET stato=?, voto=?, recensione=? WHERE ID=?");
+            //iPrenotazione = connection.prepareStatement("INSERT INTO prenotazione (ripetizione_ID, studente_ID, costo, descrizione, stato, data, materia_ID, materia_categoria_ID) VALUES (?,?,?,?,?,?,?,?)");
+            iPrenotazione = connection.prepareStatement("INSERT INTO prenotazione (ripetizione_ID, studente_ID, costo, descrizione, stato, data, materia_ID, materia_categoria_ID) VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             sRipetizioneByCittà = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE citta=?");
             sPrenotazioneByUtente = connection.prepareStatement("SELECT prenotazione.* FROM prenotazione WHERE studente_ID=? AND stato=1 AND data <= CURDATE()");
+            
             sFeedbacksByTutor = connection.prepareStatement("SELECT p.* FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID=r.ID) WHERE r.tutor_ID=? AND p.stato=2");
             sVoto = connection.prepareStatement("SELECT AVG(p.voto) AS media FROM prenotazione AS p INNER JOIN ripetizione AS r ON (p.ripetizione_ID = r.ID) WHERE r.tutor_ID=? AND p.voto>0");
             sUtenteByMail = connection.prepareStatement("SELECT utente.* FROM utente WHERE email=?");
@@ -141,6 +146,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     public Booking createPrenotazione(ResultSet rs) throws DataLayerException{
         try{
             Booking a = new Booking(this);
+            a.setKey(rs.getInt("ID"));
             a.setStudente_key(rs.getInt("studente_ID"));
             a.setRipetizione_key(rs.getInt("ripetizione_ID"));
             //manca il set tutor key
@@ -239,11 +245,14 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return null;
     } 
      
-    public Booking getPrenotazione(int ripetizione, int studente, int materia) throws DataLayerException{
+    public Booking getPrenotazione(int ripetizione, int studente, int materia, java.util.Date data) throws DataLayerException{
         try{
             sPrenotazioneBySuperkey.setInt(1, ripetizione);
             sPrenotazioneBySuperkey.setInt(2, studente);
             sPrenotazioneBySuperkey.setInt(3, materia);
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentTime = sdf.format(data);
+            sPrenotazioneBySuperkey.setString(4, currentTime);
             try(ResultSet rs = sPrenotazioneBySuperkey.executeQuery()){
                 if(rs.next()) {
                   return createPrenotazione(rs);
@@ -255,13 +264,27 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return null;
     }
     
+    public Booking getPrenotazione(int prenotazione_key) throws DataLayerException{
+        try{
+            sPrenotazioneByKey.setInt(1, prenotazione_key);
+            try(ResultSet rs = sPrenotazioneByKey.executeQuery()){
+                if(rs.next()) {
+                  return createPrenotazione(rs);
+                }
+            }
+        }catch (SQLException ex) {
+            throw new DataLayerException("Unable to load prenotazione by key", ex);
+        }
+        return null;
+    }
+    
     public List<Booking> getPrenotazioneByUtente(int utente_key) throws DataLayerException{
         List<Booking> result = new ArrayList();
         try{
             sPrenotazioneByUtente.setInt(1, utente_key);
             try(ResultSet rs = sPrenotazioneByUtente.executeQuery()){
                 while(rs.next()){
-                    result.add((Booking) getPrenotazione(rs.getInt("ripetizione_ID"), rs.getInt("studente_ID"), rs.getInt("materia_ID")));                
+                    result.add((Booking) getPrenotazione(rs.getInt("ID")));                
                 }
                 
             }
@@ -277,7 +300,10 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sFeedbacksByTutor.setInt(1, tutor_key);
             try(ResultSet rs = sFeedbacksByTutor.executeQuery()){
                 while(rs.next()){
-                    result.add((Booking) getPrenotazione(rs.getInt("ripetizione_ID"), rs.getInt("studente_ID"), rs.getInt("materia_ID")));                
+                    GregorianCalendar data = new GregorianCalendar();
+                    java.sql.Date datasql;
+                    datasql = rs.getDate("data");
+                    result.add((Booking) getPrenotazione(rs.getInt("ripetizione_ID"), rs.getInt("studente_ID"), rs.getInt("materia_ID"),datasql));                
                 }
             }
         }catch (SQLException ex) {
@@ -779,48 +805,89 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
     }
 
-     public void storePrenotazione(Booking prenotazione) throws DataLayerException {
+     public int storePrenotazione(Booking prenotazione) throws DataLayerException {
+        int key = prenotazione.getKey();
         int ripetizione_key = prenotazione.getRipetizione_key();
         int studente_key = prenotazione.getStudente_key();
         int materia_key = prenotazione.getMateria_key();
-        int categoria_key = getMateria(materia_key).getCategoria_key();
+        int categoria_key = 0;
+        if(materia_key > 0){
+            categoria_key = getMateria(materia_key).getCategoria_key();
+        }
         try {
-            
-            sPrenotazioneBySuperkey.setInt(1, ripetizione_key);
-            sPrenotazioneBySuperkey.setInt(2, studente_key);
-            sPrenotazioneBySuperkey.setInt(3, materia_key);
-            try(ResultSet rs = sPrenotazioneBySuperkey.executeQuery()){
+            if(key>0){
+            //sPrenotazioneByKey.setInt(1, key);
+            //sPrenotazioneBySuperkey.setInt(1, ripetizione_key);
+            //sPrenotazioneBySuperkey.setInt(2, studente_key);
+            //sPrenotazioneBySuperkey.setInt(3, materia_key);
+            //try(ResultSet rs = sPrenotazioneBySuperkey.executeQuery()){
+            /*try(ResultSet rs = sPrenotazioneByKey.executeQuery()){
                 if(rs.next()){
                     //la prenotazione esiste già  --> update
+                    */
                     if (!prenotazione.isDirty()) {
-                        return;
+                        return key;
                     }
+              
                     uPrenotazione.setInt(1, prenotazione.getStato());
                     uPrenotazione.setInt(2, prenotazione.getVoto());
                     uPrenotazione.setString(3, prenotazione.getRecensione());
-                    uPrenotazione.setInt(4, ripetizione_key);
-                    uPrenotazione.setInt(5, studente_key);
-                    uPrenotazione.setInt(6, materia_key);
+                    //uPrenotazione.setInt(4, ripetizione_key);
+                    //uPrenotazione.setInt(5, studente_key);
+                    //uPrenotazione.setInt(6, materia_key);
+                    uPrenotazione.setInt(4, key);
                     uPrenotazione.executeUpdate();
                 }else { //insert
+                    sPrenotazioneBySuperkey.setInt(1,ripetizione_key);
+                    sPrenotazioneBySuperkey.setInt(2,studente_key);
+                    sPrenotazioneBySuperkey.setInt(3,materia_key);
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String currentTime = sdf.format(prenotazione.getData());
+                    sPrenotazioneBySuperkey.setString(4,currentTime);
+                    try(ResultSet rs1 = sPrenotazioneBySuperkey.executeQuery()){
+                        if(rs1.next()){
+                            return 0;
+                        }
+                    }
                     iPrenotazione.setInt(1, ripetizione_key);
                     iPrenotazione.setInt(2, studente_key);
                     iPrenotazione.setInt(3, getRipetizione(ripetizione_key).getCosto());
                     iPrenotazione.setString(4, prenotazione.getDescr());
                     iPrenotazione.setInt(5, prenotazione.getStato());
-                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String currentTime = sdf.format(prenotazione.getData());
+                    //java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    //String currentTime = sdf.format(prenotazione.getData());
                     iPrenotazione.setString(6, currentTime);
                     iPrenotazione.setInt(7, materia_key);
                     iPrenotazione.setInt(8, categoria_key);
-                    if(iPrenotazione.executeUpdate()==1){
-                        prenotazione.copyFrom(getPrenotazione(ripetizione_key, studente_key, materia_key));
+                    if (iPrenotazione.executeUpdate() == 1) {
+                    //per leggere la chiave generata dal database
+                    //per il record appena inserito, usiamo il metodo
+                    //getGeneratedKeys sullo statement.
+                        try (ResultSet keys = iPrenotazione.getGeneratedKeys()) {
+                            //il valore restituito è un ResultSet con un record
+                            //per ciascuna chiave generata (uno solo nel nostro caso)
 
+                            if (keys.next()) {
+                            //i campi del record sono le componenti della chiave
+                            //(nel nostro caso, un solo intero)
+                            key = keys.getInt(1);
+                            
+                        }
                     }
-                }
-            }prenotazione.setDirty(false);
-            } catch (SQLException ex) {
-            throw new DataLayerException("Unable to store materia", ex);
+                
+            }
+            if (key > 0) {
+                prenotazione.copyFrom(getPrenotazione(key));
+            }
+            prenotazione.setDirty(false);
+            
+                
+            }}catch (SQLException ex) {
+            throw new DataLayerException("Unable to store prenotazione", ex);
         }
-    }
-}
+        return key;
+        }
+    
+     }
+    
+
