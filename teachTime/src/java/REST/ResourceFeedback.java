@@ -27,7 +27,7 @@ public class ResourceFeedback {
         this.datalayer = datalayer;
     }
 
-    
+    //testato
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFeedbacksList(@PathParam("tutor_id") int tutor_key) throws DataLayerException{
@@ -36,16 +36,6 @@ public class ResourceFeedback {
         
         return Response.ok(prenotazioni).build();
     }
-    
-    
-    /*@GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getFeedbacksList(@PathParam("SID") String token, @PathParam("tutor_id") int tutor_key) throws DataLayerException{
-        //recupero lista di feedback per tutor id     
-        List<Booking> prenotazioni = this.datalayer.getFeedbacksByTutor(tutor_key);
-        
-        return Response.ok(prenotazioni).build();
-    }*/
     
     
     @Path("avg")

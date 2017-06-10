@@ -300,10 +300,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sFeedbacksByTutor.setInt(1, tutor_key);
             try(ResultSet rs = sFeedbacksByTutor.executeQuery()){
                 while(rs.next()){
-                    GregorianCalendar data = new GregorianCalendar();
-                    java.sql.Date datasql;
-                    datasql = rs.getDate("data");
-                    result.add((Booking) getPrenotazione(rs.getInt("ripetizione_ID"), rs.getInt("studente_ID"), rs.getInt("materia_ID"),datasql));                
+                    result.add((Booking) getPrenotazione(rs.getInt("ID")));
                 }
             }
         }catch (SQLException ex) {
