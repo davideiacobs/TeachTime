@@ -8,14 +8,11 @@ package REST;
 import classes.Booking;
 import classes.PrivateLesson;
 import classes.Subject;
-import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -35,20 +32,13 @@ import javax.ws.rs.core.UriInfo;
  * @author iacobs
  */
 @Path("privateLessons")
-public class ResourcePrivateLesson {
-    
-    @Resource(name = "jdbc/teachtime")
-    private DataSource ds;
-    private TeachTimeDataLayer datalayer;
+public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
     
     public ResourcePrivateLesson() throws SQLException, NamingException, DataLayerException{
-        //this.datalayer = new TeachTimeDataLayer(ds);
-        //this.datalayer.init();
+        
+        super();
     }
     
-    public ResourcePrivateLesson(TeachTimeDataLayer datalayer) throws SQLException, NamingException, DataLayerException{
-        this.datalayer = datalayer;          
-    }
     
      //testato
      @POST
@@ -78,8 +68,6 @@ public class ResourcePrivateLesson {
             , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
         
         //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
-        datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
         
         if ((città != null && !"".equals(città)) || (!"".equals(tutor_key) && tutor_key != null) ){            
             List<PrivateLesson> result;
@@ -117,8 +105,7 @@ public class ResourcePrivateLesson {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPrivateLessonByKey(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
         //recupero ripetizione per id
-        datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
+        
         PrivateLesson r = datalayer.getRipetizione(n);
         r.setTutor(datalayer.getUtente(r.getTutor_key()));
         List<Subject> materie = r.getMaterie();
@@ -169,8 +156,7 @@ public class ResourcePrivateLesson {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBooking(@PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key) throws DataLayerException, SQLException, NamingException{
-        datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
+        
         Booking b = datalayer.getPrenotazione(key);
         //b.setRipetizione(datalayer.getRipetizione(ripetizione_key));
         return Response.ok(b).build();
@@ -179,7 +165,7 @@ public class ResourcePrivateLesson {
     @Path("{privateLesson_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
         //passaggio alla risorsa bookings che gestisce le prenotazioni
-        return new ResourceBooking(datalayer);
+        return new ResourceBooking();
     }
     
     /*@Path("{id: [0-9]+}/bookings")

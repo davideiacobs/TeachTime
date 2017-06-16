@@ -6,13 +6,10 @@
 package REST;
 
 import classes.Subject;
-import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.sql.SQLException;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -25,20 +22,18 @@ import javax.ws.rs.core.Response;
  * @author iacobs
  */
 @Path("categories")
-public class ResourceSubject {
+public class ResourceSubject extends TeachTimeDataLayerSupplier{
     
-    @Resource(name = "jdbc/teachtime")
-    private DataSource ds;
-    
+    public ResourceSubject()throws SQLException, NamingException, DataLayerException{
+        super();
+    }
     
     @GET
     @Path("{id: [0-9]+}/subjects")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getArgList(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException{
         
-        //inserimento materia relativa alla categoria per id categoria
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
+        //recuepero lista materie per id categoria
         List<Subject> list = datalayer.getMaterieByCategoria(n);
         return Response.ok(list).build();
     }

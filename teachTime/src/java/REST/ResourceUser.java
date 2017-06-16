@@ -5,14 +5,11 @@
  */
 package REST;
 
-import classes.TeachTimeDataLayer;
 import classes.User;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
-import javax.annotation.Resource;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -32,32 +29,19 @@ import javax.ws.rs.core.UriInfo;
  
 
 @Path("users")
-public class ResourceUser {
-    @Resource(name = "jdbc/teachtime")
-    public DataSource ds; 
-    private TeachTimeDataLayer datalayer;
+public class ResourceUser extends TeachTimeDataLayerSupplier{
     
     public ResourceUser() throws SQLException, NamingException, DataLayerException{
-        //this.datalayer = new TeachTimeDataLayer(ds);
-        //this.datalayer.init();
+        super();
     }
-    
-    public ResourceUser(TeachTimeDataLayer datalayer) throws SQLException, NamingException, DataLayerException{
-        this.datalayer = datalayer;          
-    }
-    
-    
+   
     //testato
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON) 
     public Response getUser(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException {
-        //recupero utente per id
-        datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
         
-        User utente = datalayer.getUtente(n);
-            
+        User utente = datalayer.getUtente(n);   
         return Response.ok(utente).build();
     }
 
@@ -65,16 +49,12 @@ public class ResourceUser {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postUser(@Context UriInfo c, User utente) throws SQLException, NamingException, DataLayerException {
-        //inserimento utente nel sistema
-        datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
         
         datalayer.storeUtente(utente);
         //restituiamo la uri per recuperare le info relative all'utente appena creato
         URI u = c.getAbsolutePathBuilder()
                 .path(ResourceUser.class, "getUser")
                 .build(utente.getKey());
-
         return Response.created(u).build();
     }  
     
@@ -85,7 +65,7 @@ public class ResourceUser {
     public Response putUser(@PathParam("SID") String session_id, @PathParam("id") int utente_key, User u) throws SQLException, NamingException, DataLayerException {
        
         //controllare se session id è uguale a quello dell'utente
-        if(this.datalayer.getTokenByUtente(utente_key).equals(session_id)){
+        if(datalayer.getTokenByUtente(utente_key).equals(session_id)){
             u.setDirty(true);
             u.setKey(utente_key);
             datalayer.storeUtente(u);
@@ -97,18 +77,14 @@ public class ResourceUser {
     
     @Path("{user_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
-        //passaggio alla risorsa bookings che gestisce le prenotazioni
-        //che recupererà la lista delle ripetizioni a cui lo studente ha partecipato
-        //e per le quali non ha rilasciato ancora feedback
-        return new ResourceBooking(datalayer);
+        
+        return new ResourceBooking();
     }
     
     @Path("{tutor_id: [0-9]+}/feedbacks")
     public ResourceFeedback toResouceFeedback() throws SQLException, NamingException, DataLayerException {
-        //passaggio alla risorsa feedbacks che gestisce i feedback
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        return new ResourceFeedback(datalayer);
+        
+        return new ResourceFeedback();
     }
     
     /*@Path("{user_id: [0-9]+}/bookings")

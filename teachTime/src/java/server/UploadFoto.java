@@ -46,7 +46,8 @@ public class UploadFoto extends HttpServlet {
         } finally {
             out.close();
         }*/
-        out = new FileOutputStream(new File(getServletContext().getInitParameter("foto.directory")+File.separator+(String.valueOf((long) (Math.random()*1000000000)))+".jpg"));
+        String name = (String.valueOf((long) (Math.random()*1000000000)))+".jpg";
+        out = new FileOutputStream(new File(getServletContext().getInitParameter("foto.directory")+File.separator+name));
         filecontent = foto_to_upload.getInputStream();
         int read = 0;
         final byte[] bytes = new byte[1024];
@@ -59,6 +60,11 @@ public class UploadFoto extends HttpServlet {
         filecontent.close();
         if (writer != null) {
             writer.close();
+        }
+        response.setContentType("text/plain"); 
+        response.setCharacterEncoding("UTF-8"); 
+        try (PrintWriter out2 = response.getWriter()) {
+            out2.println(name);
         }
      
      }

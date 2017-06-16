@@ -6,15 +6,11 @@
 package REST;
 
 import classes.Booking;
-import classes.PrivateLesson;
-import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
-import javax.annotation.Resource;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,13 +27,10 @@ import javax.ws.rs.core.UriInfo;
  *
  * @author david
  */
-public class ResourceBooking {
-    @Resource(name = "jdbc/teachtime")
-    public DataSource ds; 
-    private TeachTimeDataLayer datalayer;
-  
-    ResourceBooking(TeachTimeDataLayer datalayer){
-        this.datalayer = datalayer;
+public class ResourceBooking extends TeachTimeDataLayerSupplier{
+    
+    public ResourceBooking() throws SQLException, NamingException, DataLayerException {
+        super();
     }
     
     //testato
