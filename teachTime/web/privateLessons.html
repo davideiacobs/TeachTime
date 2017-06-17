@@ -6,12 +6,15 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>Ripetizioni Disponibili</title>
+        <title>TeachTime</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="custom.css"/>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     </head>
     <body>
+        <h2>Ripetizioni Disponibili</h2>
         <div>
             <label>Filtra per città, categoria e materia</label>
             <input id="city" type="text" placeholder="Inserisci città"/>
@@ -25,11 +28,18 @@ and open the template in the editor.
                 <option value="">Seleziona Materia</option>
             </select>
             <input id="filter" type="button" value="Cerca"/>
-            <h2 id="title_pl">Ripetizioni Disponibili</h2>
+           
             
         </div>
         
+        <section class="accordion" id="title_pl">
+
+        </section>
+        
+        
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="script.js"></script>
+        <script src="jquery.min.js"></script>
     </body>
 </html>
