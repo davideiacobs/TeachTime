@@ -31,15 +31,22 @@ public class ResourceAuth extends TeachTimeDataLayerSupplier{
     public Response postAuth( User u) throws SQLException, NamingException, DataLayerException{
        
         User utente = datalayer.getUtenteByMail(u.getEmail());
-        if(utente != null && utente.getPwd().equals(u.getPwd())){
-            Session session = new Session(); 
-            session.setUtente(utente);
-            session.setToken(Utility.generateToken());
-            datalayer.storeSessione(session);
-            return Response.ok(session.getToken()).build();
-        } else {
+        if(utente!=null){
+            String isLogged = datalayer.getTokenByUtente(utente.getKey());
+            if(isLogged !=null && !isLogged.equals("")){
+                return Response.serverError().build(); 
+            }
+            if(utente.getPwd().equals(u.getPwd())){
+                Session session = new Session(); 
+                session.setUtente(utente);
+                session.setToken(Utility.generateToken());
+                datalayer.storeSessione(session);
+                return Response.ok(session.getToken()).build();
+            } else {
+                return Response.serverError().build();
+            }     
+        }else{
             return Response.serverError().build();
-  
         }
     }
     
@@ -48,7 +55,6 @@ public class ResourceAuth extends TeachTimeDataLayerSupplier{
     @Path("logout")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postAuthDestroy(String token) throws SQLException, NamingException, DataLayerException{
-        
         datalayer.deleteSessione(token);
         return Response.noContent().build();   
     }

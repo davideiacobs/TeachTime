@@ -567,6 +567,16 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 uUtente.setInt(5, key);
                 uUtente.executeUpdate();
             } else { //insert
+                try{
+                    sUtenteByMail.setString(1, utente.getEmail());
+                    try(ResultSet rs = sUtenteByMail.executeQuery()){
+                        if(rs.next()){
+                            return;
+                        }
+                    }
+                }catch (SQLException ex) {
+                        throw new DataLayerException("Unable to store utente", ex);
+                }
                 iUtente.setString(1, utente.getNome());
                 iUtente.setString(2, utente.getCognome());
                 iUtente.setString(3, utente.getEmail());

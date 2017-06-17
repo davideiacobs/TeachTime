@@ -11,8 +11,8 @@
         url="jdbc:mysql://localhost:3308/teachtime"
         username="root"
         password="turbo-webeng"
-        maxActive="150"
-        maxIdle="75"
+        maxActive="500"
+        maxIdle="250"
         maxWait="10000"
     />
 </Context>

@@ -49,16 +49,18 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
         return Response.serverError().build();
     }
     
-    /*@Path("{id: [0-9]+}")
+    @Path("{id: [0-9]+}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBooking(@PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key) throws DataLayerException, SQLException, NamingException{
-        TeachTimeDataLayer datalayer2 = new TeachTimeDataLayer(ds);
-        datalayer2.init();
-        Booking b = datalayer2.getPrenotazione(key);
-        //b.setRipetizione(datalayer.getRipetizione(ripetizione_key));
-        return Response.ok(b).build();
-    }*/
+        
+        Booking b = datalayer.getPrenotazione(key);
+        if(b!=null){
+            return Response.ok(b).build();
+        }else{
+            return Response.serverError().build();
+        }
+    }
     
     //testato
     @POST
@@ -70,7 +72,7 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
         //controllo se il token di sessione è lo stesso dell'utente che si sta prentoando
         if(datalayer.getTokenByUtente(prenotazione.getStudente_key()).equals(token)){
             prenotazione.setRipetizione_key(ripetizione_key);
-            prenotazione.setDirty(true);
+            //prenotazione.setDirty(true);
             int key = datalayer.storePrenotazione(prenotazione);
             if(key == 0){
                 //l'utente ha già effettuato la stessa identica prenotazione
@@ -89,6 +91,8 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
     public Response putBooking(Booking prenotazione,@PathParam("booking_id") int key, @PathParam("SID") String token,
             @PathParam("privateLesson_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
         //aggiornamento prenotazione per id 
+        
+        //BASTA INDICARE STUDENT_ID, VOTO E RECENSIONE
         prenotazione.setKey(key);
         prenotazione.setRipetizione_key(ripetizione_key);
         

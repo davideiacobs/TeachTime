@@ -152,7 +152,7 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         return Response.serverError().build();
     }
     
-    @Path("{privateLesson_id: [0-9]+}/bookings/{id: [0-9]+}")
+    /*@Path("{privateLesson_id: [0-9]+}/bookings/{id: [0-9]+}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBooking(@PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key) throws DataLayerException, SQLException, NamingException{
@@ -160,7 +160,7 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         Booking b = datalayer.getPrenotazione(key);
         //b.setRipetizione(datalayer.getRipetizione(ripetizione_key));
         return Response.ok(b).build();
-    }
+    }*/
     
     @Path("{privateLesson_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
