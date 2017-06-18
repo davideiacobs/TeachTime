@@ -15,8 +15,28 @@ $("#select_category").on("change", function(){
               success: function(response) {
                 var i = 0;
                 for(i;i<response.length;i++){
-                    console.log(response[i]);
+                   
                     $("#select_subject").append("<option value="+response[i].key+">"+response[i].nome+"</option>");
+                }
+              }
+        });   
+    }
+});
+
+
+$("#select_category_insert").on("change", function(){
+    
+    $("#select_subject_insert option:not([value='']").remove();
+    if(this.value!=''){
+        $.ajax({
+              datatype:'json',
+              type: 'get',
+              url: 'http://localhost:8080/teachTime/MainApplication/rest/categories/'+this.value+'/subjects',
+              success: function(response) {
+                var i = 0;
+                for(i;i<response.length;i++){
+                    
+                    $("#select_subject_insert").append("<option value="+response[i].key+">"+response[i].nome+"</option>");
                 }
               }
         });   
@@ -79,17 +99,16 @@ $("#filter").on("click",function(){
                     $("."+tutor_id).before(parseFloat(output.substring(0,3)));
     
                 });
-               
                 $("#title_pl").append("<section class='privateLessons'><header aria-controls='contentA"+(i+1)+"' aria-expanded='true'>\n\
                                 <h2>"+capitalize(response[i].tutor.nome)+" "+capitalize(response[i].tutor.cognome[0])+". &nbsp; \n\
                                 ("+age(response[i].tutor.dataDiNascita)+" anni) &nbsp <i class='fa fa-star "+response[i].tutor.key+"'>\n\
                                 </i>&nbsp;&nbsp;"+response[i].costo+"€/h</h2></header><div id='contentA"+(i+1)+
-                                "' aria-hidden='false'><p><b>Città:</b> "+
+                                "'aria-hidden='false'><p><b>Città:</b> "+
                                 response[i].città+"</p><p><b>Luogo di incontro:</b> "+
                                 response[i].luogoIncontro+"</p><p id='appendhere"+i+"'><b>Materie:</b> </p><p> <b> Descrizione: </b>"+
                                 response[i].descr+"</div></section>");
                 if(response[i].tutor.imgProfilo!=="" && response[i].tutor.imgProfilo!=null){
-                    $("header").after("<img src='fotoProfilo/"+response[i].tutor.imgProfilo+"' class='img-circle'>");
+                    $("#contentA"+(i+1)).prepend("<img src='fotoProfilo/"+response[i].tutor.imgProfilo+"' class='img-circle'>");
                 }
                 var k = 0;
                 for(k;k<response[i].materie.length;k++){
@@ -129,7 +148,7 @@ function makeCollapsible(container)  {
             colbody.attr("aria-hidden","false");
             colindicator.children("i").addClass("fa-sort-desc");
             colindicator.children("i").removeClass("fa-sort-asc");
-            
+
             
         });				
     });
@@ -142,7 +161,7 @@ function makeCollapsible(container)  {
             colbody.attr("aria-hidden","true");  
             colindicator.children("i").addClass("fa-sort-asc"); 
             colindicator.children("i").removeClass("fa-sort-desc");
-           
+
         });
     });
     
@@ -193,5 +212,133 @@ $(function() {
     $(".accordion").each(function(){ 
         makeAccordion(this);
     });	
+    makeLogin($("#login-trigger"));
+    loginBtn($("#login_btn"));
+    checkLogin();
     
 });
+
+
+function makeLogin(login){
+    login.on("click",function() {
+        $(this).next('#login-content').slideToggle();
+        $(this).toggleClass('active');                    
+        
+        if ($(this).hasClass('active')){
+            $(this).find('span').html('&#x25B2;');
+        }else{ 
+            $(this).find('span').html('&#x25BC;');
+        }
+    });
+}
+
+
+
+function loginBtn(loginBtn){
+   loginBtn.on("click", function(){
+   var email = $("#email").val();
+   var pwd = $("#password").val();
+   if(email.indexOf("@")!= -1){
+       $.ajax({
+        contentType: "application/json",
+        type:'post',
+        data:JSON.stringify({
+            email: email,
+            pwd: pwd
+        }),
+        url:'http://localhost:8080/teachTime/MainApplication/rest/auth/login',
+        success: function(response) {
+           
+           if(response!=0){
+               localStorage['myToken'] = response;
+               logoutNav();
+               checkLogin();
+           }  
+        }
+    });
+   }
+    
+});
+}
+
+
+function logoutNav(){
+    $("#nav_option").empty();
+    $("#nav_option").append("<li id='logout'><a id='logout-trigger' href='#'>Logout \n\
+                            </a><i class='fa fa-sign-out'></i></li>");
+    makeLogout($("#logout-trigger"));
+}
+
+function loginNav(){
+    $("#nav_option").empty();
+    $("#nav_option").append("<li id='login'><a id='login-trigger' href='#'> \n\
+                    Login <span>&#x25BC;</span></a><div id='login-content'><div><input id='email'\n\
+                    type='email' name='Email' placeholder='Your email address' required><input \n\
+                    id='password' type='password' name='Password' placeholder='Password' required><input type='submit' \n\
+                    id='login_btn' value='Login'></div></div></li>");
+    makeLogin($("#login-trigger"));
+    loginBtn($("#login_btn"));
+}
+
+
+function makeLogout(logout){
+    logout.on("click", function(){     
+        var myToken = localStorage.getItem('myToken');
+
+        $.ajax({
+            contentType: "text/plain",
+            dataType:"text",
+            type:'post',
+            data:myToken,
+            url:'http://localhost:8080/teachTime/MainApplication/rest/auth/logout',
+            success: function(response) {
+                localStorage.removeItem('myToken');
+                loginNav();
+                checkLogin();
+            }
+        });
+        
+    });
+ }
+ 
+ 
+ function checkLogin(){
+     var myToken = localStorage.getItem('myToken');
+     if(myToken!=null && myToken!=""){
+         $("#insert").css({'display':'block'});
+         logoutNav();
+     }else{
+         $("#insert").css({'display':'none'});
+         loginNav();
+     }
+ }
+ 
+ 
+ $("#add_subject_btn").on("click",function(){
+    var category = $("#select_category_insert option:selected");
+    var subject = $("#select_subject_insert option:selected");
+    if(subject.val()!=''){
+        $("#riepilogo").css({'display':'block'});
+        if($("#selected_category").length == 0){
+            $("#riepilogo_materie").after("<p id='selected_category'><b>Categoria:</b> "+category.text()+"</p>\n\
+                                             <p id='selected_subjects'><b>Materie:</b> "+subject.text()+"</p>");
+            $("#select_category_insert").attr("disabled","disabled");
+            subject.attr("disabled","disabled");
+        }else{
+            $("#selected_subjects").append(", "+subject.text());
+             subject.attr("disabled","disabled");
+        }
+    }
+ });
+ 
+ 
+ $("#reset").on("click", function(){
+     $("#selected_category").empty();
+     $("#selected_subjects").empty();
+     $("#riepilogo").css({'display':'none'});
+     $("#select_category_insert").prop("disabled",false);
+     $("#select_subject_insert option").each(function(){
+         $(this).prop("disabled",false);
+     })
+     
+ });

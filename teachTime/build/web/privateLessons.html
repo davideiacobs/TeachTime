@@ -14,6 +14,51 @@ and open the template in the editor.
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     </head>
     <body>
+        
+        <header>
+            <nav>
+                <ul id="nav_option">
+                    <li id="login">
+                        <a id="login-trigger" href="#">
+                            Login <span>&#x25BC;</span>
+                        </a>
+                        <div id="login-content">
+                            <div>
+                                    <input id="email" type="email" name="Email" placeholder="La tua Email">   
+                                    <input id="password" type="password" name="Password" placeholder="La tua Password">
+                                    <input type="submit" id="login_btn" value="Login">
+                            </div>
+                        </div>                     
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div id="insert">
+            <h2> Inserisci una nuova ripetizione </h2>
+            <div id="insert-content">
+                <div>
+                    <select id="select_category_insert">
+                        <option value="" selected="selected">Seleziona Categoria</option>
+                        <option value="1">Informatica</option>
+                        <option value="2">Matematica</option>
+                        <option value="3">Fisica</option>
+                    </select>
+                     <select id="select_subject_insert">
+                        <option value="">Seleziona Materia</option>
+                     </select>
+                    <input type="button" id="add_subject_btn" value="Aggiungi"/>
+                    <div id="riepilogo">
+                        <h5 id="riepilogo_materie">Riepilogo materie</h5>
+                        <input type="button" id="reset" value="reset"/>
+                    </div>
+                </div>
+                <input id="città" type="text" name="città" placeholder="Inserisci la città"/>
+                <input id="luogoIncontro" type="text" name="luogoIncontro" placeholder="Luogo di incontro" />
+                <input id="costo" type="number" min="0" name="costo" placeholder="€/h"/>
+                <textarea id="descr" name="descr" placeholder="Descrizione e info aggiuntive"></textarea>
+                <input type="submit" id="insert_btn" value="Inserisci"/>
+            </div>
+        </div>
         <h2>Ripetizioni Disponibili</h2>
         <div>
             <label>Filtra per città, categoria e materia</label>

@@ -803,13 +803,16 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
     }
     
-    public void deleteSessione(String token) throws DataLayerException {
+    public int deleteSessione(String token) throws DataLayerException {
         try{
             dSessione.setString(1, token);
-            dSessione.executeUpdate();
+            if(dSessione.executeUpdate()==1){
+                return 1;
+            }
         }catch (SQLException ex) {
             throw new DataLayerException("Unable to delete sessione", ex);
         }
+        return 0;
     }
 
      public int storePrenotazione(Booking prenotazione) throws DataLayerException {
