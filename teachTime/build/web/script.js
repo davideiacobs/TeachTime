@@ -90,14 +90,15 @@ $("#filter").on("click",function(){
           success: function(response) {
             var i = 0;           
             for(i;i<response.length;i++){
-                console.log(response[i]);
+                
                 avg(response[i].tutor.key, function(output, tutor_id){
                     
                     if(output==""){
                         output="0";
                     }
-                    $("."+tutor_id).before(parseFloat(output.substring(0,3)));
-    
+                    if($(".star_tutorid"+tutor_id).length == 0 ){
+                        $("."+tutor_id).before("<spam class='star_tutorid"+tutor_id+"'>"+parseFloat(output.substring(0,3))+"</spam>");
+                    }
                 });
                 $("#title_pl").append("<section class='privateLessons'><header aria-controls='contentA"+(i+1)+"' aria-expanded='true'>\n\
                                 <h2>"+capitalize(response[i].tutor.nome)+" "+capitalize(response[i].tutor.cognome[0])+". &nbsp; \n\
@@ -317,6 +318,7 @@ function makeLogout(logout){
  $("#add_subject_btn").on("click",function(){
     var category = $("#select_category_insert option:selected");
     var subject = $("#select_subject_insert option:selected");
+    var input = $("#categorysubjects").val();
     if(subject.val()!=''){
         $("#riepilogo").css({'display':'block'});
         if($("#selected_category").length == 0){
@@ -324,9 +326,11 @@ function makeLogout(logout){
                                              <p id='selected_subjects'><b>Materie:</b> "+subject.text()+"</p>");
             $("#select_category_insert").attr("disabled","disabled");
             subject.attr("disabled","disabled");
+            $("#categorysubjects").val(category.val()+";"+$.trim(subject.text()));
         }else{
-            $("#selected_subjects").append(", "+subject.text());
+            $("#selected_subjects").append(", "+$.trim(subject.text()));
              subject.attr("disabled","disabled");
+             $("#categorysubjects").val(input+","+$.trim(subject.text()));
         }
     }
  });
@@ -339,6 +343,49 @@ function makeLogout(logout){
      $("#select_category_insert").prop("disabled",false);
      $("#select_subject_insert option").each(function(){
          $(this).prop("disabled",false);
-     })
+     });
+     $("#categorysubjects").val("");
+     
+ });
+ 
+ 
+ $("#insert_btn").on("click", function(){
+     var myToken = localStorage.getItem('myToken');
+     var categorysubjects = $("#categorysubjects").val();
+     var category_key = parseInt(categorysubjects.split(";")[0]);
+     var subjects = categorysubjects.split(";")[1].split(",");
+     var i = 0;
+     var subjects_list = {};
+     for(i;i<subjects.length;i++){
+         subjects_list["nome"]=subjects[i];
+     }
+     var città = $("#città").val();
+     var luogoIncontro = $("#luogoIncontro").val();
+     var costo = parseInt($("#costo").val());
+     var descr = $("#descr").val();
+     console.log(category_key);
+     console.log(subjects);
+     console.log(città);
+     console.log(luogoIncontro);
+     console.log(costo);
+     console.log(descr);
+     
+      $.ajax({
+            contentType: "application/json",
+            dataType:"json",
+            type:'post',
+            data:JSON.stringify({
+                città:città,
+                luogoIncontro:luogoIncontro,
+                costo:costo,
+                descr:descr,
+                categoria_key:category_key,
+                materie:[subjects_list]
+            }),
+            url:'http://localhost:8080/teachTime/MainApplication/rest/auth/'+myToken+'/privateLessons',
+            success: function(response) {
+               console.log(response);
+            }
+        });
      
  });

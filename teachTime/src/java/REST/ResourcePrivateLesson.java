@@ -5,13 +5,14 @@
  */
 package REST;
 
-import classes.Booking;
+
 import classes.PrivateLesson;
 import classes.Subject;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import javax.mail.internet.HeaderTokenizer;
 import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -60,11 +61,23 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
 
         return Response.created(u).build();
     }  
-    
+   
+    /*@GET 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPrivateLessonsByUser(@PathParam("SID") String session_id) throws DataLayerException{
+         int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
+        List<PrivateLesson> l = datalayer.getRipetizioniByTutor(user_key);
+        for(PrivateLesson r : l){ 
+                List<Subject> materie = r.getMaterie();
+                r.setMaterie(materie);
+                r.setCategoria_key(materie.get(0).getCategoria_key());
+            }
+        return Response.ok(l).build();
+    }*/
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPrivateLesson(@QueryParam("city") String città, @QueryParam("category") String categoria
+    public Response getPrivateLessons(@QueryParam("city") String città, @QueryParam("category") String categoria
             , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
         
         //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
@@ -97,8 +110,8 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
             return Response.serverError().build();
         }
     } 
-     
-     
+    
+    
     //testato
     @GET
     @Path("{id: [0-9]+}")
