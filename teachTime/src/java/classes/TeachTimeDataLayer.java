@@ -32,6 +32,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà, sPrenotazioneByKey;
     private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail, iSessione;
     private PreparedStatement sSessioneById, dSessione, sSessioneByUtente, sSessioneByToken;
+    private PreparedStatement sRipetizioniByCittàLogged, sRipetizioniByMateriaLogged, sRipetizioniByCategoriaLogged;
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -62,9 +63,11 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             iRipetizioneHasMateria = connection.prepareStatement("INSERT INTO ripetizione_has_materia (ripetizione_ID,materia_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
             sRipetizioneByTutor = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE tutor_ID=?");
             sRipetizioneByCategoria = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");      
+            sRipetizioniByCategoriaLogged = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? AND r.tutor_ID<>?");      
             
             
             sRipetizioneByMateria = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");
+            sRipetizioniByMateriaLogged = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? AND r.tutor_ID<>?");
             
             
             dRipetizione = connection.prepareStatement("DELETE FROM ripetizione WHERE ID=?");
@@ -75,9 +78,9 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sPrenotazioneBySuperkey = connection.prepareStatement("SELECT * FROM prenotazione WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=? AND data=?");
             //uPrenotazione = connection.prepareStatement("UPDATE prenotazione SET stato=?, voto=?, recensione=? WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=?");
             uPrenotazione = connection.prepareStatement("UPDATE prenotazione SET stato=?, voto=?, recensione=? WHERE ID=?");
-            //iPrenotazione = connection.prepareStatement("INSERT INTO prenotazione (ripetizione_ID, studente_ID, costo, descrizione, stato, data, materia_ID, materia_categoria_ID) VALUES (?,?,?,?,?,?,?,?)");
             iPrenotazione = connection.prepareStatement("INSERT INTO prenotazione (ripetizione_ID, studente_ID, costo, descrizione, stato, data, materia_ID, materia_categoria_ID) VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             sRipetizioneByCittà = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE citta=?");
+            sRipetizioniByCittàLogged = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE citta=? AND tutor_ID<>?");
           
             
             sPrenotazioneByUtente = connection.prepareStatement("SELECT prenotazione.* FROM prenotazione WHERE studente_ID=? AND stato=1 AND data <= CURDATE()");
@@ -405,10 +408,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
         return 0;
     }
-
-     
-     
-     
+  
     public List<Subject> getMaterieByCategoria(int categoria_key) throws DataLayerException{
         List<Subject> result = new ArrayList<>();
         try{
@@ -493,7 +493,22 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return result;
     }
     
-    
+     public List<PrivateLesson> getRipetizioniByCittàLogged(String città, int user_key) throws DataLayerException{
+        List<PrivateLesson> result = new ArrayList<>();
+        try {
+            sRipetizioniByCittàLogged.setString(1, città); //setta primo parametro query a project_key
+            sRipetizioniByCittàLogged.setInt(2, user_key);
+            try (ResultSet rs = sRipetizioniByCittàLogged.executeQuery()) {
+                while(rs.next()){
+                 result.add((PrivateLesson) getRipetizione(rs.getInt("ID")));
+
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load repetition by città", ex);
+        }
+        return result;
+    }
     
      
      
@@ -504,6 +519,26 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sRipetizioneByCategoria.setString(2, città);
 
             try (ResultSet rs = sRipetizioneByCategoria.executeQuery()) {
+                while(rs.next()){
+                 result.add((PrivateLesson) getRipetizione(rs.getInt("ID")));
+
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load repetition by filter", ex);
+        }
+        return result;
+    }
+    
+    
+    public List<PrivateLesson> getRipetizioniByCategoriaLogged(String città, int categoria, int user_key) throws DataLayerException{
+        List<PrivateLesson> result = new ArrayList<>();
+        try {
+            sRipetizioniByCategoriaLogged.setInt(1, categoria);
+            sRipetizioniByCategoriaLogged.setString(2, città);
+            sRipetizioniByCategoriaLogged.setInt(3, user_key);
+
+            try (ResultSet rs = sRipetizioniByCategoriaLogged.executeQuery()) {
                 while(rs.next()){
                  result.add((PrivateLesson) getRipetizione(rs.getInt("ID")));
 
@@ -535,6 +570,26 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
         return result;
     }
+    
+    
+    public List<PrivateLesson> getRipetizioniByMateriaLogged(String città, int materia, int user_key) throws DataLayerException{
+        List<PrivateLesson> result = new ArrayList<>();
+        try {
+            sRipetizioniByMateriaLogged.setInt(1, materia);
+            sRipetizioniByMateriaLogged.setString(2, città);
+            sRipetizioniByMateriaLogged.setInt(3, user_key);
+            try (ResultSet rs = sRipetizioniByMateriaLogged.executeQuery()) {
+                while(rs.next()){
+                 result.add((PrivateLesson) getRipetizione(rs.getInt("ID")));
+
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load repetition by filter", ex);
+        }
+        return result;
+    }
+    
 
     
     public String getTokenByUtente(int utente_key) throws DataLayerException{

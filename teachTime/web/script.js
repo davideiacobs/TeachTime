@@ -4,6 +4,10 @@
  * and open the template in the editor.
  */
 
+ 
+
+
+
 $("#select_category").on("change", function(){
     
     $("#select_subject option:not([value='']").remove();
@@ -14,8 +18,8 @@ $("#select_category").on("change", function(){
               url: 'http://localhost:8080/teachTime/MainApplication/rest/categories/'+this.value+'/subjects',
               success: function(response) {
                 var i = 0;
-                for(i;i<response.length;i++){
-                   
+                var subjects = [response.length];
+                for(i;i<response.length;i++){         
                     $("#select_subject").append("<option value="+response[i].key+">"+response[i].nome+"</option>");
                 }
               }
@@ -76,7 +80,66 @@ function avg(tutor_id, handledata){
 }
 
 
+function getRipetizioniLogged(token){
+    
+    $(".privateLessons").empty();
+    $.ajax({
+          datatype:'json',
+          type: 'get',
+          url: 'http://localhost:8080/teachTime/MainApplication/rest/auth/'+token+'/privateLessons',
+          data: {
+           city:$("#city").val(),
+           category:$("#select_category").val(),
+           subject:$("#select_subject").val()
+          },
+          success: function(response) {
+            var i = 0;           
+            for(i;i<response.length;i++){
+                
+                avg(response[i].tutor.key, function(output, tutor_id){
+                    
+                    if(output==""){
+                        output="0";
+                    }
+                    if($(".star_tutorid"+tutor_id).length == 0 ){
+                        $("."+tutor_id).before("<spam class='star_tutorid"+tutor_id+"'>"+parseFloat(output.substring(0,3))+"</spam>");
+                    }
+                });
+                $("#title_pl").append("<section class='privateLessons'><header aria-controls='contentA"+(i+1)+"' aria-expanded='true'>\n\
+                                <h2>"+capitalize(response[i].tutor.nome)+" "+capitalize(response[i].tutor.cognome[0])+". &nbsp; \n\
+                                ("+age(response[i].tutor.dataDiNascita)+" anni) &nbsp <i class='fa fa-star "+response[i].tutor.key+"'>\n\
+                                </i>&nbsp;&nbsp;"+response[i].costo+"€/h</h2></header><div id='contentA"+(i+1)+
+                                "'aria-hidden='false'><p><b>Città:</b> "+
+                                response[i].città+"</p><p><b>Luogo di incontro:</b> "+
+                                response[i].luogoIncontro+"</p><p id='appendhere"+i+"'><b>Materie:</b> </p><p> <b> Descrizione: </b>"+
+                                response[i].descr+"</div></section>");
+                if(response[i].tutor.imgProfilo!=="" && response[i].tutor.imgProfilo!=null){
+                    $("#contentA"+(i+1)).prepend("<img src='fotoProfilo/"+response[i].tutor.imgProfilo+"' class='img-circle'>");
+                }
+                var k = 0;
+                for(k;k<response[i].materie.length;k++){
+                    if(k==response[i].materie.length-1){
+                        $("#appendhere"+i).append(" "+response[i].materie[k].nome); 
+                    }else{
+                        $("#appendhere"+i).append(" "+response[i].materie[k].nome+","); 
+                    }
+                }
+                $(".accordion").each(function(){ 
+                    makeAccordion(this);
+                });
+            }
+            
+          }
+    });
+    
+}
+
+
 $("#filter").on("click",function(){
+    var token = localStorage.getItem('myToken');
+    if(token != null && token!="" && token != undefined){
+        getRipetizioniLogged(token);
+    }else{
     $(".privateLessons").empty();
     $.ajax({
           datatype:'json',
@@ -126,7 +189,7 @@ $("#filter").on("click",function(){
             
           }
     });
-
+}
 });
 
 
@@ -204,8 +267,14 @@ function makeAccordion(container) {
 
 
 $(function() {
-    //agganciamo come estensione di JQeury una funzione che richiama la nostra makeCollapsible su tutti gli elementi selezionati
-    //ritorniamo this (restituito a sua volta da thiseach) per permettere la concatenazione dei metodi di JQuery
+    $("#select_category_insert").val("");
+    $("#select_category").val("");
+    $("#nuova_materia").val("");
+    $("#select_subject_insert").val("");
+    $("#select_subject").val("");
+    $("#nuova_materia").on("keyup", function(){
+        $("#select_subject_insert").val("");
+    });
     jQuery.fn.extend({awdColl: function(){return this.each(function(){makeCollapsible(this)});}});
     
     $(".collapsible.v0:first").awdColl();
@@ -254,6 +323,7 @@ function loginBtn(loginBtn){
                localStorage['myToken'] = response;
                logoutNav();
                checkLogin();
+               $(".privateLessons").empty();
            }  
         }
     });
@@ -294,6 +364,7 @@ function makeLogout(logout){
             url:'http://localhost:8080/teachTime/MainApplication/rest/auth/logout',
             success: function(response) {
                 localStorage.removeItem('myToken');
+                $(".privateLessons").empty();
                 loginNav();
                 checkLogin();
             }
@@ -306,10 +377,12 @@ function makeLogout(logout){
  function checkLogin(){
      var myToken = localStorage.getItem('myToken');
      if(myToken!=null && myToken!=""){
-         $("#insert").css({'display':'block'});
+         //$("#insert").css({'display':'block'});
+         $("#insert").removeClass("hidden");
          logoutNav();
      }else{
-         $("#insert").css({'display':'none'});
+         //$("#insert").css({'display':'none'});
+         $("#insert").addClass("hidden");
          loginNav();
      }
  }
@@ -317,10 +390,12 @@ function makeLogout(logout){
  
  $("#add_subject_btn").on("click",function(){
     var category = $("#select_category_insert option:selected");
+    var new_subject = $("#nuova_materia").val();
     var subject = $("#select_subject_insert option:selected");
     var input = $("#categorysubjects").val();
     if(subject.val()!=''){
-        $("#riepilogo").css({'display':'block'});
+        //$("#riepilogo").css({'display':'block'});
+        $("#riepilogo").removeClass("hidden");
         if($("#selected_category").length == 0){
             $("#riepilogo_materie").after("<p id='selected_category'><b>Categoria:</b> "+category.text()+"</p>\n\
                                              <p id='selected_subjects'><b>Materie:</b> "+subject.text()+"</p>");
@@ -332,14 +407,36 @@ function makeLogout(logout){
              subject.attr("disabled","disabled");
              $("#categorysubjects").val(input+","+$.trim(subject.text()));
         }
+        $("#select_subject_insert").val("");
+        
+    }else{
+        if(new_subject!=''){
+            $("#riepilogo").removeClass("hidden");
+            if($("#selected_category").length == 0){
+                $("#riepilogo_materie").after("<p id='selected_category'><b>Categoria:</b> "+category.text()+"</p>\n\
+                                                 <p id='selected_subjects'><b>Materie:</b> "+new_subject+"</p>");
+                $("#select_category_insert").attr("disabled","disabled");
+                
+                $("#categorysubjects").val(category.val()+";"+new_subject);
+            }else{
+                $("#selected_subjects").append(", "+new_subject);
+                 
+                 $("#categorysubjects").val(input+","+new_subject);
+            }
+            $("#nuova_materia").val("");
+        }
     }
  });
  
  
  $("#reset").on("click", function(){
+     $("#select_subject_insert").val("");
+     $("#select_category_insert").val("");
      $("#selected_category").empty();
+     $("#selected_category").remove();
      $("#selected_subjects").empty();
-     $("#riepilogo").css({'display':'none'});
+     //$("#riepilogo").css({'display':'none'});
+     $("#riepilogo").addClass("hidden");
      $("#select_category_insert").prop("disabled",false);
      $("#select_subject_insert option").each(function(){
          $(this).prop("disabled",false);
@@ -348,44 +445,71 @@ function makeLogout(logout){
      
  });
  
+ function resetInsert(){
+      $("#reset").trigger("click");  
+      $("select").val("");
+      $("#città").val("");
+      $("#luogoIncontro").val("");
+      $("#costo").val("");
+      $("#descr").val("");
+      $("#nuova_materia").val("");
+      $("#insert").scrollTop(0);
+ }
+     
+ function msg_ko(){
+     $("#msg").removeClass("hidden");
+     $("#msg").removeClass("msg_ok");
+     $("#msg").addClass("msg_ko");
+     $("#msg").text("Qualcosa è andato storto..");
+ }
  
  $("#insert_btn").on("click", function(){
      var myToken = localStorage.getItem('myToken');
      var categorysubjects = $("#categorysubjects").val();
-     var category_key = parseInt(categorysubjects.split(";")[0]);
-     var subjects = categorysubjects.split(";")[1].split(",");
-     var i = 0;
-     var subjects_list = {};
-     for(i;i<subjects.length;i++){
-         subjects_list["nome"]=subjects[i];
-     }
-     var città = $("#città").val();
-     var luogoIncontro = $("#luogoIncontro").val();
-     var costo = parseInt($("#costo").val());
-     var descr = $("#descr").val();
-     console.log(category_key);
-     console.log(subjects);
-     console.log(città);
-     console.log(luogoIncontro);
-     console.log(costo);
-     console.log(descr);
-     
-      $.ajax({
-            contentType: "application/json",
-            dataType:"json",
-            type:'post',
-            data:JSON.stringify({
-                città:città,
-                luogoIncontro:luogoIncontro,
-                costo:costo,
-                descr:descr,
-                categoria_key:category_key,
-                materie:[subjects_list]
-            }),
-            url:'http://localhost:8080/teachTime/MainApplication/rest/auth/'+myToken+'/privateLessons',
-            success: function(response) {
-               console.log(response);
+     console.log(categorysubjects);
+     if(categorysubjects.indexOf(";") != -1){
+         
+        var category_key = parseInt(categorysubjects.split(";")[0]);
+            
+            var subjects = categorysubjects.split(";")[1].split(",");
+            var i = 0;
+            var subjects_list = [];
+            for(i;i<subjects.length;i++){
+                subjects_list[i]={"nome":subjects[i]};
+                console.log(subjects_list);
             }
-        });
-     
+            var città = $("#città").val();
+            var luogoIncontro = $("#luogoIncontro").val();
+            var costo = parseInt($("#costo").val());
+            var descr = $("#descr").val();
+            if(città!="" && luogoIncontro!="" && costo!=""){
+
+                $.ajax({
+                      contentType: "application/json",
+                      dataType:"json",
+                      type:'post',
+                      data:JSON.stringify({
+                          città:città,
+                          luogoIncontro:luogoIncontro,
+                          costo:costo,
+                          descr:descr,
+                          categoria_key:category_key,
+                          materie:subjects_list
+                      }),
+                      url:'http://localhost:8080/teachTime/MainApplication/rest/auth/'+myToken+'/privateLessons',
+                      success: function(response) {
+
+
+                      }
+                  });
+
+               resetInsert();
+               $("#msg").removeClass("hidden");
+           }else{
+               msg_ko();
+           }
+        }else{
+            msg_ko();
+           }
+    
  });

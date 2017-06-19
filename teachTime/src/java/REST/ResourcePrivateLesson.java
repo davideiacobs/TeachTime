@@ -12,7 +12,6 @@ import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
-import javax.mail.internet.HeaderTokenizer;
 import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -74,6 +73,69 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
             }
         return Response.ok(l).build();
     }*/
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPrivateLessonsLogged(@PathParam("SID") String session_id, @QueryParam("city") String città, @QueryParam("category") String categoria
+            , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
+       
+        List<PrivateLesson> result = null;
+        int user_key;
+        if(session_id!=null){
+            //LOGGATO
+            user_key = datalayer.getSessionByToken(session_id).getUtente_key();
+            if((!"".equals(città) && città != null) || (!"".equals(tutor_key) && tutor_key != null)){
+                if(materia != null && !"".equals(materia)){
+                    //filtro per città, categoria e materia
+                    result = datalayer.getRipetizioniByMateriaLogged(città, Integer.parseInt(materia),user_key);
+                }else{
+                    if(categoria != null && !"".equals(categoria)){
+                        result = datalayer.getRipetizioniByCategoriaLogged(città, Integer.parseInt(categoria),user_key);   
+                    }else{
+                        //filtro per città
+                        result = datalayer.getRipetizioniByCittàLogged(città, user_key); 
+                    }
+                }
+            }else{
+                result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
+            }
+        }else{
+            //NON LOGGATO
+        //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
+            if((!"".equals(città) && città != null) || (!"".equals(tutor_key) && tutor_key != null)){
+                if(materia != null && !"".equals(materia)){
+                    //filtro per città, categoria e materia
+                    result = datalayer.getRipetizioniByMateria(città, Integer.parseInt(materia));
+                }else{
+                    if(categoria != null && !"".equals(categoria)){
+                        result = datalayer.getRipetizioniByCategoria(città, Integer.parseInt(categoria));   
+                    }else{
+                        //filtro per città
+                        result = datalayer.getRipetizioniByCittà(città); 
+                    }
+                }
+            }else{
+                
+                result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
+            }
+           
+        
+        } 
+        if(result!=null){
+            for(PrivateLesson r : result){ 
+                r.setTutor(datalayer.getUtente(r.getTutor_key()));
+                List<Subject> materie = r.getMaterie();
+                r.setMaterie(materie);
+                r.setCategoria_key(materie.get(0).getCategoria_key());
+            }
+            return Response.ok(result).build();            
+        }else {
+            return Response.serverError().build();
+        }
+        
+    }  
+     
+     
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
