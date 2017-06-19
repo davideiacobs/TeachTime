@@ -35,21 +35,22 @@ public class ResourceUser extends TeachTimeDataLayerSupplier{
         super();
     }
    
-    //testato
+    
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON) 
     public Response getUser(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException {
-        
+        //recupero oggetto utente (NO PWD)
         User utente = datalayer.getUtente(n);   
         return Response.ok(utente).build();
     }
 
-    //testato
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postUser(@Context UriInfo c, User utente) throws SQLException, NamingException, DataLayerException {
         
+        //inserimento nuovo utente nel sistema
         datalayer.storeUtente(utente);
         //restituiamo la uri per recuperare le info relative all'utente appena creato
         URI u = c.getAbsolutePathBuilder()
@@ -58,12 +59,13 @@ public class ResourceUser extends TeachTimeDataLayerSupplier{
         return Response.created(u).build();
     }  
     
-    //testato
+    
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response putUser(@PathParam("SID") String session_id, @PathParam("id") int utente_key, User u) throws SQLException, NamingException, DataLayerException {
-       
+        
+        //aggiornamento utente
         //controllare se session id è uguale a quello dell'utente
         if(datalayer.getTokenByUtente(utente_key).equals(session_id)){
             u.setDirty(true);
@@ -77,53 +79,13 @@ public class ResourceUser extends TeachTimeDataLayerSupplier{
     
     @Path("{user_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
-        
+        //passaggio alla risorsa prenotazione
         return new ResourceBooking();
     }
     
     @Path("{tutor_id: [0-9]+}/feedbacks")
     public ResourceFeedback toResouceFeedback() throws SQLException, NamingException, DataLayerException {
-        
+        //passaggio alla risorsa feedback
         return new ResourceFeedback();
     }
-    
-    /*@Path("{user_id: [0-9]+}/bookings")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getBookingByUser(@PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
-        
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        
-        List<Prenotation> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
-        
-        return Response.ok(prenotazioni).build();
-        
-    }*/
-    
-    
-    /*@Path("{tutor_id: [0-9]+}/feedbacks")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getFeedbacksList(@PathParam("tutor_id") int tutor_key) throws SQLException, NamingException, DataLayerException, NamingException{
-        
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        
-        List<Prenotation> prenotazioni = datalayer.getFeedbacksByTutor(tutor_key);
-        
-        return Response.ok(prenotazioni).build();
-    }
-    
-    @Path("{tutor_id: [0-9]+}/feedbacks/vote")
-    @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response getUserVote(@PathParam("tutor_id") int tutor_key) throws SQLException, NamingException, DataLayerException, NamingException{
-        
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        
-        String voto = datalayer.getVoto(tutor_key);
-        return Response.ok(voto).build();
-    }*/
 }

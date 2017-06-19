@@ -40,7 +40,7 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
     }
     
     
-     //testato
+     
      @POST
      @Consumes(MediaType.APPLICATION_JSON)
      public Response postPrivateLesson(@PathParam("SID") String session_id, @Context UriInfo c, PrivateLesson ripetizione) throws SQLException, NamingException, DataLayerException {
@@ -48,7 +48,7 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         
         //recupero l'utente relativo alla sessione
         int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
-        
+        //setto la categoria delle materie
         for(Subject m : ripetizione.getMaterie()){
             m.setCategoria_key(ripetizione.getCategoria_key());
         }
@@ -61,10 +61,11 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         return Response.created(u).build();
     }  
    
-    /*@GET 
+    @GET 
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPrivateLessonsByUser(@PathParam("SID") String session_id) throws DataLayerException{
-         int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
+        //recupero ripetizioni offerte dall'utente
+        int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
         List<PrivateLesson> l = datalayer.getRipetizioniByTutor(user_key);
         for(PrivateLesson r : l){ 
                 List<Subject> materie = r.getMaterie();
@@ -72,13 +73,13 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
                 r.setCategoria_key(materie.get(0).getCategoria_key());
             }
         return Response.ok(l).build();
-    }*/
+    }
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPrivateLessonsLogged(@PathParam("SID") String session_id, @QueryParam("city") String città, @QueryParam("category") String categoria
+    public Response getPrivateLessons(@PathParam("SID") String session_id, @QueryParam("city") String città, @QueryParam("category") String categoria
             , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
-       
+        //filtro ripetizioni -> 2 casi (loggato e non)
         List<PrivateLesson> result = null;
         int user_key;
         if(session_id!=null){
@@ -115,11 +116,8 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
                     }
                 }
             }else{
-                
                 result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
-            }
-           
-        
+            }           
         } 
         if(result!=null){
             for(PrivateLesson r : result){ 
@@ -134,47 +132,7 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         }
         
     }  
-     
-     
-    
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getPrivateLessons(@QueryParam("city") String città, @QueryParam("category") String categoria
-            , @QueryParam("subject") String materia, @QueryParam("tutor_key") String tutor_key) throws SQLException, NamingException, DataLayerException {
-        
-        //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
-        
-        if ((città != null && !"".equals(città)) || (!"".equals(tutor_key) && tutor_key != null) ){            
-            List<PrivateLesson> result;
-            if(!"".equals(città) && città != null){
-                if(materia != null && !"".equals(materia)){
-                    //filtro per città, categoria e materia
-                    result = datalayer.getRipetizioniByMateria(città, Integer.parseInt(materia));
-                }else{
-                    if(categoria != null && !"".equals(categoria)){
-                        //filtro per città e categoria
-                        result = datalayer.getRipetizioniByCategoria(città, Integer.parseInt(categoria));
-                    }else{
-                        //filtro per città
-                        result = datalayer.getRipetizioniByCittà(città);
-                    }
-                }
-            }else{
-                result = datalayer.getRipetizioniByTutor(Integer.parseInt(tutor_key));
-            }
-            for(PrivateLesson r : result){ 
-                r.setTutor(datalayer.getUtente(r.getTutor_key()));
-                List<Subject> materie = r.getMaterie();
-                r.setMaterie(materie);
-                r.setCategoria_key(materie.get(0).getCategoria_key());
-            }return Response.ok(result).build();            
-        } else {
-            return Response.serverError().build();
-        }
-    } 
-    
-    
-    //testato
+
     @GET
     @Path("{id: [0-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -189,7 +147,7 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         return Response.ok(r).build();
     }
     
-    //testato
+
     @DELETE
     @Path("{id: [0-9]+}")
     public Response deletePrivateLesson(@Context UriInfo c, @PathParam("SID") String token, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException {
@@ -202,7 +160,6 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
        
     }
     
-    //testato
     @PUT
     @Path("{id: [0-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -210,7 +167,6 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         /******NB******
         si DEVONO indicare le materie anche se non ne sono state aggiunte altre
         e si deve indicare la categoria_key 
-        (alternativa: r.setCategoria_Key(datalayer.getRipetizione(ripetizione_key))
         ***************/
 
         //aggiornamento info relative alla ripetizione id
@@ -227,51 +183,10 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         return Response.serverError().build();
     }
     
-    /*@Path("{privateLesson_id: [0-9]+}/bookings/{id: [0-9]+}")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getBooking(@PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key) throws DataLayerException, SQLException, NamingException{
-        
-        Booking b = datalayer.getPrenotazione(key);
-        //b.setRipetizione(datalayer.getRipetizione(ripetizione_key));
-        return Response.ok(b).build();
-    }*/
-    
     @Path("{privateLesson_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {
         //passaggio alla risorsa bookings che gestisce le prenotazioni
         return new ResourceBooking();
     }
     
-    /*@Path("{id: [0-9]+}/bookings")
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)    
-    public Response postBooking(@Context UriInfo c, Prenotation prenotazione, @PathParam("id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
-        
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        
-        prenotazione.setRipetizione_key(ripetizione_key);
-        datalayer.storePrenotazione(prenotazione);
-        
-        
-        URI u = c.getAbsolutePath();
-        return Response.created(u).build();    
-    }
-    
-    @Path("{id: [0-9]+}/bookings")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response putBooking(Prenotation prenotazione, @PathParam("id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
-        
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        
-        prenotazione.setRipetizione_key(ripetizione_key);
-        prenotazione.setDirty(true);
-        datalayer.storePrenotazione(prenotazione);
-        
-        return Response.noContent().build();
-    }
-    */
 }

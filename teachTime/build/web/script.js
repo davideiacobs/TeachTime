@@ -3,13 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
- 
-
-
-
 $("#select_category").on("change", function(){
-    
     $("#select_subject option:not([value='']").remove();
     if(this.value!=''){
         $.ajax({
@@ -29,7 +23,6 @@ $("#select_category").on("change", function(){
 
 
 $("#select_category_insert").on("change", function(){
-    
     $("#select_subject_insert option:not([value='']").remove();
     if(this.value!=''){
         $.ajax({
@@ -69,10 +62,8 @@ function avg(tutor_id, handledata){
         success: function(response) {
            if(response==""){
                reponse="0";
-           }
-               
-           handledata(response, tutor_id);
-            
+           }  
+           handledata(response, tutor_id); 
         },error: function(){
             handledata(0, tutor_id);
         }
@@ -81,7 +72,6 @@ function avg(tutor_id, handledata){
 
 
 function getRipetizioniLogged(token){
-    
     $(".privateLessons").empty();
     $.ajax({
           datatype:'json',
@@ -95,9 +85,7 @@ function getRipetizioniLogged(token){
           success: function(response) {
             var i = 0;           
             for(i;i<response.length;i++){
-                
                 avg(response[i].tutor.key, function(output, tutor_id){
-                    
                     if(output==""){
                         output="0";
                     }
@@ -128,7 +116,6 @@ function getRipetizioniLogged(token){
                     makeAccordion(this);
                 });
             }
-            
           }
     });
     
@@ -138,6 +125,7 @@ function getRipetizioniLogged(token){
 $("#filter").on("click",function(){
     var token = localStorage.getItem('myToken');
     if(token != null && token!="" && token != undefined){
+        //se l'utente è loggato restituiamo solo le ripetizioni delle quali non è tutor
         getRipetizioniLogged(token);
     }else{
     $(".privateLessons").empty();
@@ -153,9 +141,7 @@ $("#filter").on("click",function(){
           success: function(response) {
             var i = 0;           
             for(i;i<response.length;i++){
-                
                 avg(response[i].tutor.key, function(output, tutor_id){
-                    
                     if(output==""){
                         output="0";
                     }
@@ -186,7 +172,6 @@ $("#filter").on("click",function(){
                     makeAccordion(this);
                 });
             }
-            
           }
     });
 }
@@ -201,9 +186,6 @@ function makeCollapsible(container)  {
     var colbody = $("#"+colbodyid,colcontainer);			
     var colindicator = $("<div class='indicator'><i class='fa'></i></div>");
     colheader.append(colindicator);
-    
-    //usiamo degli eventi custom per dotare i collapsible di "metodi"
-    //facilmente richiamabili dall'esterno
     colcontainer.on("awdcoll:expand",function(e,init) {
         if (init) colbody.show();
         colbody.slideDown(function() {
@@ -211,12 +193,9 @@ function makeCollapsible(container)  {
             colcontainer.removeClass("collapsed"); 
             colbody.attr("aria-hidden","false");
             colindicator.children("i").addClass("fa-sort-desc");
-            colindicator.children("i").removeClass("fa-sort-asc");
-
-            
+            colindicator.children("i").removeClass("fa-sort-asc");   
         });				
     });
-    
     colcontainer.on("awdcoll:collapse",function(e,init) {
         if (init) colbody.hide(); //se stiamo inizializzando, nascondi subito senza far vedere l'effetto
         colbody.slideUp(function() {
@@ -228,15 +207,12 @@ function makeCollapsible(container)  {
 
         });
     });
-    
-    
     colheader.on("click",function(){ 			
         if (colheader.attr("aria-expanded")=="true") {					
             colcontainer.trigger("awdcoll:collapse");
         } else {					
             colcontainer.trigger("awdcoll:expand");				
         }						
-        //RICEVENTE: $(document).on("awdcoll:expand",function(e){console.log(e.target)})
     });
     
     //init
@@ -248,10 +224,6 @@ function makeCollapsible(container)  {
 }
 
 
-
-//crea un accordion rendendo collapsible le sezioni figlio
-//e aggiungendo su ciascuna un ulteriore handler che provoca la
-//chiusura delle altre sezioni
 function makeAccordion(container) {
     var acccontainer = $(container);
     $("> section",acccontainer).each(function() {
@@ -276,9 +248,7 @@ $(function() {
         $("#select_subject_insert").val("");
     });
     jQuery.fn.extend({awdColl: function(){return this.each(function(){makeCollapsible(this)});}});
-    
     $(".collapsible.v0:first").awdColl();
-    
     $(".accordion").each(function(){ 
         makeAccordion(this);
     });	
@@ -293,7 +263,6 @@ function makeLogin(login){
     login.on("click",function() {
         $(this).next('#login-content').slideToggle();
         $(this).toggleClass('active');                    
-        
         if ($(this).hasClass('active')){
             $(this).find('span').html('&#x25B2;');
         }else{ 
@@ -326,9 +295,8 @@ function loginBtn(loginBtn){
                $(".privateLessons").empty();
            }  
         }
-    });
-   }
-    
+      });
+   }   
 });
 }
 
@@ -354,9 +322,8 @@ function loginNav(){
 
 function makeLogout(logout){
     logout.on("click", function(){     
-        var myToken = localStorage.getItem('myToken');
-
-        $.ajax({
+    var myToken = localStorage.getItem('myToken');
+    $.ajax({
             contentType: "text/plain",
             dataType:"text",
             type:'post',
@@ -369,7 +336,6 @@ function makeLogout(logout){
                 checkLogin();
             }
         });
-        
     });
  }
  
@@ -377,11 +343,9 @@ function makeLogout(logout){
  function checkLogin(){
      var myToken = localStorage.getItem('myToken');
      if(myToken!=null && myToken!=""){
-         //$("#insert").css({'display':'block'});
          $("#insert").removeClass("hidden");
          logoutNav();
      }else{
-         //$("#insert").css({'display':'none'});
          $("#insert").addClass("hidden");
          loginNav();
      }
@@ -408,7 +372,6 @@ function makeLogout(logout){
              $("#categorysubjects").val(input+","+$.trim(subject.text()));
         }
         $("#select_subject_insert").val("");
-        
     }else{
         if(new_subject!=''){
             $("#riepilogo").removeClass("hidden");
@@ -468,9 +431,7 @@ function makeLogout(logout){
      var categorysubjects = $("#categorysubjects").val();
      console.log(categorysubjects);
      if(categorysubjects.indexOf(";") != -1){
-         
-        var category_key = parseInt(categorysubjects.split(";")[0]);
-            
+            var category_key = parseInt(categorysubjects.split(";")[0]);
             var subjects = categorysubjects.split(";")[1].split(",");
             var i = 0;
             var subjects_list = [];
@@ -483,7 +444,6 @@ function makeLogout(logout){
             var costo = parseInt($("#costo").val());
             var descr = $("#descr").val();
             if(città!="" && luogoIncontro!="" && costo!=""){
-
                 $.ajax({
                       contentType: "application/json",
                       dataType:"json",
@@ -498,11 +458,8 @@ function makeLogout(logout){
                       }),
                       url:'http://localhost:8080/teachTime/MainApplication/rest/auth/'+myToken+'/privateLessons',
                       success: function(response) {
-
-
                       }
                   });
-
                resetInsert();
                $("#msg").removeClass("hidden");
            }else{
@@ -511,5 +468,4 @@ function makeLogout(logout){
         }else{
             msg_ko();
            }
-    
  });

@@ -33,7 +33,7 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
         super();
     }
     
-    //testato
+   
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBookingByUser(@PathParam("SID") String token, @PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
@@ -49,11 +49,12 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
         return Response.serverError().build();
     }
     
+    
     @Path("{id: [0-9]+}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBooking(@PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key) throws DataLayerException, SQLException, NamingException{
-        
+        //recupero prentoazione per chiave prenotazione/chiave ripetizione
         Booking b = datalayer.getPrenotazione(key);
         if(b!=null){
             return Response.ok(b).build();
@@ -62,7 +63,6 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
         }
     }
     
-    //testato
     @POST
     @Consumes(MediaType.APPLICATION_JSON)    
     public Response postBooking(@Context UriInfo c, Booking prenotazione, @PathParam("SID") String token,
@@ -84,7 +84,7 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
         return Response.serverError().build();
     }
     
-    //testata --> inserire studente_key nel payload oppure fare in modo che lo setti ricavandolo dal token
+   
     @Path("{booking_id: [0-9]+}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)

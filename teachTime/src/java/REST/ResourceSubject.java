@@ -38,40 +38,4 @@ public class ResourceSubject extends TeachTimeDataLayerSupplier{
         return Response.ok(list).build();
     }
     
-    /*@POST
-    @Path("{id: [0-9]+}/subjects")
-    @Consumes(MediaType.APPLICATION_JSON)
-     public Response postArgomento(@Context UriInfo c, @PathParam("id") int n, Subject materia) throws SQLException, NamingException, DataLayerException {
-            
-        
-        /*int materia_key = argomento.getMateria_key();
-        if(materia_key != n){
-            //vaffanculo 
-        }*/
-        
-    /*    TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        
-        datalayer.storeMateria(materia);
-        
-        URI u = c.getAbsolutePath();
-        
-        return Response.created(u).build();
-    }  
-    */
-    
-    
-    /*@GET
-    @Path("{id: [0-9]+}/subjects/{id_arg: [0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getArgomento(@PathParam("id") int materia, @PathParam("id_arg") int argomento) throws SQLException, NamingException, DataLayerException{
-        
-        TeachTimeDataLayer datalayer = new TeachTimeDataLayer(ds);
-        datalayer.init();
-        Subject arg = datalayer.getArgomento(argomento);
-        return Response.ok(arg).build();
-    }
-    */
-    
-  }  
-   
+  }
