@@ -47,7 +47,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
 
             uUtente = connection.prepareStatement("UPDATE utente SET citta=?,telefono=?,titolo_di_studio=?,img_profilo=? WHERE ID=?");
             iUtente = connection.prepareStatement("INSERT INTO utente (nome,cognome,email,pwd,citta,telefono,data_di_nascita,titolo_di_studio,img_profilo) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            sUtenteByID = connection.prepareStatement("SELECT * FROM utente WHERE ID=?");
+            sUtenteByID = connection.prepareStatement("SELECT ID,nome,cognome,email,citta,telefono,data_di_nascita,titolo_di_studio,img_profilo FROM utente WHERE ID=?");
             sCategoriaByID = connection.prepareStatement("SELECT * FROM categoria WHERE ID=?");
             uCategoria = connection.prepareStatement("UPDATE categoria SET nome=? WHERE ID=?");
             iCategoria = connection.prepareStatement("INSERT INTO categoria (nome) VALUES(?)", Statement.RETURN_GENERATED_KEYS);
@@ -182,14 +182,17 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     }
     
     
-     public User createUtente(ResultSet rs) throws  DataLayerException{
+     public User createUtente(ResultSet rs, boolean pwd) throws  DataLayerException{
+        //pwd indica se la query restituisce la password o meno
         try{
             User a = new User(this);
             a.setKey(rs.getInt("ID"));
             a.setNome(rs.getString("nome"));
             a.setCognome(rs.getString("cognome"));
             a.setEmail(rs.getString("email"));
-            a.setPwd(rs.getString("pwd"));
+            if(pwd==true){
+                a.setPwd(rs.getString("pwd"));
+            }
             a.setCittà(rs.getString("citta"));
             a.setEmail(rs.getString("email"));
             a.setTelefono(rs.getString("telefono"));
@@ -218,6 +221,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
      
    
      public User getUtente(int utente_key) throws DataLayerException {
+        boolean pwd = false;
         try {
             sUtenteByID.setInt(1, utente_key); //setta primo parametro query a project_key
             try (ResultSet rs = sUtenteByID.executeQuery()) {
@@ -226,7 +230,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     //"helper" della classe AuthorImpl
                     //per creare rapidamente un'istanza a
                     //partire dal record corrente
-                    return createUtente(rs);
+                    return createUtente(rs, pwd);
                 }
             }
         } catch (SQLException ex) {
@@ -237,6 +241,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     
      
     public User getUtenteByMail(String mail) throws DataLayerException{
+        boolean pwd = true;
         try {
             sUtenteByMail.setString(1, mail); //setta primo parametro query a project_key
             try (ResultSet rs = sUtenteByMail.executeQuery()) {
@@ -245,7 +250,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     //"helper" della classe AuthorImpl
                     //per creare rapidamente un'istanza a
                     //partire dal record corrente
-                    return createUtente(rs);
+                    return createUtente(rs, pwd);
                 }
             }
         } catch (SQLException ex) {

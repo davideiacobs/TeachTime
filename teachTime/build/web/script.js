@@ -96,11 +96,11 @@ function getRipetizioniLogged(token){
                 $("#title_pl").append("<section class='privateLessons'><header aria-controls='contentA"+(i+1)+"' aria-expanded='true'>\n\
                                 <h2>"+capitalize(response[i].tutor.nome)+" "+capitalize(response[i].tutor.cognome[0])+". &nbsp; \n\
                                 ("+age(response[i].tutor.dataDiNascita)+" anni) &nbsp <i class='fa fa-star "+response[i].tutor.key+"'>\n\
-                                </i>&nbsp;&nbsp;"+response[i].costo+"€/h</h2></header><div id='contentA"+(i+1)+
-                                "'aria-hidden='false'><p><b>Città:</b> "+
+                                </i></h2></header><div id='contentA"+(i+1)+
+                                "'aria-hidden='false'><p><b>Titolo di Studi:</b> "+response[i].tutor.titoloDiStudi+"</p><p class='costo'>"+response[i].costo+"€/h</p><p><b>Città:</b> "+
                                 response[i].città+"</p><p><b>Luogo di incontro:</b> "+
                                 response[i].luogoIncontro+"</p><p id='appendhere"+i+"'><b>Materie:</b> </p><p> <b> Descrizione: </b>"+
-                                response[i].descr+"</div></section>");
+                                response[i].descr+"</p></div></section>");
                 if(response[i].tutor.imgProfilo!=="" && response[i].tutor.imgProfilo!=null){
                     $("#contentA"+(i+1)).prepend("<img src='fotoProfilo/"+response[i].tutor.imgProfilo+"' class='img-circle'>");
                 }
@@ -112,9 +112,9 @@ function getRipetizioniLogged(token){
                         $("#appendhere"+i).append(" "+response[i].materie[k].nome+","); 
                     }
                 }
-                $(".accordion").each(function(){ 
+                /*$(".accordion").each(function(){ 
                     makeAccordion(this);
-                });
+                });*/
             }
           }
     });
@@ -152,8 +152,8 @@ $("#filter").on("click",function(){
                 $("#title_pl").append("<section class='privateLessons'><header aria-controls='contentA"+(i+1)+"' aria-expanded='true'>\n\
                                 <h2>"+capitalize(response[i].tutor.nome)+" "+capitalize(response[i].tutor.cognome[0])+". &nbsp; \n\
                                 ("+age(response[i].tutor.dataDiNascita)+" anni) &nbsp <i class='fa fa-star "+response[i].tutor.key+"'>\n\
-                                </i>&nbsp;&nbsp;"+response[i].costo+"€/h</h2></header><div id='contentA"+(i+1)+
-                                "'aria-hidden='false'><p><b>Città:</b> "+
+                                </i></h2></header><div id='contentA"+(i+1)+
+                                "'aria-hidden='false'><p><b>Titolo di Studi:</b> "+response[i].tutor.titoloDiStudi+"</p><p class='costo'>"+response[i].costo+"€/h</p><p><b>Città:</b> "+
                                 response[i].città+"</p><p><b>Luogo di incontro:</b> "+
                                 response[i].luogoIncontro+"</p><p id='appendhere"+i+"'><b>Materie:</b> </p><p> <b> Descrizione: </b>"+
                                 response[i].descr+"</div></section>");
@@ -168,16 +168,17 @@ $("#filter").on("click",function(){
                         $("#appendhere"+i).append(" "+response[i].materie[k].nome+","); 
                     }
                 }
-                $(".accordion").each(function(){ 
+                /*$(".accordion").each(function(){ 
                     makeAccordion(this);
-                });
+                });*/
             }
           }
     });
 }
+//$('body,html').animate({ scrollTop: $('body').height() }, 800);
 });
 
-
+/*
 function makeCollapsible(container)  {
     var colcontainer = $(container);
     colcontainer.addClass("enabled");
@@ -237,7 +238,7 @@ function makeAccordion(container) {
     });
 }
 
-
+*/
 $(function() {
     $("#select_category_insert").val("");
     $("#select_category").val("");
@@ -247,11 +248,11 @@ $(function() {
     $("#nuova_materia").on("keyup", function(){
         $("#select_subject_insert").val("");
     });
-    jQuery.fn.extend({awdColl: function(){return this.each(function(){makeCollapsible(this)});}});
-    $(".collapsible.v0:first").awdColl();
-    $(".accordion").each(function(){ 
+    //jQuery.fn.extend({awdColl: function(){return this.each(function(){makeCollapsible(this)});}});
+    //$(".collapsible.v0:first").awdColl();
+    /*$(".accordion").each(function(){ 
         makeAccordion(this);
-    });	
+    });*/	
     makeLogin($("#login-trigger"));
     loginBtn($("#login_btn"));
     checkLogin();
@@ -294,6 +295,7 @@ function loginBtn(loginBtn){
                checkLogin();
                $(".privateLessons").empty();
            }  
+           
         }
       });
    }   
@@ -358,7 +360,7 @@ function makeLogout(logout){
     var subject = $("#select_subject_insert option:selected");
     var input = $("#categorysubjects").val();
     if(subject.val()!=''){
-        //$("#riepilogo").css({'display':'block'});
+        
         $("#riepilogo").removeClass("hidden");
         if($("#selected_category").length == 0){
             $("#riepilogo_materie").after("<p id='selected_category'><b>Categoria:</b> "+category.text()+"</p>\n\
@@ -418,12 +420,23 @@ function makeLogout(logout){
       $("#nuova_materia").val("");
       $("#insert").scrollTop(0);
  }
+ 
+     
+ function msg_ok(){
+     $("#msg").removeClass("hidden");
+     $("#msg").removeClass("msg_ko");
+     $("#msg").addClass("msg_ok");
+     $("#msg").text("La ripetizione è stata inserita con successo!");
+     setTimeout( function(){$("#msg").addClass("hidden");} , 4000);
+ }
+     
      
  function msg_ko(){
      $("#msg").removeClass("hidden");
      $("#msg").removeClass("msg_ok");
      $("#msg").addClass("msg_ko");
      $("#msg").text("Qualcosa è andato storto..");
+     setTimeout( function(){$("#msg").addClass("hidden");} , 4000);
  }
  
  $("#insert_btn").on("click", function(){
@@ -461,7 +474,7 @@ function makeLogout(logout){
                       }
                   });
                resetInsert();
-               $("#msg").removeClass("hidden");
+               msg_ok();
            }else{
                msg_ko();
            }
