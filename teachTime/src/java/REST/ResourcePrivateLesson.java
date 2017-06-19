@@ -38,9 +38,7 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         
         super();
     }
-    
-    
-     
+
      @POST
      @Consumes(MediaType.APPLICATION_JSON)
      public Response postPrivateLesson(@PathParam("SID") String session_id, @Context UriInfo c, PrivateLesson ripetizione) throws SQLException, NamingException, DataLayerException {
@@ -61,19 +59,6 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         return Response.created(u).build();
     }  
    
-    @GET 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getPrivateLessonsByUser(@PathParam("SID") String session_id) throws DataLayerException{
-        //recupero ripetizioni offerte dall'utente
-        int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
-        List<PrivateLesson> l = datalayer.getRipetizioniByTutor(user_key);
-        for(PrivateLesson r : l){ 
-                List<Subject> materie = r.getMaterie();
-                r.setMaterie(materie);
-                r.setCategoria_key(materie.get(0).getCategoria_key());
-            }
-        return Response.ok(l).build();
-    }
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -102,7 +87,7 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
             }
         }else{
             //NON LOGGATO
-        //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
+            //filtro per tutor_ID, per città, per città e categoria o per città categoria e materia.
             if((!"".equals(città) && città != null) || (!"".equals(tutor_key) && tutor_key != null)){
                 if(materia != null && !"".equals(materia)){
                     //filtro per città, categoria e materia
