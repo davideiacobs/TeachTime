@@ -129,7 +129,6 @@ nav li #login-content {
     font-size: 50px;
     margin-right:4%;
 }
-
-#login-error{
-    color:red;
+.error {
+    color: firebrick;
 }

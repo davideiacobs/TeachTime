@@ -53,9 +53,9 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         ripetizione.setTutor_key(user_key);
         ripetizione.setDirty(false);
         datalayer.storeRipetizione(ripetizione);
-        
+        datalayer.destroy();
         URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione.getKey()));
-
+        
         return Response.created(u).build();
     }  
    
@@ -111,8 +111,10 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
                 r.setMaterie(materie);
                 r.setCategoria_key(materie.get(0).getCategoria_key());
             }
+            datalayer.destroy();
             return Response.ok(result).build();            
         }else {
+            datalayer.destroy();
             return Response.serverError().build();
         }
         
@@ -129,7 +131,11 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         List<Subject> materie = r.getMaterie();
         r.setMaterie(materie);
         r.setCategoria_key(materie.get(0).getCategoria_key());
-        return Response.ok(r).build();
+        datalayer.destroy();
+        if(materie!=null){
+            return Response.ok(r).build();
+        }
+        return Response.serverError().build();
     }
     
 
@@ -139,8 +145,10 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         //cancellazione della ripetizione id dal sistema
         if(datalayer.getTokenByUtente(datalayer.getRipetizione(ripetizione_key).getTutor_key()).equals(token)){
             datalayer.deleteRipetizione(ripetizione_key);
+            datalayer.destroy();
             return Response.noContent().build();
         }
+        datalayer.destroy();
         return Response.serverError().build();
        
     }
@@ -163,8 +171,10 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
             r.setKey(ripetizione_key);
             r.setTutor_key(tutor_key);            
             datalayer.storeRipetizione(r);
+            datalayer.destroy();
             return Response.noContent().build();
         }
+        datalayer.destroy();
         return Response.serverError().build();
     }
     

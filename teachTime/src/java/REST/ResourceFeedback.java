@@ -34,8 +34,11 @@ public class ResourceFeedback extends TeachTimeDataLayerSupplier {
     public Response getFeedbacksList(@PathParam("tutor_id") int tutor_key) throws DataLayerException{
         //recupero lista di feedback per tutor id     
         List<Booking> prenotazioni = datalayer.getFeedbacksByTutor(tutor_key);
-        
-        return Response.ok(prenotazioni).build();
+        datalayer.destroy();
+        if(prenotazioni!=null){
+            return Response.ok(prenotazioni).build();
+        }
+        return Response.serverError().build();
     }
     
     
@@ -45,6 +48,10 @@ public class ResourceFeedback extends TeachTimeDataLayerSupplier {
     public Response getUserVote(@PathParam("tutor_id") int tutor_key) throws DataLayerException{
         //recupero voto medio tutor per id 
         String voto = datalayer.getVoto(tutor_key);
-        return Response.ok(voto).build();
+        datalayer.destroy();
+        if(!voto.equals("")){
+            return Response.ok(voto).build();
+        }
+        return Response.serverError().build();
     }
 }

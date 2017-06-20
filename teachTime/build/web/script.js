@@ -32,7 +32,6 @@ $("#select_category_insert").on("change", function(){
               success: function(response) {
                 var i = 0;
                 for(i;i<response.length;i++){
-                    
                     $("#select_subject_insert").append("<option value="+response[i].key+">"+response[i].nome+"</option>");
                 }
               }
@@ -71,8 +70,49 @@ function avg(tutor_id, handledata){
 }
 
 
+function list_empty(){
+    $("#error_ripetizioni").remove();
+    $("#title_pl").append("<p id='error_ripetizioni' class='error'>Non ci sono ripetizioni disponibili.</p>");
+}
+
+
+function list_full(response){
+    var i = 0;
+    for(i;i<response.length;i++){
+        avg(response[i].tutor.key, function(output, tutor_id){
+            if(output==""){
+                output="0";
+            }
+            if($(".star_tutorid"+tutor_id).length == 0 ){
+                $("."+tutor_id).before("<spam class='star_tutorid"+tutor_id+"'>"+parseFloat(output.substring(0,3))+"</spam>");
+            }
+        });
+        $("#title_pl").append("<section class='privateLessons'><header aria-controls='contentA"+(i+1)+"' aria-expanded='true'>\n\
+                                    <h2>"+capitalize(response[i].tutor.nome)+" "+capitalize(response[i].tutor.cognome[0])+". &nbsp; \n\
+                                    ("+age(response[i].tutor.dataDiNascita)+" anni) &nbsp <i class='fa fa-star "+response[i].tutor.key+"'>\n\
+                                    </i></h2></header><div id='contentA"+(i+1)+
+                "'aria-hidden='false'><p><b>Titolo di Studi:</b> "+response[i].tutor.titoloDiStudi+"</p><p class='costo'>"+response[i].costo+"€/h</p><p><b>Città:</b> "+
+                response[i].città+"</p><p><b>Luogo di incontro:</b> "+
+                response[i].luogoIncontro+"</p><p id='appendhere"+i+"'><b>Materie:</b> </p><p> <b> Descrizione: </b>"+
+                response[i].descr+"</p></div></section>");
+        if(response[i].tutor.imgProfilo!=="" && response[i].tutor.imgProfilo!=null){
+            $("#contentA"+(i+1)).prepend("<img src='fotoProfilo/"+response[i].tutor.imgProfilo+"' class='img-circle'>");
+        }
+        var k = 0;
+        for(k;k<response[i].materie.length;k++){
+            if(k==response[i].materie.length-1){
+                $("#appendhere"+i).append(" "+response[i].materie[k].nome); 
+            }else{
+                $("#appendhere"+i).append(" "+response[i].materie[k].nome+","); 
+            }
+        }
+    }
+}
+
+
 function getRipetizioniLogged(token){
     $(".privateLessons").empty();
+    $("#error_ripetizioni").remove();
     $.ajax({
           datatype:'json',
           type: 'get',
@@ -82,40 +122,16 @@ function getRipetizioniLogged(token){
            category:$("#select_category").val(),
            subject:$("#select_subject").val()
           },
-          success: function(response) {
-            var i = 0;           
-            for(i;i<response.length;i++){
-                avg(response[i].tutor.key, function(output, tutor_id){
-                    if(output==""){
-                        output="0";
-                    }
-                    if($(".star_tutorid"+tutor_id).length == 0 ){
-                        $("."+tutor_id).before("<spam class='star_tutorid"+tutor_id+"'>"+parseFloat(output.substring(0,3))+"</spam>");
-                    }
-                });
-                $("#title_pl").append("<section class='privateLessons'><header aria-controls='contentA"+(i+1)+"' aria-expanded='true'>\n\
-                                <h2>"+capitalize(response[i].tutor.nome)+" "+capitalize(response[i].tutor.cognome[0])+". &nbsp; \n\
-                                ("+age(response[i].tutor.dataDiNascita)+" anni) &nbsp <i class='fa fa-star "+response[i].tutor.key+"'>\n\
-                                </i></h2></header><div id='contentA"+(i+1)+
-                                "'aria-hidden='false'><p><b>Titolo di Studi:</b> "+response[i].tutor.titoloDiStudi+"</p><p class='costo'>"+response[i].costo+"€/h</p><p><b>Città:</b> "+
-                                response[i].città+"</p><p><b>Luogo di incontro:</b> "+
-                                response[i].luogoIncontro+"</p><p id='appendhere"+i+"'><b>Materie:</b> </p><p> <b> Descrizione: </b>"+
-                                response[i].descr+"</p></div></section>");
-                if(response[i].tutor.imgProfilo!=="" && response[i].tutor.imgProfilo!=null){
-                    $("#contentA"+(i+1)).prepend("<img src='fotoProfilo/"+response[i].tutor.imgProfilo+"' class='img-circle'>");
-                }
-                var k = 0;
-                for(k;k<response[i].materie.length;k++){
-                    if(k==response[i].materie.length-1){
-                        $("#appendhere"+i).append(" "+response[i].materie[k].nome); 
-                    }else{
-                        $("#appendhere"+i).append(" "+response[i].materie[k].nome+","); 
-                    }
-                }
-                /*$(".accordion").each(function(){ 
-                    makeAccordion(this);
-                });*/
+          success: function(response) {      
+            
+            if(response.length!=0){  
+                list_full(response);   
+            }else{
+               list_empty();
             }
+          },
+          error: function(){
+             list_empty();
           }
     });
     
@@ -129,6 +145,7 @@ $("#filter").on("click",function(){
         getRipetizioniLogged(token);
     }else{
     $(".privateLessons").empty();
+    $("#error_ripetizioni").remove();
     $.ajax({
           datatype:'json',
           type: 'get',
@@ -139,124 +156,17 @@ $("#filter").on("click",function(){
            subject:$("#select_subject").val()
           },
           success: function(response) {
-            var i = 0;           
-            for(i;i<response.length;i++){
-                avg(response[i].tutor.key, function(output, tutor_id){
-                    if(output==""){
-                        output="0";
-                    }
-                    if($(".star_tutorid"+tutor_id).length == 0 ){
-                        $("."+tutor_id).before("<spam class='star_tutorid"+tutor_id+"'>"+parseFloat(output.substring(0,3))+"</spam>");
-                    }
-                });
-                $("#title_pl").append("<section class='privateLessons'><header aria-controls='contentA"+(i+1)+"' aria-expanded='true'>\n\
-                                <h2>"+capitalize(response[i].tutor.nome)+" "+capitalize(response[i].tutor.cognome[0])+". &nbsp; \n\
-                                ("+age(response[i].tutor.dataDiNascita)+" anni) &nbsp <i class='fa fa-star "+response[i].tutor.key+"'>\n\
-                                </i></h2></header><div id='contentA"+(i+1)+
-                                "'aria-hidden='false'><p><b>Titolo di Studi:</b> "+response[i].tutor.titoloDiStudi+"</p><p class='costo'>"+response[i].costo+"€/h</p><p><b>Città:</b> "+
-                                response[i].città+"</p><p><b>Luogo di incontro:</b> "+
-                                response[i].luogoIncontro+"</p><p id='appendhere"+i+"'><b>Materie:</b> </p><p> <b> Descrizione: </b>"+
-                                response[i].descr+"</div></section>");
-                if(response[i].tutor.imgProfilo!=="" && response[i].tutor.imgProfilo!=null){
-                    $("#contentA"+(i+1)).prepend("<img src='fotoProfilo/"+response[i].tutor.imgProfilo+"' class='img-circle'>");
-                }
-                var k = 0;
-                for(k;k<response[i].materie.length;k++){
-                    if(k==response[i].materie.length-1){
-                        $("#appendhere"+i).append(" "+response[i].materie[k].nome); 
-                    }else{
-                        $("#appendhere"+i).append(" "+response[i].materie[k].nome+","); 
-                    }
-                }
-                /*$(".accordion").each(function(){ 
-                    makeAccordion(this);
-                });*/
+            if(response.length!=0){  
+               list_full(response);
+            }else{
+               list_empty();
             }
+          },
+          error: function(){
+              list_empty();
           }
     });
 }
-//$('body,html').animate({ scrollTop: $('body').height() }, 800);
-});
-
-/*
-function makeCollapsible(container)  {
-    var colcontainer = $(container);
-    colcontainer.addClass("enabled");
-    var colheader = $("header",colcontainer);
-    var colbodyid = colheader.attr("aria-controls");							
-    var colbody = $("#"+colbodyid,colcontainer);			
-    var colindicator = $("<div class='indicator'><i class='fa'></i></div>");
-    colheader.append(colindicator);
-    colcontainer.on("awdcoll:expand",function(e,init) {
-        if (init) colbody.show();
-        colbody.slideDown(function() {
-            colheader.attr("aria-expanded","true")
-            colcontainer.removeClass("collapsed"); 
-            colbody.attr("aria-hidden","false");
-            colindicator.children("i").addClass("fa-sort-desc");
-            colindicator.children("i").removeClass("fa-sort-asc");   
-        });				
-    });
-    colcontainer.on("awdcoll:collapse",function(e,init) {
-        if (init) colbody.hide(); //se stiamo inizializzando, nascondi subito senza far vedere l'effetto
-        colbody.slideUp(function() {
-            colheader.attr("aria-expanded","false")
-            colcontainer.addClass("collapsed"); 
-            colbody.attr("aria-hidden","true");  
-            colindicator.children("i").addClass("fa-sort-asc"); 
-            colindicator.children("i").removeClass("fa-sort-desc");
-
-        });
-    });
-    colheader.on("click",function(){ 			
-        if (colheader.attr("aria-expanded")=="true") {					
-            colcontainer.trigger("awdcoll:collapse");
-        } else {					
-            colcontainer.trigger("awdcoll:expand");				
-        }						
-    });
-    
-    //init
-    if (colheader.attr("aria-expanded")=="true") {					
-        colcontainer.trigger("awdcoll:expand",true);				
-    } else {	
-        colcontainer.trigger("awdcoll:collapse",true);									
-    }	
-}
-
-
-function makeAccordion(container) {
-    var acccontainer = $(container);
-    $("> section",acccontainer).each(function() {
-        var colcontainer = $(this);
-        var colheader = $("header",colcontainer);				
-        colcontainer.addClass("collapsible");
-        makeCollapsible(this);		
-        colheader.on("click",function(){ 			
-            $("> section",acccontainer).not(colcontainer).trigger("awdcoll:collapse");					
-        });
-    });
-}
-
-*/
-$(function() {
-    $("#select_category_insert").val("");
-    $("#select_category").val("");
-    $("#nuova_materia").val("");
-    $("#select_subject_insert").val("");
-    $("#select_subject").val("");
-    $("#nuova_materia").on("keyup", function(){
-        $("#select_subject_insert").val("");
-    });
-    //jQuery.fn.extend({awdColl: function(){return this.each(function(){makeCollapsible(this)});}});
-    //$(".collapsible.v0:first").awdColl();
-    /*$(".accordion").each(function(){ 
-        makeAccordion(this);
-    });*/	
-    makeLogin($("#login-trigger"));
-    loginBtn($("#login_btn"));
-    checkLogin();
-    
 });
 
 
@@ -273,33 +183,47 @@ function makeLogin(login){
 }
 
 
+function login_error(){
+    $("#login_error").remove();
+    $("#login-content").prepend("<p id='login_error' class='error'> Login Errato!</p>");
+    setTimeout( function(){$("#login_error").remove();} , 4000);
+}
+
 
 function loginBtn(loginBtn){
+    
    loginBtn.on("click", function(){
-   var email = $("#email").val();
-   var pwd = $("#password").val();
-   if(email.indexOf("@")!= -1){
-       $.ajax({
-        contentType: "application/json",
-        type:'post',
-        data:JSON.stringify({
-            email: email,
-            pwd: pwd
-        }),
-        url:'http://localhost:8080/teachTime/MainApplication/rest/auth/login',
-        success: function(response) {
-           
-           if(response!=0){
-               localStorage['myToken'] = response;
-               logoutNav();
-               checkLogin();
-               $(".privateLessons").empty();
-           }  
-           
-        }
-      });
-   }   
-});
+        $("#login_error").remove();
+        var email = $("#email").val();
+        var pwd = $("#password").val();
+        if(email.indexOf("@")!= -1){
+            $.ajax({
+                contentType: "application/json",
+                type:'post',
+                data:JSON.stringify({
+                    email: email,
+                    pwd: pwd
+                }),
+                url:'http://localhost:8080/teachTime/MainApplication/rest/auth/login',
+                success: function(response) {
+                   if(response!=0){
+                       localStorage['myToken'] = response;
+                       logoutNav();
+                       checkLogin();
+                       $(".privateLessons").empty();
+                       $("#error_ripetizioni").remove();
+                   }else{
+                       login_error();
+                   }  
+                },
+                error: function(){
+                    login_error();
+                }
+           });
+        }else{
+           login_error();
+        }   
+    });
 }
 
 
@@ -309,6 +233,7 @@ function logoutNav(){
                             </a><i class='fa fa-sign-out'></i></li>");
     makeLogout($("#logout-trigger"));
 }
+
 
 function loginNav(){
     $("#nav_option").empty();
@@ -334,15 +259,16 @@ function makeLogout(logout){
             success: function(response) {
                 localStorage.removeItem('myToken');
                 $(".privateLessons").empty();
+                $("#error_ripetizioni").remove();
                 loginNav();
                 checkLogin();
             }
         });
     });
- }
+}
  
  
- function checkLogin(){
+function checkLogin(){
      var myToken = localStorage.getItem('myToken');
      if(myToken!=null && myToken!=""){
          $("#insert").removeClass("hidden");
@@ -351,16 +277,15 @@ function makeLogout(logout){
          $("#insert").addClass("hidden");
          loginNav();
      }
- }
+}
  
  
- $("#add_subject_btn").on("click",function(){
+$("#add_subject_btn").on("click",function(){
     var category = $("#select_category_insert option:selected");
     var new_subject = $("#nuova_materia").val();
     var subject = $("#select_subject_insert option:selected");
     var input = $("#categorysubjects").val();
     if(subject.val()!=''){
-        
         $("#riepilogo").removeClass("hidden");
         if($("#selected_category").length == 0){
             $("#riepilogo_materie").after("<p id='selected_category'><b>Categoria:</b> "+category.text()+"</p>\n\
@@ -391,26 +316,27 @@ function makeLogout(logout){
             $("#nuova_materia").val("");
         }
     }
- });
+});
  
  
- $("#reset").on("click", function(){
+$("#reset").on("click", function(){
      $("#select_subject_insert").val("");
      $("#select_category_insert").val("");
      $("#selected_category").empty();
      $("#selected_category").remove();
      $("#selected_subjects").empty();
-     //$("#riepilogo").css({'display':'none'});
      $("#riepilogo").addClass("hidden");
      $("#select_category_insert").prop("disabled",false);
      $("#select_subject_insert option").each(function(){
          $(this).prop("disabled",false);
      });
      $("#categorysubjects").val("");
+     $("#error_ripetizioni").remove();
      
- });
+});
  
- function resetInsert(){
+
+function resetInsert(){
       $("#reset").trigger("click");  
       $("select").val("");
       $("#città").val("");
@@ -419,30 +345,30 @@ function makeLogout(logout){
       $("#descr").val("");
       $("#nuova_materia").val("");
       $("#insert").scrollTop(0);
- }
+}
  
      
- function msg_ok(){
+function msg_ok(){
      $("#msg").removeClass("hidden");
      $("#msg").removeClass("msg_ko");
      $("#msg").addClass("msg_ok");
      $("#msg").text("La ripetizione è stata inserita con successo!");
      setTimeout( function(){$("#msg").addClass("hidden");} , 4000);
- }
+}
      
      
- function msg_ko(){
+function msg_ko(){
      $("#msg").removeClass("hidden");
      $("#msg").removeClass("msg_ok");
      $("#msg").addClass("msg_ko");
      $("#msg").text("Qualcosa è andato storto..");
      setTimeout( function(){$("#msg").addClass("hidden");} , 4000);
- }
+}
  
- $("#insert_btn").on("click", function(){
+
+$("#insert_btn").on("click", function(){
      var myToken = localStorage.getItem('myToken');
      var categorysubjects = $("#categorysubjects").val();
-     console.log(categorysubjects);
      if(categorysubjects.indexOf(";") != -1){
             var category_key = parseInt(categorysubjects.split(";")[0]);
             var subjects = categorysubjects.split(";")[1].split(",");
@@ -450,7 +376,6 @@ function makeLogout(logout){
             var subjects_list = [];
             for(i;i<subjects.length;i++){
                 subjects_list[i]={"nome":subjects[i]};
-                console.log(subjects_list);
             }
             var città = $("#città").val();
             var luogoIncontro = $("#luogoIncontro").val();
@@ -471,6 +396,10 @@ function makeLogout(logout){
                       }),
                       url:'http://localhost:8080/teachTime/MainApplication/rest/auth/'+myToken+'/privateLessons',
                       success: function(response) {
+                          resetInsert();
+                          msg_ok();
+                      },error: function(){
+                          msg_ko();
                       }
                   });
                resetInsert();
@@ -481,4 +410,20 @@ function makeLogout(logout){
         }else{
             msg_ko();
            }
- });
+});
+
+
+$(function() {
+    $("#error_ripetizioni").remove();
+    $("#select_category_insert").val("");
+    $("#select_category").val("");
+    $("#nuova_materia").val("");
+    $("#select_subject_insert").val("");
+    $("#select_subject").val("");
+    $("#nuova_materia").on("keyup", function(){
+        $("#select_subject_insert").val("");
+    });	
+    makeLogin($("#login-trigger"));
+    loginBtn($("#login_btn"));
+    checkLogin(); 
+});

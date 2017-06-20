@@ -36,7 +36,7 @@ public class ResourceAuth extends TeachTimeDataLayerSupplier{
             String isLogged = datalayer.getTokenByUtente(utente.getKey());
             if(isLogged !=null && !isLogged.equals("")){
                 //se è in sessione ritorno errore
-                return Response.serverError().build(); 
+                return Response.ok(isLogged).build(); 
             }
             if(utente.getPwd().equals(u.getPwd())){
                 //verifico se la pwd inserita è corretta. Se lo è autentico l'utente
@@ -45,13 +45,17 @@ public class ResourceAuth extends TeachTimeDataLayerSupplier{
                 session.setToken(Utility.generateToken());
                 //memorizzo la sessione nel db
                 datalayer.storeSessione(session);
+                datalayer.destroy();
                 return Response.ok(session.getToken()).build();
             } else {
+                datalayer.destroy();
                 return Response.serverError().build();
             }     
         }else{
+            datalayer.destroy();
             return Response.serverError().build();
         }
+        
     }
     
     @POST
@@ -62,12 +66,14 @@ public class ResourceAuth extends TeachTimeDataLayerSupplier{
         int res = datalayer.deleteSessione(token);
         if(res==1){
             //cancellazione avvenuta con successo
+            datalayer.destroy();
             return Response.noContent().build();   
         }
+        datalayer.destroy();
         return Response.serverError().build();
     }
     
-    //testato
+
     @Path("{SID: [0-9]+}/users")
     public ResourceUser toResourceUser() throws SQLException, NamingException, DataLayerException {
         //passaggio alla risorsa user

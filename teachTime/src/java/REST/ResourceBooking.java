@@ -44,8 +44,10 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
             List<Booking> prenotazioni = datalayer.getPrenotazioneByUtente(utente_key);
         
             //evitiamo di restituire i dati superflui riguardanti la ripetizione (es: lista materie)
+            datalayer.destroy();
             return Response.ok(prenotazioni).build();
         }
+        datalayer.destroy();
         return Response.serverError().build();
     }
     
@@ -56,6 +58,7 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
     public Response getBooking(@PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key) throws DataLayerException, SQLException, NamingException{
         //recupero prentoazione per chiave prenotazione/chiave ripetizione
         Booking b = datalayer.getPrenotazione(key);
+        datalayer.destroy();
         if(b!=null){
             return Response.ok(b).build();
         }else{
@@ -76,11 +79,14 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
             int key = datalayer.storePrenotazione(prenotazione);
             if(key == 0){
                 //l'utente ha già effettuato la stessa identica prenotazione
+                datalayer.destroy();
                 return Response.serverError().build();
             }
             URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione_key)+"/bookings/"+String.valueOf(key));
+            datalayer.destroy();
             return Response.created(u).build();    
         }
+        datalayer.destroy();
         return Response.serverError().build();
     }
     
@@ -102,9 +108,10 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
             }
             prenotazione.setDirty(true);
             datalayer.storePrenotazione(prenotazione);
-
+            datalayer.destroy();
             return Response.noContent().build();
         }
+        datalayer.destroy();
         return Response.serverError().build();
     }
     

@@ -41,8 +41,13 @@ public class ResourceUser extends TeachTimeDataLayerSupplier{
     @Produces(MediaType.APPLICATION_JSON) 
     public Response getUser(@PathParam("id") int n) throws SQLException, NamingException, DataLayerException {
         //recupero oggetto utente (NO PWD)
-        User utente = datalayer.getUtente(n);   
-        return Response.ok(utente).build();
+        User utente = datalayer.getUtente(n); 
+        datalayer.destroy();
+        if(utente!=null){
+            return Response.ok(utente).build();
+        }else{
+            return Response.serverError().build();
+        }
     }
 
     
@@ -56,6 +61,7 @@ public class ResourceUser extends TeachTimeDataLayerSupplier{
         URI u = c.getAbsolutePathBuilder()
                 .path(ResourceUser.class, "getUser")
                 .build(utente.getKey());
+        datalayer.destroy();
         return Response.created(u).build();
     }  
     
@@ -71,8 +77,10 @@ public class ResourceUser extends TeachTimeDataLayerSupplier{
             u.setDirty(true);
             u.setKey(utente_key);
             datalayer.storeUtente(u);
+            datalayer.destroy();
             return Response.noContent().build();
         }
+        datalayer.destroy();
         return Response.serverError().build();
     }
     

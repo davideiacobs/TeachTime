@@ -35,7 +35,11 @@ public class ResourceSubject extends TeachTimeDataLayerSupplier{
         
         //recuepero lista materie per id categoria
         List<Subject> list = datalayer.getMaterieByCategoria(n);
-        return Response.ok(list).build();
+        datalayer.destroy();
+        if(list!=null){
+            return Response.ok(list).build();
+        }
+        return Response.serverError().build();
     }
     
   }

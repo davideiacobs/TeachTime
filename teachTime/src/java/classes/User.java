@@ -14,7 +14,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
  * @author david
  */
 public class User {
-    @JsonIgnore
     private int key;
     private String nome;
     private String cognome;
@@ -189,7 +188,6 @@ public class User {
     /**
      * @return the key
      */
-    @JsonIgnore
     public int getKey() {
         return key;
     }
@@ -197,7 +195,6 @@ public class User {
     /**
      * @param key the key to set
      */
-    @JsonIgnore
     public void setKey(int key) {
         this.key = key;
     }
