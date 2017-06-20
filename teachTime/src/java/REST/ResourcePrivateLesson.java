@@ -47,16 +47,21 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         //recupero l'utente relativo alla sessione
         int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
         //setto la categoria delle materie
-        for(Subject m : ripetizione.getMaterie()){
-            m.setCategoria_key(ripetizione.getCategoria_key());
+        if(ripetizione.getMaterie()!=null){
+            for(Subject m : ripetizione.getMaterie()){
+                m.setCategoria_key(ripetizione.getCategoria_key());
+            }
+            ripetizione.setTutor_key(user_key);
+            ripetizione.setDirty(false);
+            datalayer.storeRipetizione(ripetizione);
+            datalayer.destroy();
+            URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione.getKey()));
+
+            return Response.created(u).build();
         }
-        ripetizione.setTutor_key(user_key);
-        ripetizione.setDirty(false);
-        datalayer.storeRipetizione(ripetizione);
         datalayer.destroy();
-        URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione.getKey()));
+        return Response.serverError().build();
         
-        return Response.created(u).build();
     }  
    
     
@@ -137,6 +142,21 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         }
         return Response.serverError().build();
     }
+    
+    @GET
+    @Path("my")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMyPrivateLessons(@PathParam("SID") String session_id) throws SQLException, NamingException, DataLayerException{
+        //recupero ripetizione per id
+        int user_key = datalayer.getSessionByToken(session_id).getUtente_key();
+        List<PrivateLesson> r = datalayer.getRipetizioniByTutor(user_key);
+        datalayer.destroy();
+        if(r != null){
+            return Response.ok(r).build();
+        }
+        return Response.serverError().build();
+    }
+    
     
 
     @DELETE

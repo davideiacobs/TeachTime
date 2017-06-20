@@ -1,6 +1,5 @@
 package classes;
 
-import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.util.List;
 import org.codehaus.jackson.annotate.JsonIgnore;
 

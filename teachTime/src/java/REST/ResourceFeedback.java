@@ -6,12 +6,13 @@
 package REST;
 
 import classes.Booking;
-import classes.TeachTimeDataLayer;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.sql.SQLException;
 import java.util.List;
 import javax.naming.NamingException;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -54,4 +55,30 @@ public class ResourceFeedback extends TeachTimeDataLayerSupplier {
         }
         return Response.serverError().build();
     }
+    
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postFeedback(Booking prenotazione,@PathParam("booking_id") int key, @PathParam("SID") String token,
+            @PathParam("privateLesson_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
+        //aggiornamento prenotazione per id 
+        
+        //BASTA INDICARE VOTO E RECENSIONE
+        prenotazione.setKey(key);
+        prenotazione.setRipetizione_key(ripetizione_key);
+        int user_key = datalayer.getUtenteByToken(token);
+        if(user_key!=0){
+            if(prenotazione.getVoto()!=-1){
+                prenotazione.setStato(2);
+            }
+            prenotazione.setDirty(true);
+            datalayer.storePrenotazione(prenotazione);
+            datalayer.destroy();
+            return Response.noContent().build();
+        }
+        datalayer.destroy();
+        return Response.serverError().build();
+    }
+    
+    
+    
 }

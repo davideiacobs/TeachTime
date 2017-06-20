@@ -14,7 +14,6 @@ import javax.naming.NamingException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -72,47 +71,29 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
             @PathParam("privateLesson_id") int ripetizione_key) throws SQLException, DataLayerException, NamingException {
         //inserimento prenotazione alla ripetizione nel sistema
         
-        //controllo se il token di sessione è lo stesso dell'utente che si sta prentoando
-        if(datalayer.getTokenByUtente(prenotazione.getStudente_key()).equals(token)){
+        //recupero l'id dell'utente che si sta prenotando
+        int user_key = datalayer.getUtenteByToken(token);
+            if(user_key != 0){
             prenotazione.setRipetizione_key(ripetizione_key);
-            //prenotazione.setDirty(true);
+            prenotazione.setStudente_key(user_key);
             int key = datalayer.storePrenotazione(prenotazione);
+            datalayer.destroy();
             if(key == 0){
                 //l'utente ha già effettuato la stessa identica prenotazione
-                datalayer.destroy();
                 return Response.serverError().build();
             }
             URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione_key)+"/bookings/"+String.valueOf(key));
-            datalayer.destroy();
             return Response.created(u).build();    
         }
-        datalayer.destroy();
         return Response.serverError().build();
     }
     
-   
-    @Path("{booking_id: [0-9]+}")
-    @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response putBooking(Booking prenotazione,@PathParam("booking_id") int key, @PathParam("SID") String token,
-            @PathParam("privateLesson_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
-        //aggiornamento prenotazione per id 
-        
-        //BASTA INDICARE STUDENT_ID, VOTO E RECENSIONE
-        prenotazione.setKey(key);
-        prenotazione.setRipetizione_key(ripetizione_key);
-        
-        if(datalayer.getTokenByUtente(prenotazione.getStudente_key()).equals(token)){
-            if(prenotazione.getVoto()!=-1){
-                prenotazione.setStato(2);
-            }
-            prenotazione.setDirty(true);
-            datalayer.storePrenotazione(prenotazione);
-            datalayer.destroy();
-            return Response.noContent().build();
-        }
-        datalayer.destroy();
-        return Response.serverError().build();
+    
+    @Path("{booking_id: [0-9]+}/feedbacks")
+    public ResourceFeedback toResourceFeedback() throws SQLException, NamingException, DataLayerException {
+        //passaggio alla risorsa feedback che gestisce i feedback
+        return new ResourceFeedback();
     }
+    
     
 }

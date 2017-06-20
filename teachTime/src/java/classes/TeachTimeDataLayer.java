@@ -31,7 +31,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione, sMateriaByNome;
     private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà, sPrenotazioneByKey;
     private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail, iSessione;
-    private PreparedStatement sSessioneById, dSessione, sSessioneByUtente, sSessioneByToken;
+    private PreparedStatement sSessioneById, dSessione, sSessioneByUtente, sSessioneByToken,sUtenteByToken;
     private PreparedStatement sRipetizioniByCittàLogged, sRipetizioniByMateriaLogged, sRipetizioniByCategoriaLogged;
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -65,7 +65,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sRipetizioneByCategoria = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");      
             sRipetizioniByCategoriaLogged = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? AND r.tutor_ID<>?");      
             
-            
+            sUtenteByToken = connection.prepareStatement("SELECT utente_ID FROM sessione WHERE token=?");
             sRipetizioneByMateria = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");
             sRipetizioniByMateriaLogged = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? AND r.tutor_ID<>?");
             
@@ -94,7 +94,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sSessioneByUtente = connection.prepareStatement("SELECT sessione.token FROM sessione INNER JOIN utente ON(sessione.utente_ID = utente.ID) WHERE utente.ID=?");
             sSessioneByToken = connection.prepareStatement("SELECT sessione.* FROM sessione WHERE token=?");
         } catch (SQLException ex) {
-            throw new DataLayerException("Error initializing newspaper data layer", ex);
+            throw new DataLayerException("Error initializing teachtime data layer", ex);
         } 
     }
        
@@ -171,7 +171,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             a.setRecensione(rs.getString("recensione"));
             return a;
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to create prenotation object from ResultSet",ex);
+            throw new DataLayerException("Unable to create booking object from ResultSet",ex);
         }
     }
     
@@ -239,6 +239,21 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         return null;
     }
     
+     public int getUtenteByToken(String token) throws DataLayerException{
+        try{
+            sUtenteByToken.setString(1, token);
+            try(ResultSet rs = sUtenteByToken.executeQuery()){
+                if(rs.next()){
+                    return rs.getInt("utente_ID");
+                }
+            }
+        }catch (SQLException ex) {
+            throw new DataLayerException("Unable to load utente by token", ex);
+        }
+        return 0;
+        
+         
+     }
      
     public User getUtenteByMail(String mail) throws DataLayerException{
         boolean pwd = true;
@@ -254,7 +269,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load utente by ID", ex);
+            throw new DataLayerException("Unable to load utente by mail", ex);
         }
         return null;
     } 
@@ -303,7 +318,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load prenotazioni", ex);
+            throw new DataLayerException("Unable to load prenotazioni by utente", ex);
         }
         return result;
     }
@@ -318,7 +333,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         }catch (SQLException ex) {
-            throw new DataLayerException("Unable to load prenotazioni", ex);
+            throw new DataLayerException("Unable to load feebacks by tutor id", ex);
         }
         return result;
     }
@@ -373,7 +388,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load materia by ID", ex);
+            throw new DataLayerException("Unable to load sessione by ID", ex);
         }
         return null;
     }
@@ -391,14 +406,14 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load materia by ID", ex);
+            throw new DataLayerException("Unable to load sessione by token", ex);
         }
         return null;
     }
      
-    public int getTutorByRipetizione(int studente_key) throws DataLayerException{
+    public int getTutorByRipetizione(int key) throws DataLayerException{
         try {
-            sTutorByRipetizione.setInt(1, studente_key); //setta primo parametro query a project_key
+            sTutorByRipetizione.setInt(1, key); //setta primo parametro query a project_key
             try (ResultSet rs = sTutorByRipetizione.executeQuery()) {
                 if (rs.next()) {
                     //notare come utilizziamo il costrutture
@@ -409,7 +424,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load materia by ID", ex);
+            throw new DataLayerException("Unable to load ripetizione by key", ex);
         }
         return 0;
     }
@@ -425,7 +440,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load subjects", ex);
+            throw new DataLayerException("Unable to load materie by categoria", ex);
         }
         return result; //restituisce in result tutti gli oggetti Project esistenti
     }
@@ -442,7 +457,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load subjects", ex);
+            throw new DataLayerException("Unable to load materie by ripetizione", ex);
         }
         return result;
     }
@@ -460,7 +475,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by ID", ex);
+            throw new DataLayerException("Unable to load ripetizione by ID", ex);
         }
         return null;
     }
@@ -476,7 +491,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by tutor_ID", ex);
+            throw new DataLayerException("Unable to load ripetizione by tutor_ID", ex);
         }
         return result;
     }
@@ -493,7 +508,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by città", ex);
+            throw new DataLayerException("Unable to load ripetizioni by città", ex);
         }
         return result;
     }
@@ -510,7 +525,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by città", ex);
+            throw new DataLayerException("Unable to load ripetizioni by città", ex);
         }
         return result;
     }
@@ -530,7 +545,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by filter", ex);
+            throw new DataLayerException("Unable to load ripetizioni by filter", ex);
         }
         return result;
     }
@@ -550,7 +565,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by filter", ex);
+            throw new DataLayerException("Unable to load ripetizioni by filter", ex);
         }
         return result;
     }
@@ -571,7 +586,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by filter", ex);
+            throw new DataLayerException("Unable to load ripetizioni by filter", ex);
         }
         return result;
     }
@@ -590,7 +605,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by filter", ex);
+            throw new DataLayerException("Unable to load ripetizioni by filter", ex);
         }
         return result;
     }
@@ -621,7 +636,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 }
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load repetition by filter", ex);
+            throw new DataLayerException("Unable to load ripetizioni by filter", ex);
         }
         return null;
     }
@@ -661,17 +676,9 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 iUtente.setString(8, utente.getTitoloDiStudi());
                 iUtente.setString(9, utente.getImgProfilo());
                 
-                if (iUtente.executeUpdate() == 1) {
-                    //per leggere la chiave generata dal database
-                    //per il record appena inserito, usiamo il metodo
-                    //getGeneratedKeys sullo statement.
-                    try (ResultSet keys = iUtente.getGeneratedKeys()) {
-                        //il valore restituito è un ResultSet con un record
-                        //per ciascuna chiave generata (uno solo nel nostro caso)
-                        
+                if (iUtente.executeUpdate() == 1) {                    
+                   try (ResultSet keys = iUtente.getGeneratedKeys()) {
                         if (keys.next()) {
-                            //i campi del record sono le componenti della chiave
-                            //(nel nostro caso, un solo intero)
                             key = keys.getInt(1);
                         }
                     }
@@ -699,19 +706,9 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 uCategoria.executeUpdate();
             } else { //insert
                 iCategoria.setString(1, categoria.getNome());
-                
-                
                 if (iCategoria.executeUpdate() == 1) {
-                    //per leggere la chiave generata dal database
-                    //per il record appena inserito, usiamo il metodo
-                    //getGeneratedKeys sullo statement.
                     try (ResultSet keys = iCategoria.getGeneratedKeys()) {
-                        //il valore restituito è un ResultSet con un record
-                        //per ciascuna chiave generata (uno solo nel nostro caso)
-                        
                         if (keys.next()) {
-                            //i campi del record sono le componenti della chiave
-                            //(nel nostro caso, un solo intero)
                             key = keys.getInt(1);
                         }
                     }
@@ -744,16 +741,8 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 
                 
                 if (iMateria.executeUpdate() == 1) {
-                    //per leggere la chiave generata dal database
-                    //per il record appena inserito, usiamo il metodo
-                    //getGeneratedKeys sullo statement.
                     try (ResultSet keys = iMateria.getGeneratedKeys()) {
-                        //il valore restituito è un ResultSet con un record
-                        //per ciascuna chiave generata (uno solo nel nostro caso)
-                        
                         if (keys.next()) {
-                            //i campi del record sono le componenti della chiave
-                            //(nel nostro caso, un solo intero)
                             key = keys.getInt(1);
                         }
                     }
@@ -814,16 +803,8 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                 
                 
                 if (iRipetizione.executeUpdate() == 1) {
-                    //per leggere la chiave generata dal database
-                    //per il record appena inserito, usiamo il metodo
-                    //getGeneratedKeys sullo statement.
                     try (ResultSet keys = iRipetizione.getGeneratedKeys()) {
-                        //il valore restituito è un ResultSet con un record
-                        //per ciascuna chiave generata (uno solo nel nostro caso)
-                        
                         if (keys.next()) {
-                            //i campi del record sono le componenti della chiave
-                            //(nel nostro caso, un solo intero)
                             key = keys.getInt(1);
                         }
                     }
@@ -899,25 +880,12 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
         }
         try {
             if(key>0){
-            //sPrenotazioneByKey.setInt(1, key);
-            //sPrenotazioneBySuperkey.setInt(1, ripetizione_key);
-            //sPrenotazioneBySuperkey.setInt(2, studente_key);
-            //sPrenotazioneBySuperkey.setInt(3, materia_key);
-            //try(ResultSet rs = sPrenotazioneBySuperkey.executeQuery()){
-            /*try(ResultSet rs = sPrenotazioneByKey.executeQuery()){
-                if(rs.next()){
-                    //la prenotazione esiste già  --> update
-                    */
                     if (!prenotazione.isDirty()) {
                         return key;
                     }
-              
                     uPrenotazione.setInt(1, prenotazione.getStato());
                     uPrenotazione.setInt(2, prenotazione.getVoto());
                     uPrenotazione.setString(3, prenotazione.getRecensione());
-                    //uPrenotazione.setInt(4, ripetizione_key);
-                    //uPrenotazione.setInt(5, studente_key);
-                    //uPrenotazione.setInt(6, materia_key);
                     uPrenotazione.setInt(4, key);
                     uPrenotazione.executeUpdate();
                 }else { //insert
@@ -937,27 +905,15 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
                     iPrenotazione.setInt(3, getRipetizione(ripetizione_key).getCosto());
                     iPrenotazione.setString(4, prenotazione.getDescr());
                     iPrenotazione.setInt(5, prenotazione.getStato());
-                    //java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    //String currentTime = sdf.format(prenotazione.getData());
                     iPrenotazione.setString(6, currentTime);
                     iPrenotazione.setInt(7, materia_key);
                     iPrenotazione.setInt(8, categoria_key);
                     if (iPrenotazione.executeUpdate() == 1) {
-                    //per leggere la chiave generata dal database
-                    //per il record appena inserito, usiamo il metodo
-                    //getGeneratedKeys sullo statement.
                         try (ResultSet keys = iPrenotazione.getGeneratedKeys()) {
-                            //il valore restituito è un ResultSet con un record
-                            //per ciascuna chiave generata (uno solo nel nostro caso)
-
                             if (keys.next()) {
-                            //i campi del record sono le componenti della chiave
-                            //(nel nostro caso, un solo intero)
                             key = keys.getInt(1);
-                            
                         }
-                    }
-                
+                    }  
             }
             if (key > 0) {
                 prenotazione.copyFrom(getPrenotazione(key));

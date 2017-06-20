@@ -262,6 +262,7 @@ function makeLogout(logout){
                 $("#error_ripetizioni").remove();
                 loginNav();
                 checkLogin();
+                resetInsert();
             }
         });
     });
@@ -319,6 +320,18 @@ $("#add_subject_btn").on("click",function(){
 });
  
  
+function resetInsert(){
+      $("#reset").trigger("click");  
+      $("select").val("");
+      $("#città").val("");
+      $("#luogoIncontro").val("");
+      $("#costo").val("");
+      $("#descr").val("");
+      $("#nuova_materia").val("");
+      $("#insert").scrollTop(0);
+}
+
+
 $("#reset").on("click", function(){
      $("#select_subject_insert").val("");
      $("#select_category_insert").val("");
@@ -332,20 +345,11 @@ $("#reset").on("click", function(){
      });
      $("#categorysubjects").val("");
      $("#error_ripetizioni").remove();
+     resetInsert();
      
 });
  
 
-function resetInsert(){
-      $("#reset").trigger("click");  
-      $("select").val("");
-      $("#città").val("");
-      $("#luogoIncontro").val("");
-      $("#costo").val("");
-      $("#descr").val("");
-      $("#nuova_materia").val("");
-      $("#insert").scrollTop(0);
-}
  
      
 function msg_ok(){
@@ -398,8 +402,6 @@ $("#insert_btn").on("click", function(){
                       success: function(response) {
                           resetInsert();
                           msg_ok();
-                      },error: function(){
-                          msg_ko();
                       }
                   });
                resetInsert();
@@ -423,6 +425,7 @@ $(function() {
     $("#nuova_materia").on("keyup", function(){
         $("#select_subject_insert").val("");
     });	
+    resetInsert();
     makeLogin($("#login-trigger"));
     loginBtn($("#login_btn"));
     checkLogin(); 

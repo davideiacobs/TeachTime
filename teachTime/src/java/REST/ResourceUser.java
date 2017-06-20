@@ -56,13 +56,17 @@ public class ResourceUser extends TeachTimeDataLayerSupplier{
     public Response postUser(@Context UriInfo c, User utente) throws SQLException, NamingException, DataLayerException {
         
         //inserimento nuovo utente nel sistema
-        datalayer.storeUtente(utente);
-        //restituiamo la uri per recuperare le info relative all'utente appena creato
-        URI u = c.getAbsolutePathBuilder()
-                .path(ResourceUser.class, "getUser")
-                .build(utente.getKey());
-        datalayer.destroy();
-        return Response.created(u).build();
+        User ut = datalayer.getUtenteByMail(utente.getEmail());
+        if(ut==null){
+            datalayer.storeUtente(utente);
+            //restituiamo la uri per recuperare le info relative all'utente appena creato
+            URI u = c.getAbsolutePathBuilder()
+                    .path(ResourceUser.class, "getUser")
+                    .build(utente.getKey());
+            datalayer.destroy();
+            return Response.created(u).build();
+        }
+        return Response.serverError().build();
     }  
     
     
