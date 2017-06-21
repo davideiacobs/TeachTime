@@ -6,6 +6,7 @@
 package REST;
 
 import classes.Booking;
+import classes.Subject;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
@@ -74,17 +75,25 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
         //recupero l'id dell'utente che si sta prenotando
         int user_key = datalayer.getUtenteByToken(token);
             if(user_key != 0){
-            prenotazione.setRipetizione_key(ripetizione_key);
-            prenotazione.setStudente_key(user_key);
-            int key = datalayer.storePrenotazione(prenotazione);
-            datalayer.destroy();
-            if(key == 0){
-                //l'utente ha già effettuato la stessa identica prenotazione
+                prenotazione.setRipetizione_key(ripetizione_key);
+                prenotazione.setStudente_key(user_key);
+                List<Subject> materie = datalayer.getMaterieByRipetizione(ripetizione_key);
+                //controlliamo se la materia a cui ci si vuole prenotare è presente tra 
+                //quelle disponibili nella ripetizione
+                if(materie.stream().anyMatch(ti -> ti.getKey() == prenotazione.getMateria_key())){
+                    int key = datalayer.storePrenotazione(prenotazione);
+                    datalayer.destroy();
+                    if(key == 0){
+                        //l'utente ha già effettuato la stessa identica prenotazione
+                        return Response.serverError().build();
+                    }
+                    URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione_key)+"/bookings/"+String.valueOf(key));
+                    return Response.created(u).build();    
+                }
+                datalayer.destroy();
                 return Response.serverError().build();
-            }
-            URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione_key)+"/bookings/"+String.valueOf(key));
-            return Response.created(u).build();    
         }
+        datalayer.destroy();
         return Response.serverError().build();
     }
     

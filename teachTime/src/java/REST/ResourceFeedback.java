@@ -60,7 +60,7 @@ public class ResourceFeedback extends TeachTimeDataLayerSupplier {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postFeedback(Booking prenotazione,@PathParam("booking_id") int key, @PathParam("SID") String token,
             @PathParam("privateLesson_id") int ripetizione_key) throws SQLException, NamingException, DataLayerException{
-        //aggiornamento prenotazione per id 
+        //inserimento feedback nel sistema (aggiornamento prenotazione) 
         
         //BASTA INDICARE VOTO E RECENSIONE
         prenotazione.setKey(key);
