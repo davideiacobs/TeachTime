@@ -35,7 +35,7 @@ public class ResourceAuth extends TeachTimeDataLayerSupplier{
             //se l'utente esiste verifico se è in sessione
             String isLogged = datalayer.getTokenByUtente(utente.getKey());
             if(isLogged !=null && !isLogged.equals("")){
-                //se è in sessione ritorno errore
+               
                 return Response.ok(isLogged).build(); 
             }
             if(utente.getPwd().equals(u.getPwd())){

@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.NoSuchAlgorithmException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.MessageDigest;
 
 /**
  *
@@ -30,22 +28,10 @@ public class UploadFoto extends HttpServlet {
         
         Part foto_to_upload = request.getPart("foto-profilo");
         
-        //File uploaded_foto = null;
         OutputStream out = null;
         InputStream filecontent = null;
         final PrintWriter writer = response.getWriter();
-        /*if(foto_to_upload != null && foto_to_upload.getSize() > 0){
-            uploaded_foto = File.createTempFile("foto_profilo", ".jpg", new File(getServletContext().getInitParameter("fotoProfilo.directory")));
-             String digest_foto = getDigest(foto_to_upload, uploaded_foto);
-        }
-        response.setContentType("text/plain"); 
-        response.setCharacterEncoding("UTF-8"); 
-        PrintWriter out = response.getWriter();
-        try {
-            out.println(uploaded_foto.getName());
-        } finally {
-            out.close();
-        }*/
+        
         String name = (String.valueOf((long) (Math.random()*1000000000)))+".jpg";
         out = new FileOutputStream(new File(getServletContext().getInitParameter("foto.directory")+File.separator+name));
         filecontent = foto_to_upload.getInputStream();
@@ -75,7 +61,6 @@ public class UploadFoto extends HttpServlet {
             upload_foto(request, response);
         } catch (IOException ex) {
             request.setAttribute("exception", ex);
-            //action_error(request, response);
         }
         
     }
