@@ -1,1 +1,35 @@
 /TeachTime/nbproject/private/
+
+# Specifies intentionally untracked files to ignore when using Git
+# http://git-scm.com/docs/gitignore
+
+*~
+*.sw[mnpcod]
+*.log
+*.tmp
+*.tmp.*
+/APP/TeachTime/log.txt
+*.sublime-project
+*.sublime-workspace
+/APP/TeachTime/.vscode/
+/APP/TeachTime/npm-debug.log*
+
+/APP/TeachTime/.idea/
+/APP/TeachTime/.sass-cache/
+/APP/TeachTime/.tmp/
+/APP/TeachTime/.versions/
+/APP/TeachTime/coverage/
+/APP/TeachTime/dist/
+/APP/TeachTime/node_modules/
+/APP/TeachTime/tmp/
+/APP/TeachTime/temp/
+/APP/TeachTime/hooks/
+/APP/TeachTime/platforms/
+/APP/TeachTime/plugins/
+/APP/TeachTime/plugins/android.json
+/APP/TeachTime/plugins/ios.json
+/APP/TeachTime/$RECYCLE.BIN/
+
+/APP/TeachTime/.DS_Store
+/APP/TeachTime/Thumbs.db
+/APP/TeachTime/UserInterfaceState.xcuserstate
