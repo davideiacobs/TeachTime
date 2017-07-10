@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TeachTime</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="custom.css"/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul id="nav_option">
+                    <li id="login">
+                        <a id="login-trigger" href="#">
+                            Login <span>&#x25BC;</span>
+                        </a>
+                        <div id="login-content">
+                            <div>
+                                <input id="email" type="email" name="Email" placeholder="La tua Email">   
+                                <input id="password" type="password" name="Password" placeholder="La tua Password">
+                                <input type="submit" id="login_btn" value="Login">                       
+                            </div>
+                        </div>                     
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="container">
+                    <hr />
+                    <h2>Ripetizioni Disponibili</h2>
+                    <div class="available">                      
+                        <input id="city" type="text" placeholder="Inserisci città"/>
+                        <select id="select_category">
+                            <option value="" selected="selected">Seleziona Categoria</option>
+                            <option value="1">Informatica</option>
+                            <option value="2">Matematica</option>
+                            <option value="3">Fisica</option>
+                        </select>
+                        <select id="select_subject">
+                            <option value="">Seleziona Materia</option>
+                        </select>
+                        <input id="filter" type="button" class="button" value="Cerca"/>
+                    </div>
+                    <section class="accordion" id="title_pl">
+                        <!--QUI VERRANNO INSERITE LE RIPETIZIONI-->
+                    </section>
+                        <div id="insert" class="hidden">
+                            <div class="row">
+                                <hr />
+                                <div class="col-md-6">
+                                    <h2> Inserisci una Nuova Ripetizione </h2>
+                                    <div id="insert-content">
+                                        <div class="ins">
+                                            <div class="row">
+                                                <div class="col-md-4 form-group">
+                                                    <select id="select_category_insert">
+                                                        <option value="" selected="selected">Seleziona Categoria</option>
+                                                        <option value="1">Informatica</option>
+                                                        <option value="2">Matematica</option>
+                                                        <option value="3">Fisica</option>
+                                                    </select>
+                                                </div>
+                                            </div> 
+                                             <select id="select_subject_insert">
+                                                <option value="">Seleziona Materia</option>
+                                             </select>
+                                            oppure
+                                            <input id="nuova_materia" type="text" placeholder="inserisci nuova"/>
+                                            <input type="button" id="add_subject_btn" class="button" value="Aggiungi"/>
+                                            <div id="riepilogo" class="hidden">
+                                                <h5 id="riepilogo_materie">Riepilogo materie</h5>
+                                                <input type="button" id="reset"  value="reset"/>
+                                                <input type="text" id="categorysubjects" class="hidden"/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group">
+                                                    <label for="città">Città</label>
+                                                    <input id="città" type="text" name="città" placeholder="Inserisci la città"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="luogoIncontro">Luogo</label>
+                                                    <input id="luogoIncontro" type="text" name="luogoIncontro" placeholder="Luogo di incontro" />
+                                                </div>
+                                                <div class="form-group">    
+                                                    <label for="costo">Costo (€/h)</label>
+                                                    <input id="costo" type="number" min="0" name="costo" placeholder="€/h"/>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="descr">Descrizione</label>
+                                                    <textarea class="form-control" rows="4" id="descr" name="descr" placeholder="Descrizione e info aggiuntive"></textarea>
+                                                </div>
+                                                    <input type="submit" id="insert_btn" class="button" value="Inserisci"/>
+                                            </div>
+                                        </div>
+                                        <p id="msg" class="msg_ok hidden"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="script.js"></script>
+        <script src="jquery.min.js"></script>
+    </body>
+</html>

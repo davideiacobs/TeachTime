@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+    <!--windows
+    <context-param>
+        <param-name>foto.directory</param-name>
+        <param-value>C:\Users\david\Desktop\AppDispMobili\TeachTime\teachTime\web\fotoProfilo</param-value>
+    </context-param>-->
+    <!--ubuntu-->
+    <context-param>
+        <param-name>foto.directory</param-name>
+        <param-value>/home/iacobs/GitHub/TeachTime/TeachTime/teachTime/web/fotoProfilo</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>MainApplication</servlet-name>
+        <servlet-class>REST.MainApplication</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UploadFoto</servlet-name>
+        <servlet-class>server.UploadFoto</servlet-class>
+        <multipart-config>
+            <!--
+            <location>/tmp</location> temporary files location (DEF: "") -->
+            <max-file-size>20848820</max-file-size>
+            <!-- max size of accepted uploadd (DEF: unlimited!) -->
+            <max-request-size>418018841</max-request-size>
+            <!-- max size of multipart requests (may contain more files or data) (DEF: ulimited!) -->
+            <!-- <file-size-threshold>1048576</file-size-threshold> max size of files to hold in memory (without writing to temporary disk file) (DEF: 0) -->
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MainApplication</servlet-name>
+        <url-pattern>/MainApplication</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UploadFoto</servlet-name>
+        <url-pattern>/UploadFoto</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <resource-ref>
+        <res-ref-name>jdbc/teachtime</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+</web-app>
