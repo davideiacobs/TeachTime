@@ -5,6 +5,7 @@
  */
 package REST;
 
+import classes.Category;
 import classes.Subject;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.sql.SQLException;
@@ -27,6 +28,20 @@ public class ResourceSubject extends TeachTimeDataLayerSupplier{
     public ResourceSubject()throws SQLException, NamingException, DataLayerException{
         super();
     }
+    
+    @GET 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCategories() throws DataLayerException{
+        
+        //recuepero lista materie per id categoria
+        List<Category> list = datalayer.getCategorie();
+        datalayer.destroy();
+        if(list!=null){
+            return Response.ok(list).build();
+        }
+        return Response.serverError().build();
+    }
+    
     
     @GET
     @Path("{id: [0-9]+}/subjects")

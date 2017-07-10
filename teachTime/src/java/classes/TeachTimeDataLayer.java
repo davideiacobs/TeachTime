@@ -30,7 +30,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
     private PreparedStatement sRipetizioneByTutor, sRipetizioneByCategoria, sRipetizioneByMateria;
     private PreparedStatement dRipetizione,dRipetizioneHasMateria, sTutorByRipetizione, sMateriaByNome;
     private PreparedStatement sPrenotazioneBySuperkey, uPrenotazione, iPrenotazione, sRipetizioneByCittà, sPrenotazioneByKey;
-    private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail, iSessione;
+    private PreparedStatement sPrenotazioneByUtente, sFeedbacksByTutor, sVoto, sUtenteByMail, iSessione,sCategorie;
     private PreparedStatement sSessioneById, dSessione, sSessioneByUtente, sSessioneByToken,sUtenteByToken;
     private PreparedStatement sRipetizioniByCittàLogged, sRipetizioniByMateriaLogged, sRipetizioniByCategoriaLogged;
     public TeachTimeDataLayer(DataSource datasource) throws SQLException, NamingException {
@@ -44,7 +44,7 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             super.init();
 
             //precompiliamo tutte le query utilizzate
-
+            sCategorie = connection.prepareStatement("SELECT ID FROM categoria");
             uUtente = connection.prepareStatement("UPDATE utente SET citta=?,telefono=?,titolo_di_studio=?,img_profilo=? WHERE ID=?");
             iUtente = connection.prepareStatement("INSERT INTO utente (nome,cognome,email,pwd,citta,telefono,data_di_nascita,titolo_di_studio,img_profilo) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             sUtenteByID = connection.prepareStatement("SELECT ID,nome,cognome,email,citta,telefono,data_di_nascita,titolo_di_studio,img_profilo FROM utente WHERE ID=?");
@@ -355,6 +355,26 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             throw new DataLayerException("Unable to load categoria by ID", ex);
         }
         return null;
+    }
+    
+    
+    public List<Category> getCategorie() throws DataLayerException {
+        List<Category> result = new ArrayList();
+        try {
+            
+            try (ResultSet rs = sCategorie.executeQuery()) {
+                while(rs.next()) {
+                    //notare come utilizziamo il costrutture
+                    //"helper" della classe AuthorImpl
+                    //per creare rapidamente un'istanza a
+                    //partire dal record corrente
+                    result.add((Category) getCategoria(rs.getInt("ID")));
+                }
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load categorie", ex);
+        }
+        return result;
     }
     
      public Subject getMateria(int materia_key) throws DataLayerException {
