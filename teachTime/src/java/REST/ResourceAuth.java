@@ -36,7 +36,10 @@ public class ResourceAuth extends TeachTimeDataLayerSupplier{
             String isLogged = datalayer.getTokenByUtente(utente.getKey());
             if(isLogged !=null && !isLogged.equals("")){
                 //se è in sessione ritorno errore
-                return Response.ok(isLogged).build(); 
+                Session session = new Session();
+                session.setUtente(utente);
+                session.setToken(isLogged);
+                return Response.ok(session).build(); 
             }
             if(utente.getPwd().equals(u.getPwd())){
                 //verifico se la pwd inserita è corretta. Se lo è autentico l'utente
@@ -46,7 +49,7 @@ public class ResourceAuth extends TeachTimeDataLayerSupplier{
                 //memorizzo la sessione nel db
                 datalayer.storeSessione(session);
                 datalayer.destroy();
-                return Response.ok(session.getToken()).build();
+                return Response.ok(session).build();
             } else {
                 datalayer.destroy();
                 return Response.serverError().build();

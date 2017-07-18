@@ -16,7 +16,6 @@ public class PrivateLesson {
     private String città;
     private User tutor;
     private int tutor_key;
-    @JsonIgnore
     private Category categoria;
     private int categoria_key;
     protected TeachTimeDataLayer ownerdatalayer;
@@ -180,14 +179,12 @@ public class PrivateLesson {
         this.dirty = true;
     }
     
-    @JsonIgnore
     public void setCategoria(Category categoria){
         this.categoria = categoria;
         this.categoria_key = categoria.getKey();
         this.dirty = true;
     }
     
-    @JsonIgnore
     public Category getCategoria() throws DataLayerException{
         if (categoria == null && categoria_key > 0) {
             categoria = ownerdatalayer.getCategoria(categoria_key);

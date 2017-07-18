@@ -1,3 +1,5 @@
+
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -6,7 +8,9 @@
 package REST;
 
 import classes.Booking;
+import classes.PrivateLesson;
 import classes.Subject;
+import classes.User;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
@@ -22,6 +26,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import mailer.Mailer;
 
 /**
  *
@@ -33,7 +38,7 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
         super();
     }
     
-   
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getBookingByUser(@PathParam("SID") String token, @PathParam("user_id") int utente_key) throws SQLException, DataLayerException, NamingException{
@@ -87,6 +92,24 @@ public class ResourceBooking extends TeachTimeDataLayerSupplier{
                         //l'utente ha già effettuato la stessa identica prenotazione
                         return Response.serverError().build();
                     }
+                    //invio mail
+                    PrivateLesson b = datalayer.getRipetizione(prenotazione.getRipetizione_key());
+                    User t = datalayer.getUtente(b.getTutor_key());
+                    Subject m = datalayer.getMateria(prenotazione.getMateria_key());
+                    String obj = "Richiesta di Prenotazione";
+                    String link_accetta = "http://192.168.1.5:8080/teachTime/MainApplication/rest/auth/"+token+"/privateLessons/"+ripetizione_key+"/bookings/"+key+"?state=accetta";
+                    String txt = "Salve "+t.getNome()+"!\nHai ricevuto una richiesta di prenotazione. Dettaglio:\n"
+                            + "materia: "+m.getNome()+";\n"
+                            + "per il giorno: "+prenotazione.getData()+";\n"
+                            + "città: "+b.getCittà()+";\n"
+                            + "luogo di incontro: "+b.getLuogoIncontro()+";\n"
+                            + "eventuali informazioni generali: "+prenotazione.getDescr()+".\n"
+                            + "\nPer accettare la richiesta clicca qui "+link_accetta+""
+                            + " , lo studente ti contatterà al più presto!\n"
+                            + "\nSaluti,\nTeachTime";
+                    Mailer m1 = new Mailer(t.getEmail(),obj,txt);
+                    m1.sendEmail();
+
                     URI u = URI.create(c.getBaseUri().toString()+"privateLessons/"+String.valueOf(ripetizione_key)+"/bookings/"+String.valueOf(key));
                     return Response.created(u).build();    
                 }

@@ -6,17 +6,21 @@
 package classes;
 
 import it.univaq.f4i.iw.framework.data.DataLayerException;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
  * @author iacobs
  */
 public class Session {
+    @JsonIgnore
     private int id;
     private String token;
     private int utente_key;
+    @JsonIgnore
     private User utente;
     protected TeachTimeDataLayer ownerdatalayer;
+    @JsonIgnore
     private boolean dirty;
     
     public Session(TeachTimeDataLayer datalayer){
@@ -40,6 +44,7 @@ public class Session {
     /**
      * @return the id
      */
+    @JsonIgnore
     public int getId() {
         return id;
     }
@@ -47,6 +52,7 @@ public class Session {
     /**
      * @param id the id to set
      */
+    @JsonIgnore
     public void setId(int id) {
         this.id = id;
         this.dirty = true;
@@ -86,6 +92,7 @@ public class Session {
     /**
      * @return the utente
      */
+    @JsonIgnore
     public User getUtente() throws DataLayerException {
         if(utente_key>0 && utente == null){
             utente = ownerdatalayer.getUtente(utente_key);
@@ -96,6 +103,7 @@ public class Session {
     /**
      * @param utente the utente to set
      */
+    @JsonIgnore
     public void setUtente(User utente) {
         this.utente_key = utente.getKey();
         this.utente = utente;
@@ -105,6 +113,7 @@ public class Session {
     /**
      * @return the dirty
      */
+    @JsonIgnore
     public boolean isDirty() {
         return dirty;
     }
@@ -112,6 +121,7 @@ public class Session {
     /**
      * @param dirty the dirty to set
      */
+    @JsonIgnore
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }

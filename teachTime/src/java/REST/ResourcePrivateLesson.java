@@ -6,8 +6,11 @@
 package REST;
 
 
+import classes.Booking;
+import classes.Category;
 import classes.PrivateLesson;
 import classes.Subject;
+import classes.User;
 import it.univaq.f4i.iw.framework.data.DataLayerException;
 import java.net.URI;
 import java.sql.SQLException;
@@ -26,6 +29,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import mailer.Mailer;
 
 /**
  *
@@ -115,6 +119,8 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
                 List<Subject> materie = r.getMaterie();
                 r.setMaterie(materie);
                 r.setCategoria_key(materie.get(0).getCategoria_key());
+                Category c = datalayer.getCategoria(r.getCategoria_key());
+                r.setCategoria(c);
             }
             datalayer.destroy();
             return Response.ok(result).build();            
@@ -197,6 +203,55 @@ public class ResourcePrivateLesson extends TeachTimeDataLayerSupplier {
         datalayer.destroy();
         return Response.serverError().build();
     }
+    
+    @Path("{privateLesson_id: [0-9]+}/bookings/{id: [0-9]+}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response putBooking(@PathParam("SID") String token, @PathParam("privateLesson_id") int ripetizione_key, @PathParam("id") int key, @QueryParam("state") String state) throws DataLayerException{
+        //permette di accettare o rifiutare 
+        int user_key = datalayer.getSessionByToken(token).getUtente_key();
+        if(user_key != 0){
+            Booking prenotazione = datalayer.getPrenotazione(key);
+            prenotazione.setRipetizione_key(ripetizione_key);
+            if(state.equals("accetta")){
+              prenotazione.setStato(1);
+              prenotazione.setRecensione("");
+              prenotazione.setVoto(-1);
+              prenotazione.setDirty(true);
+              datalayer.storePrenotazione(prenotazione);
+              
+              PrivateLesson b = datalayer.getRipetizione(prenotazione.getRipetizione_key());
+              User studente = datalayer.getUtente(prenotazione.getStudente_key());
+              User tutor = datalayer.getUtente(b.getTutor_key());
+              Subject m = datalayer.getMateria(prenotazione.getMateria_key());
+              String obj = "Prenotazione Accettata";
+              String txt = "Salve "+studente.getNome()+"!\nLa tua richiesta di prenotazione è stata accettata. Dettaglio:\n"
+                            + "materia: "+m.getNome()+";\n"
+                            + "per il giorno: "+prenotazione.getData()+";\n"
+                            + "città: "+b.getCittà()+";\n"
+                            + "luogo di incontro: "+b.getLuogoIncontro()+";\n"
+                            + "eventuali informazioni generali: "+prenotazione.getDescr()+".\n\n"
+                            + "Di seguito forniamo i dati necessari a contattare il Tutor: \n"
+                            + "nome: "+tutor.getNome()+";\n"
+                            + "email: "+tutor.getEmail()+";\n"
+                            + "telefono: "+tutor.getTelefono()+". \n\n Ti preghiamo di contattarlo per organizzare l'incontro.\n\n"                            
+                            + "\nSaluti,\nTeachTime";
+               Mailer m1 = new Mailer(studente.getEmail(),obj,txt);
+               m1.sendEmail();
+              
+              datalayer.destroy();
+              return Response.ok().build();
+            }else{
+                datalayer.destroy();
+                return Response.serverError().build();
+            }
+        }else{
+            datalayer.destroy();
+            return Response.serverError().build();
+        }
+    }
+    
+    
     
     @Path("{privateLesson_id: [0-9]+}/bookings")
     public ResourceBooking toResourceBooking() throws SQLException, NamingException, DataLayerException {

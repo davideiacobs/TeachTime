@@ -16,6 +16,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -49,11 +50,13 @@ public class ResourceFeedback extends TeachTimeDataLayerSupplier {
     public Response getUserVote(@PathParam("tutor_id") int tutor_key) throws DataLayerException{
         //recupero voto medio tutor per id 
         String voto = datalayer.getVoto(tutor_key);
+        String voto2 = String.valueOf(voto.charAt(0));
+        
         datalayer.destroy();
         if(!voto.equals("")){
-            return Response.ok(voto).build();
+            return Response.ok(voto2).build();
         }
-        return Response.serverError().build();
+        return Response.ok(0).build();
     }
     
     @POST
@@ -78,6 +81,9 @@ public class ResourceFeedback extends TeachTimeDataLayerSupplier {
         datalayer.destroy();
         return Response.serverError().build();
     }
+    
+    
+    
     
     
     

@@ -162,9 +162,8 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             a.setDescr(rs.getString("descrizione"));
             a.setStato(rs.getInt("stato"));
             a.setCosto(rs.getInt("costo"));
-            GregorianCalendar data = new GregorianCalendar();
-            java.sql.Date datasql;
-            datasql = rs.getDate("data");
+            java.sql.Timestamp datasql;
+            datasql = rs.getTimestamp("data");
             a.setData(datasql); 
             a.setMateria_key(rs.getInt("materia_ID"));
             a.setVoto(rs.getInt("voto"));
