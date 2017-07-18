@@ -61,13 +61,13 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             sMaterieByCategoria = connection.prepareStatement("SELECT a.ID FROM materia AS a WHERE a.categoria_ID=?");
             sMaterieByRipetizione = connection.prepareStatement("SELECT rha.materia_ID FROM ripetizione_has_materia AS rha WHERE ripetizione_ID=?");
             iRipetizioneHasMateria = connection.prepareStatement("INSERT INTO ripetizione_has_materia (ripetizione_ID,materia_ID) VALUES (?,?)", Statement.RETURN_GENERATED_KEYS);
-            sRipetizioneByTutor = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE tutor_ID=?");
-            sRipetizioneByCategoria = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");      
-            sRipetizioniByCategoriaLogged = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? AND r.tutor_ID<>?");      
+            sRipetizioneByTutor = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE tutor_ID=? ORDER BY costo_per_ora");
+            sRipetizioneByCategoria = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? ORDER BY r.costo_per_ora");      
+            sRipetizioniByCategoriaLogged = connection.prepareStatement("SELECT r.* FROM ((SELECT materia.ID FROM materia WHERE materia.categoria_ID=?) AS m INNER JOIN ripetizione_has_materia AS rha ON (m.ID = rha.materia_ID) INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? AND r.tutor_ID<>? ORDER BY r.costo_per_ora");      
             
             sUtenteByToken = connection.prepareStatement("SELECT utente_ID FROM sessione WHERE token=?");
-            sRipetizioneByMateria = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?");
-            sRipetizioniByMateriaLogged = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? AND r.tutor_ID<>?");
+            sRipetizioneByMateria = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=?  ORDER BY r.costo_per_ora");
+            sRipetizioniByMateriaLogged = connection.prepareStatement("SELECT r.* FROM ((SELECT ripetizione_has_materia.ripetizione_ID FROM ripetizione_has_materia WHERE ripetizione_has_materia.materia_ID=?) AS rha INNER JOIN ripetizione AS r ON (rha.ripetizione_ID = r.ID)) WHERE r.citta=? AND r.tutor_ID<>?  ORDER BY r.costo_per_ora");
             
             
             dRipetizione = connection.prepareStatement("DELETE FROM ripetizione WHERE ID=?");
@@ -79,8 +79,8 @@ public class TeachTimeDataLayer extends DataLayerMysqlImpl{
             //uPrenotazione = connection.prepareStatement("UPDATE prenotazione SET stato=?, voto=?, recensione=? WHERE ripetizione_ID=? AND studente_ID=? AND materia_ID=?");
             uPrenotazione = connection.prepareStatement("UPDATE prenotazione SET stato=?, voto=?, recensione=? WHERE ID=?");
             iPrenotazione = connection.prepareStatement("INSERT INTO prenotazione (ripetizione_ID, studente_ID, costo, descrizione, stato, data, materia_ID, materia_categoria_ID) VALUES (?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            sRipetizioneByCittà = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE citta=?");
-            sRipetizioniByCittàLogged = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE citta=? AND tutor_ID<>?");
+            sRipetizioneByCittà = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE citta=? ORDER BY costo_per_ora");
+            sRipetizioniByCittàLogged = connection.prepareStatement("SELECT ripetizione.* FROM ripetizione WHERE citta=? AND tutor_ID<>? ORDER BY costo_per_ora");
           
             
             sPrenotazioneByUtente = connection.prepareStatement("SELECT prenotazione.* FROM prenotazione WHERE studente_ID=? AND stato=1 AND data <= CURDATE()");
