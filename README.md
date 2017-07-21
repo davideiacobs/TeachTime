@@ -12,3 +12,5 @@ su parametri come la materia, l’argomento specifico, il prezzo, la distanza da
 titoli di studio conseguiti e le proprie competenze. Queste informazioni, insieme ai feedback raccolti, 
 permettono di fornire informazioni più dettagliate e specifiche all’allievo, 
 in modo da agevolare la ricerca del profilo più adatto che egli desidera avere come Tutor.
+
+NB: in questa repo è contenuto il codice lato server e la documentazione riguardante la progettazione dell'app. Il codice lato client (app basata su ionic 2) è contenuto qui [a link] https://github.com/davideiacobs/TeachTime-App 
